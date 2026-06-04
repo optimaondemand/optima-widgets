@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Study Planner — Optima Academy Online</title>
+<style>
+  :root {
+    --navy: #0E1C42;
+    --cyan: #55C8E8;
+    --gold: #C7922C;
+    --blue: #2196D0;
+    --ink: #1a2340;
+    --line: #D0D9E8;
+    --paper: #FFFFFF;
+    --wash: #F4F9FC;
+    --washblue: #E8F6FB;
+    --good: #2A9D5C;
+    --goodbg: #D8F0DD;
+    --warnbg: #FDF3E3;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Segoe UI", Segoe, Tahoma, Arial, sans-serif;
+    color: var(--ink);
+    background: linear-gradient(135deg, var(--washblue) 0%, var(--wash) 100%);
+    line-height: 1.55;
+  }
+  .shell { max-width: 860px; margin: 0 auto; padding: 14px 14px 40px; }
+
+  /* ---------- header ---------- */
+  .brandbar { display: flex; align-items: center; gap: 10px; padding: 10px 2px 4px; }
+  .brandbar .owl { font-size: 26px; }
+  .brandbar .wordmark { font-size: 12px; letter-spacing: 2.5px; color: var(--blue); font-weight: 600; text-transform: uppercase; }
+  .brandbar h1 { font-size: 22px; color: var(--navy); margin: 0; font-weight: 600; }
+  .brandhead { display: flex; flex-direction: column; }
+
+  /* ---------- progress ---------- */
+  .progress { display: flex; gap: 5px; margin: 12px 0 18px; }
+  .progress span { flex: 1; height: 6px; border-radius: 3px; background: #d7e4ec; transition: background 0.3s; }
+  .progress span.done { background: var(--cyan); }
+  .progress span.now { background: var(--navy); }
+
+  /* ---------- cards / steps ---------- */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-left: 5px solid var(--blue);
+    border-radius: 10px;
+    padding: 22px 24px;
+    margin-bottom: 16px;
+  }
+  .step { display: none; }
+  .step.active { display: block; animation: fadein 0.25s ease; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .kicker { font-size: 11px; letter-spacing: 1.2px; color: var(--blue); font-weight: 600; text-transform: uppercase; margin-bottom: 6px; }
+  h2 { font-size: 20px; color: var(--navy); margin: 0 0 6px; font-weight: 600; }
+  .lead { font-size: 15px; color: var(--ink); margin: 0 0 16px; }
+  .hint { font-size: 13px; color: #5a6a85; margin: 6px 0 0; }
+  label.fieldlabel { display: block; font-size: 14px; font-weight: 600; color: var(--navy); margin: 16px 0 6px; }
+
+  /* ---------- choice chips ---------- */
+  .choices { display: flex; flex-wrap: wrap; gap: 8px; }
+  .choices button, .chip {
+    background: var(--paper); border: 1.5px solid var(--line); border-radius: 10px;
+    padding: 10px 14px; font-size: 14px; color: var(--ink); cursor: pointer;
+    font-family: inherit; transition: all 0.15s; text-align: left;
+  }
+  .choices button:hover { border-color: var(--cyan); background: var(--wash); }
+  .choices button.selected { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .choices button .sub { display: block; font-size: 12px; opacity: 0.75; margin-top: 2px; }
+  .choices.big button { flex: 1 1 220px; padding: 14px 16px; }
+  .choices.big button .emoji { font-size: 22px; display: block; margin-bottom: 4px; }
+
+  /* ---------- inputs ---------- */
+  input[type="text"], input[type="date"], select, textarea {
+    font-family: inherit; font-size: 14px; color: var(--ink);
+    border: 1.5px solid var(--line); border-radius: 8px; padding: 9px 12px;
+    background: #fff; width: 100%;
+  }
+  input:focus, select:focus, textarea:focus, .choices button:focus-visible {
+    outline: 2px solid var(--cyan); outline-offset: 1px;
+  }
+  textarea { min-height: 110px; resize: vertical; }
+  .inline-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .inline-row > * { flex: 1 1 160px; }
+
+  /* ---------- nav buttons ---------- */
+  .navrow { display: flex; justify-content: space-between; gap: 10px; margin-top: 20px; }
+  .btn {
+    font-family: inherit; font-size: 15px; font-weight: 600; cursor: pointer;
+    border-radius: 10px; padding: 11px 22px; transition: all 0.15s; border: none;
+  }
+  .btn-primary { background: var(--navy); color: #fff; }
+  .btn-primary:hover { background: #1a2d5e; }
+  .btn-ghost { background: transparent; color: var(--navy); border: 1.5px solid var(--line); }
+  .btn-ghost:hover { border-color: var(--cyan); }
+  .btn-gold { background: var(--gold); color: #fff; }
+  .btn-gold:hover { background: #ab7c20; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  /* ---------- item list (courses & goals) ---------- */
+  .itemlist { margin: 12px 0; display: flex; flex-direction: column; gap: 8px; }
+  .item-row {
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    background: var(--wash); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px;
+  }
+  .item-row .iname { flex: 2 1 180px; font-weight: 600; color: var(--navy); font-size: 14px; border: none; background: transparent; padding: 4px; }
+  .item-row select { flex: 1 1 130px; width: auto; padding: 6px 8px; font-size: 13px; }
+  .item-row .star, .item-row .del {
+    background: transparent; border: none; cursor: pointer; font-size: 17px; padding: 2px 6px; border-radius: 6px;
+  }
+  .item-row .star { filter: grayscale(1); opacity: 0.45; }
+  .item-row .star.on { filter: none; opacity: 1; }
+  .item-row .del:hover { background: #fdecec; }
+  .suggest-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .suggest-chips button {
+    background: var(--washblue); border: 1.5px dashed var(--blue); border-radius: 16px;
+    padding: 5px 12px; font-size: 13px; color: var(--navy); cursor: pointer; font-family: inherit;
+  }
+  .suggest-chips button:hover { background: var(--cyan); color: var(--navy); border-style: solid; }
+  .filebtn {
+    display: inline-block; background: transparent; border: 1.5px solid var(--gold); color: var(--gold);
+    border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .filebtn:hover { background: var(--warnbg); }
+
+  .notice { background: var(--warnbg); border-left: 3px solid var(--gold); border-radius: 6px; padding: 10px 14px; font-size: 14px; margin: 12px 0; }
+  .notice-blue { background: var(--washblue); border-left: 3px solid var(--blue); border-radius: 6px; padding: 10px 14px; font-size: 14px; margin: 12px 0; }
+
+  /* ---------- review summary ---------- */
+  .summary dt { font-weight: 600; color: var(--navy); font-size: 13px; margin-top: 10px; }
+  .summary dd { margin: 2px 0 0; font-size: 14px; }
+
+  /* ---------- plan output ---------- */
+  #planScreen { display: none; }
+  .plan-sheet {
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+    padding: 28px 30px; margin-bottom: 16px;
+  }
+  .plan-brand { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 6px; border-bottom: 3px solid var(--navy); padding-bottom: 10px; margin-bottom: 4px; }
+  .plan-brand .pb-left { font-size: 11px; letter-spacing: 2.5px; color: var(--blue); font-weight: 600; text-transform: uppercase; }
+  .plan-brand .pb-right { font-size: 12px; color: #5a6a85; }
+  .plan-title { font-size: 24px; color: var(--navy); font-weight: 600; margin: 10px 0 2px; }
+  .plan-sub { font-size: 14px; color: #5a6a85; margin-bottom: 18px; }
+  .plan-section { margin: 22px 0; }
+  .plan-section h3 {
+    font-size: 15px; color: var(--navy); text-transform: uppercase; letter-spacing: 1px;
+    border-left: 4px solid var(--gold); padding-left: 10px; margin: 0 0 10px;
+  }
+  .plan-section p, .plan-section li { font-size: 14px; }
+  table.sched { border-collapse: collapse; width: 100%; font-size: 13px; }
+  table.sched th { background: var(--navy); color: #fff; padding: 7px 9px; text-align: left; font-weight: 600; }
+  table.sched td { border: 1px solid var(--line); padding: 7px 9px; vertical-align: top; }
+  table.sched td.blocklabel { background: var(--wash); font-weight: 600; color: var(--navy); white-space: nowrap; }
+  table.sched .slot-item { display: block; margin: 2px 0; }
+  table.sched td.liveblock { background: var(--washblue); color: var(--blue); font-weight: 600; }
+  table.sched td.freecell { color: #9aa7bd; }
+  .tablewrap { overflow-x: auto; }
+  .checkrow { font-size: 14px; margin: 6px 0; }
+  .checkrow::before { content: "☐ "; color: var(--gold); font-size: 15px; }
+  .signoff { margin-top: 16px; font-size: 14px; border-top: 1px dashed var(--line); padding-top: 12px; }
+  .routine-step { display: flex; gap: 12px; margin: 8px 0; align-items: baseline; }
+  .routine-step .rtime { flex: 0 0 110px; font-weight: 600; color: var(--blue); font-size: 13px; }
+  .routine-step .rwhat { flex: 1; font-size: 14px; }
+  .planactions { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 20px; }
+
+  /* ---------- print ---------- */
+  @media print {
+    body { background: #fff; }
+    .shell { max-width: none; padding: 0; }
+    .no-print, .brandbar, .progress { display: none !important; }
+    .plan-sheet { border: none; border-radius: 0; padding: 0; }
+    table.sched th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .plan-section { break-inside: avoid; }
+  }
+
+  @media (max-width: 560px) {
+    .card { padding: 16px 14px; }
+    .plan-sheet { padding: 18px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="brandbar">
+    <span class="owl">🦉</span>
+    <div class="brandhead">
+      <span class="wordmark">Optima Academy Online</span>
+      <h1>My Study Planner</h1>
+    </div>
+  </div>
+
+  <div class="progress no-print" id="progressBar"></div>
+
+  <!-- ================= WIZARD ================= -->
+  <div id="wizard">
+
+    <!-- Step 0: Welcome / grade -->
+    <div class="card step" data-step="0">
+      <div class="kicker">Step 1 · About you</div>
+      <h2>Let's build a plan that fits <em>your</em> life.</h2>
+      <p class="lead">Answer a few questions and this planner will help you design a schedule you can actually follow — then download it as a PDF to print or keep.</p>
+
+      <label class="fieldlabel" for="studentName">Your first name <span style="font-weight:400;color:#5a6a85;">(optional — it goes on your plan)</span></label>
+      <input type="text" id="studentName" maxlength="40" placeholder="e.g., Jordan" autocomplete="off">
+
+      <label class="fieldlabel">What grade are you in?</label>
+      <div class="choices" id="gradeChoices"></div>
+      <div class="notice" id="k2note" style="display:none;">👨‍👩‍👧 <strong>For our youngest planners:</strong> build this plan <em>together with your grown-up</em>. Read each question out loud and decide together.</div>
+    </div>
+
+    <!-- Step 1: Enrollment type -->
+    <div class="card step" data-step="1">
+      <div class="kicker">Step 2 · Your courses at Optima</div>
+      <h2 id="enrollHeading">How do you take your Optima courses?</h2>
+      <p class="lead">This matters because live classes are fixed on your calendar — your plan should work <em>around</em> them. On-Demand courses are flexible — your plan decides <em>when</em> they happen.</p>
+      <div class="choices big" id="enrollChoices">
+        <button data-val="live"><span class="emoji">🎓</span><strong>Live courses</strong><span class="sub">I attend live classes (usually 4 days a week)</span></button>
+        <button data-val="od"><span class="emoji">🧭</span><strong>On-Demand courses</strong><span class="sub">I work through my courses independently</span></button>
+        <button data-val="mix"><span class="emoji">🔀</span><strong>A mix of both</strong><span class="sub">Some live classes, some On-Demand</span></button>
+      </div>
+
+      <div id="liveDetails" style="display:none;">
+        <label class="fieldlabel">Which days do you have live classes?</label>
+        <div class="choices" id="liveDayChoices"></div>
+        <label class="fieldlabel" for="liveEnd">On live-class days, when are you usually finished with classes?</label>
+        <select id="liveEnd" style="max-width:320px;">
+          <option value="12">Around noon</option>
+          <option value="14" selected>Around 2:00 pm</option>
+          <option value="15.5">Around 3:30 pm</option>
+          <option value="varies">It varies day to day</option>
+        </select>
+        <p class="hint">If it varies, we'll plan as if classes end around 2:00 pm — you can adjust your plan afterward.</p>
+      </div>
+    </div>
+
+    <!-- Step 2: Plan type -->
+    <div class="card step" data-step="2">
+      <div class="kicker">Step 3 · What kind of plan?</div>
+      <h2>What would you like to plan?</h2>
+      <p class="lead">Pick the one you need most right now. You can always come back and make another plan later.</p>
+      <div class="choices big" id="planTypeChoices">
+        <button data-val="week"><span class="emoji">📅</span><strong>Plan my week</strong><span class="sub">A weekly schedule showing when each course and goal gets done</span></button>
+        <button data-val="routine"><span class="emoji">🔁</span><strong>Plan a daily routine</strong><span class="sub">A repeatable daily rhythm for the quarter, semester, or year</span></button>
+        <button data-val="project"><span class="emoji">🎯</span><strong>Plan a specific project</strong><span class="sub">Work backward from a due date with milestones</span></button>
+      </div>
+
+      <div id="routineDetails" style="display:none;">
+        <label class="fieldlabel">How long should this routine carry you?</label>
+        <div class="choices" id="horizonChoices">
+          <button data-val="quarter">One quarter (~9 weeks)</button>
+          <button data-val="semester">One semester (~18 weeks)</button>
+          <button data-val="year">The whole school year</button>
+        </div>
+      </div>
+
+      <div id="projectDetails" style="display:none;">
+        <label class="fieldlabel" for="projName">What is the project called?</label>
+        <input type="text" id="projName" placeholder="e.g., Science Fair Project, Capstone Proposal, Book Report">
+        <label class="fieldlabel" for="projDeliverable">What will you turn in or finish?</label>
+        <input type="text" id="projDeliverable" placeholder="e.g., a 5-page report and a poster">
+        <div class="inline-row">
+          <div>
+            <label class="fieldlabel" for="projDue">When is it due?</label>
+            <input type="date" id="projDue">
+          </div>
+          <div>
+            <label class="fieldlabel" for="projSize">How big does it feel?</label>
+            <select id="projSize">
+              <option value="3">Small (about 3 hours of work)</option>
+              <option value="8" selected>Medium (about 8 hours)</option>
+              <option value="15">Large (15+ hours)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Courses & goals -->
+    <div class="card step" data-step="3">
+      <div class="kicker">Step 4 · Your courses &amp; goals</div>
+      <h2>What are you planning time for?</h2>
+      <p class="lead">Bring what you already have: paste in your course descriptions, upload a file, or just type your courses and goals below.</p>
+
+      <label class="fieldlabel" for="pasteBox">Paste course descriptions or your own goals here</label>
+      <textarea id="pasteBox" placeholder="Paste anything — course descriptions, a list of classes, goals you've written down. Then click &quot;Find my courses &amp; goals.&quot;"></textarea>
+      <div class="inline-row" style="margin-top:10px;">
+        <button class="btn btn-ghost" id="extractBtn" type="button" style="flex:0 1 auto;">🔍 Find my courses &amp; goals</button>
+        <label class="filebtn" style="flex:0 1 auto;">📄 Upload a file (.txt or .md)
+          <input type="file" id="fileUpload" accept=".txt,.md,text/plain,text/markdown" style="display:none;">
+        </label>
+      </div>
+      <p class="hint">PDFs and Word files can't be read here — open them, copy the text, and paste it above instead.</p>
+      <div class="suggest-chips" id="suggestChips"></div>
+
+      <label class="fieldlabel">Your list <span style="font-weight:400;color:#5a6a85;">(tap the ⭐ on your most challenging one — it gets your best focus time)</span></label>
+      <div class="itemlist" id="itemList"></div>
+      <div class="inline-row">
+        <input type="text" id="manualAdd" placeholder="Type a course or goal and press Enter or Add" style="flex:2 1 220px;">
+        <button class="btn btn-ghost" id="manualAddBtn" type="button" style="flex:0 1 auto;">+ Add</button>
+      </div>
+      <p class="hint" id="minsHint">Minutes per week start at a typical amount for your grade — adjust any of them.</p>
+    </div>
+
+    <!-- Step 4: Days & times + parent coordination -->
+    <div class="card step" data-step="4">
+      <div class="kicker">Step 5 · Your time</div>
+      <h2>When do you have time to work?</h2>
+      <p class="lead">Be honest about what's really available — a plan only works if it matches your actual week.</p>
+
+      <label class="fieldlabel">Which days can you do independent work?</label>
+      <div class="choices" id="dayChoices"></div>
+
+      <label class="fieldlabel">What times of day do you want to work?</label>
+      <div class="choices" id="blockChoices"></div>
+      <p class="hint">Pick all that could work. Your plan won't fill every minute — it just needs room to fit things.</p>
+
+      <label class="fieldlabel">Do you need to coordinate your work times with a parent or your family's schedule?</label>
+      <div class="choices" id="parentChoices">
+        <button data-val="yes">Yes — we share schedules, devices, or spaces</button>
+        <button data-val="unsure">Not sure</button>
+        <button data-val="no">No — my times are my own</button>
+      </div>
+      <div class="notice-blue" id="parentNote" style="display:none;">Good call. Your plan will include a short <strong>Family Schedule Huddle</strong> — a few questions to settle with your family, plus a sign-off line so everyone agrees on the plan.</div>
+    </div>
+
+    <!-- Step 5: Metacognition -->
+    <div class="card step" data-step="5">
+      <div class="kicker">Step 6 · Know yourself</div>
+      <h2>How do you work best?</h2>
+      <p class="lead">There are no wrong answers here. Knowing <em>how</em> you work is just as important as knowing <em>what</em> you have to do.</p>
+
+      <label class="fieldlabel">When is your brain at its best?</label>
+      <div class="choices" id="focusTimeChoices">
+        <button data-val="morning">🌅 Morning — I'm sharpest early</button>
+        <button data-val="afternoon">☀️ Afternoon — I warm up as the day goes</button>
+        <button data-val="evening">🌙 Evening — I come alive later</button>
+        <button data-val="findout">🔬 I'm not sure — I'd like to find out!</button>
+      </div>
+      <div class="notice-blue" id="findoutNote" style="display:none;">Excellent — that's real scientist thinking. Your plan will include a <strong>2-week Focus Finder experiment</strong>: you'll try your hardest subject at different times of day and rate your focus, so you discover your own answer.</div>
+
+      <label class="fieldlabel">How long can you usually focus before you need a break?</label>
+      <div class="choices" id="focusSpanChoices">
+        <button data-val="15">About 15 minutes</button>
+        <button data-val="25">About 25 minutes</button>
+        <button data-val="45">About 45 minutes</button>
+        <button data-val="60">An hour or more</button>
+        <button data-val="0">Not sure</button>
+      </div>
+      <p class="hint" id="spanHint"></p>
+
+      <label class="fieldlabel">What pulls your attention away most? <span style="font-weight:400;color:#5a6a85;">(optional)</span></label>
+      <div class="choices" id="distractionChoices">
+        <button data-val="phone">📱 My phone</button>
+        <button data-val="games">🎮 Games / videos</button>
+        <button data-val="noise">🔊 Noise or siblings</button>
+        <button data-val="daydream">💭 Daydreaming</button>
+        <button data-val="stuck">🧱 Getting stuck and giving up</button>
+      </div>
+    </div>
+
+    <!-- Step 6: Review -->
+    <div class="card step" data-step="6">
+      <div class="kicker">Step 7 · Review</div>
+      <h2>Ready to build your plan?</h2>
+      <p class="lead">Here's what you told me. If something's off, go back and fix it.</p>
+      <dl class="summary" id="reviewSummary"></dl>
+      <div class="navrow" style="justify-content:center;">
+        <button class="btn btn-gold" id="generateBtn" type="button" style="font-size:17px;padding:14px 34px;">✨ Build my plan</button>
+      </div>
+    </div>
+
+    <div class="navrow no-print">
+      <button class="btn btn-ghost" id="backBtn" type="button">← Back</button>
+      <button class="btn btn-primary" id="nextBtn" type="button">Next →</button>
+    </div>
+  </div>
+
+  <!-- ================= PLAN OUTPUT ================= -->
+  <div id="planScreen">
+    <div class="planactions no-print">
+      <button class="btn btn-gold" id="printBtn" type="button">⬇️ Download as PDF</button>
+      <button class="btn btn-ghost" id="editBtn" type="button">✏️ Edit my answers</button>
+      <button class="btn btn-ghost" id="restartBtn" type="button">🔄 Start over</button>
+    </div>
+    <p class="hint no-print" style="margin:-8px 0 14px;">When the print window opens, choose <strong>“Save as PDF”</strong> as the printer/destination.</p>
+    <div class="plan-sheet" id="planSheet"></div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ============================================================
+     CONSTANTS
+  ============================================================ */
+  var DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  var DAY_FULL = { Mon: "Monday", Tue: "Tuesday", Wed: "Wednesday", Thu: "Thursday", Fri: "Friday", Sat: "Saturday", Sun: "Sunday" };
+  var BLOCKS = [
+    { id: "early",     label: "Early morning", time: "7:00–9:00 am",  start: 7,  end: 9  },
+    { id: "morning",   label: "Morning",       time: "9:00 am–12:00", start: 9,  end: 12 },
+    { id: "midday",    label: "Midday",        time: "12:00–2:00 pm", start: 12, end: 14 },
+    { id: "afternoon", label: "Afternoon",     time: "2:00–5:00 pm",  start: 14, end: 17 },
+    { id: "evening",   label: "Evening",       time: "5:00–8:00 pm",  start: 17, end: 20 }
+  ];
+  var LIVE_CLASS_START = 9; // live classes assumed to begin around 9:00 am
+  var FOCUS_BLOCK_MAP = { morning: ["early", "morning"], afternoon: ["midday", "afternoon"], evening: ["evening", "afternoon"] };
+
+  function band(grade) {
+    if (grade === "K" || grade === "1" || grade === "2") return "k2";
+    var g = parseInt(grade, 10);
+    if (g <= 5) return "el";
+    if (g <= 8) return "ms";
+    return "hs";
+  }
+  // default weekly minutes per item, by band and item type
+  var DEFAULT_MINS = {
+    k2: { od: 100, live: 30,  goal: 45 },
+    el: { od: 150, live: 60,  goal: 60 },
+    ms: { od: 200, live: 90,  goal: 60 },
+    hs: { od: 250, live: 100, goal: 90 }
+  };
+  // focus-span defaults & caps by band
+  var SPAN_DEFAULT = { k2: 15, el: 20, ms: 30, hs: 45 };
+  var SPAN_CAP     = { k2: 20, el: 35, ms: 60, hs: 90 };
+  var BAND_LABEL = { k2: "K–2", el: "grades 3–5", ms: "middle school", hs: "high school" };
+
+  var DISTRACTION_TIPS = {
+    phone:    "📱 During work blocks, put your phone in another room (or hand it to a parent). Check it only on breaks — it will survive without you.",
+    games:    "🎮 Make games and videos the <em>reward</em>, not the in-between. Work block first, then a set amount of play — use a timer so the reward doesn't eat the day.",
+    noise:    "🔊 Claim a quiet spot and tell your family your work times so they can help protect them. Headphones (even with no music) signal “I'm working.”",
+    daydream: "💭 Keep a “later list” next to you. When your mind wanders, jot the thought down and come back to it on your break — captured, not lost.",
+    stuck:    "🧱 Use the Rule of 10: when you're stuck, try for 10 more minutes. Still stuck? Write down exactly where you got stuck as a question for your teacher or parent, then move to the next thing. Stuck is a message, not a failure."
+  };
+
+  /* ============================================================
+     STATE
+  ============================================================ */
+  var state = {
+    name: "", grade: null,
+    enroll: null, liveDays: ["Mon", "Tue", "Wed", "Thu"], liveEnd: "14",
+    planType: null, horizon: null,
+    projName: "", projDeliverable: "", projDue: "", projSize: "8",
+    items: [],            // { name, type: od|live|goal, mins, star }
+    days: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+    blocks: [],
+    parentCoord: null,
+    focusTime: null, focusSpan: null, distraction: null
+  };
+  var currentStep = 0;
+  var TOTAL_STEPS = 7;
+  var STORE_KEY = "optimaStudyPlanner.v1";
+
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify({ state: state, step: currentStep })); } catch (e) {}
+  }
+  function restore() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return;
+      var saved = JSON.parse(raw);
+      if (saved && saved.state) {
+        for (var k in state) { if (saved.state.hasOwnProperty(k)) state[k] = saved.state[k]; }
+        currentStep = Math.min(saved.step || 0, TOTAL_STEPS - 1);
+      }
+    } catch (e) {}
+  }
+
+  /* ============================================================
+     SMALL HELPERS
+  ============================================================ */
+  function $(id) { return document.getElementById(id); }
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  }
+  function setSingleSelect(containerId, val) {
+    var btns = $(containerId).querySelectorAll("button");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle("selected", btns[i].getAttribute("data-val") === String(val));
+    }
+  }
+  function setMultiSelect(containerId, arr) {
+    var btns = $(containerId).querySelectorAll("button");
+    for (var i = 0; i < btns.length; i++) {
+      btns[i].classList.toggle("selected", arr.indexOf(btns[i].getAttribute("data-val")) !== -1);
+    }
+  }
+  function wireSingle(containerId, onPick) {
+    $(containerId).addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      var v = b.getAttribute("data-val");
+      setSingleSelect(containerId, v);
+      onPick(v);
+      save();
+    });
+  }
+  function wireMulti(containerId, arrGetter) {
+    $(containerId).addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return;
+      var v = b.getAttribute("data-val");
+      var arr = arrGetter();
+      var idx = arr.indexOf(v);
+      if (idx === -1) arr.push(v); else arr.splice(idx, 1);
+      b.classList.toggle("selected", idx === -1);
+      save();
+    });
+  }
+  function fmtMins(m) {
+    if (m < 60) return m + " min";
+    var h = Math.floor(m / 60), r = m % 60;
+    return r ? h + " hr " + r + " min" : h + " hr";
+  }
+  function todayStr() {
+    return new Date().toLocaleDateString(undefined, { year: "numeric", month: "long", day: "numeric" });
+  }
+
+  /* ============================================================
+     BUILD STATIC CHOICE SETS
+  ============================================================ */
+  // grade buttons
+  (function () {
+    var grades = ["K","1","2","3","4","5","6","7","8","9","10","11","12"];
+    var html = "";
+    for (var i = 0; i < grades.length; i++) {
+      html += '<button type="button" data-val="' + grades[i] + '">' + (grades[i] === "K" ? "K" : grades[i]) + "</button>";
+    }
+    $("gradeChoices").innerHTML = html;
+  })();
+  // day buttons (live days + work days)
+  (function () {
+    var html = "";
+    for (var i = 0; i < DAYS.length; i++) html += '<button type="button" data-val="' + DAYS[i] + '">' + DAYS[i] + "</button>";
+    $("liveDayChoices").innerHTML = html;
+    $("dayChoices").innerHTML = html;
+  })();
+  // time-of-day blocks
+  (function () {
+    var html = "";
+    for (var i = 0; i < BLOCKS.length; i++) {
+      html += '<button type="button" data-val="' + BLOCKS[i].id + '">' + BLOCKS[i].label + '<span class="sub">' + BLOCKS[i].time + "</span></button>";
+    }
+    $("blockChoices").innerHTML = html;
+  })();
+
+  /* ============================================================
+     WIRING — STEP 0
+  ============================================================ */
+  $("studentName").addEventListener("input", function () { state.name = this.value.trim(); save(); });
+  wireSingle("gradeChoices", function (v) {
+    state.grade = v;
+    $("k2note").style.display = band(v) === "k2" ? "" : "none";
+    refreshSpanHint();
+  });
+
+  /* ============================================================
+     WIRING — STEP 1 (enrollment)
+  ============================================================ */
+  wireSingle("enrollChoices", function (v) {
+    state.enroll = v;
+    $("liveDetails").style.display = (v === "live" || v === "mix") ? "" : "none";
+  });
+  wireMulti("liveDayChoices", function () { return state.liveDays; });
+  $("liveEnd").addEventListener("change", function () { state.liveEnd = this.value; save(); });
+
+  /* ============================================================
+     WIRING — STEP 2 (plan type)
+  ============================================================ */
+  wireSingle("planTypeChoices", function (v) {
+    state.planType = v;
+    $("routineDetails").style.display = v === "routine" ? "" : "none";
+    $("projectDetails").style.display = v === "project" ? "" : "none";
+  });
+  wireSingle("horizonChoices", function (v) { state.horizon = v; });
+  $("projName").addEventListener("input", function () { state.projName = this.value; save(); });
+  $("projDeliverable").addEventListener("input", function () { state.projDeliverable = this.value; save(); });
+  $("projDue").addEventListener("change", function () { state.projDue = this.value; save(); });
+  $("projSize").addEventListener("change", function () { state.projSize = this.value; save(); });
+
+  /* ============================================================
+     WIRING — STEP 3 (courses & goals)
+  ============================================================ */
+  function defaultMins(type) {
+    var b = state.grade ? band(state.grade) : "ms";
+    return DEFAULT_MINS[b][type] || 60;
+  }
+  function addItem(name, type) {
+    name = name.trim();
+    if (!name) return;
+    // skip duplicates (case-insensitive)
+    for (var i = 0; i < state.items.length; i++) {
+      if (state.items[i].name.toLowerCase() === name.toLowerCase()) return;
+    }
+    type = type || (state.enroll === "live" ? "live" : state.enroll === "od" ? "od" : "od");
+    state.items.push({ name: name, type: type, mins: defaultMins(type), star: false });
+    renderItems();
+    save();
+  }
+  function renderItems() {
+    var wrap = $("itemList");
+    if (!state.items.length) {
+      wrap.innerHTML = '<p class="hint" style="margin:4px 0;">Nothing here yet — paste text above or add a course or goal below.</p>';
+      return;
+    }
+    var minsOptions = [30, 45, 60, 90, 120, 150, 180, 200, 250, 300];
+    var html = "";
+    for (var i = 0; i < state.items.length; i++) {
+      var it = state.items[i];
+      var opts = "";
+      var values = minsOptions.slice();
+      if (values.indexOf(it.mins) === -1) { values.push(it.mins); values.sort(function (a, b) { return a - b; }); }
+      for (var j = 0; j < values.length; j++) {
+        opts += '<option value="' + values[j] + '"' + (values[j] === it.mins ? " selected" : "") + ">" + fmtMins(values[j]) + "/wk</option>";
+      }
+      var typeSel =
+        '<select data-i="' + i + '" data-f="type">' +
+        '<option value="od"' + (it.type === "od" ? " selected" : "") + ">On-Demand course</option>" +
+        '<option value="live"' + (it.type === "live" ? " selected" : "") + ">Live course</option>" +
+        '<option value="goal"' + (it.type === "goal" ? " selected" : "") + ">My own goal</option>" +
+        "</select>";
+      html +=
+        '<div class="item-row">' +
+        '<button type="button" class="star' + (it.star ? " on" : "") + '" data-i="' + i + '" title="My most challenging — give it my best focus time">⭐</button>' +
+        '<input class="iname" data-i="' + i + '" value="' + esc(it.name) + '" maxlength="60">' +
+        typeSel +
+        '<select data-i="' + i + '" data-f="mins">' + opts + "</select>" +
+        '<button type="button" class="del" data-i="' + i + '" title="Remove">✕</button>' +
+        "</div>";
+    }
+    wrap.innerHTML = html;
+  }
+  $("itemList").addEventListener("click", function (e) {
+    var star = e.target.closest(".star");
+    if (star) {
+      var i = +star.getAttribute("data-i");
+      var on = !state.items[i].star;
+      for (var k = 0; k < state.items.length; k++) state.items[k].star = false;
+      state.items[i].star = on;
+      renderItems(); save(); return;
+    }
+    var del = e.target.closest(".del");
+    if (del) { state.items.splice(+del.getAttribute("data-i"), 1); renderItems(); save(); }
+  });
+  $("itemList").addEventListener("change", function (e) {
+    var t = e.target, i = +t.getAttribute("data-i");
+    if (isNaN(i) || !state.items[i]) return;
+    if (t.classList.contains("iname")) { state.items[i].name = t.value.trim() || state.items[i].name; }
+    else if (t.getAttribute("data-f") === "type") {
+      state.items[i].type = t.value;
+      state.items[i].mins = defaultMins(t.value);
+      renderItems();
+    }
+    else if (t.getAttribute("data-f") === "mins") { state.items[i].mins = +t.value; }
+    save();
+  });
+  $("manualAddBtn").addEventListener("click", function () {
+    addItem($("manualAdd").value); $("manualAdd").value = "";
+  });
+  $("manualAdd").addEventListener("keydown", function (e) {
+    if (e.key === "Enter") { e.preventDefault(); addItem(this.value); this.value = ""; }
+  });
+
+  // --- paste / upload extraction ---
+  $("fileUpload").addEventListener("change", function () {
+    var f = this.files && this.files[0];
+    if (!f) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      var box = $("pasteBox");
+      box.value = (box.value ? box.value + "\n\n" : "") + reader.result;
+      extractCandidates();
+    };
+    reader.readAsText(f);
+    this.value = "";
+  });
+  $("extractBtn").addEventListener("click", extractCandidates);
+
+  function extractCandidates() {
+    var text = $("pasteBox").value;
+    if (!text.trim()) { $("suggestChips").innerHTML = '<p class="hint">Paste some text first, then I’ll look for course names and goals in it.</p>'; return; }
+    var lines = text.split(/\r?\n/);
+    var found = [], seen = {};
+    for (var i = 0; i < lines.length; i++) {
+      var raw = lines[i].trim();
+      if (!raw) continue;
+      // strip bullets, numbering, markdown heading marks
+      var s = raw.replace(/^[-*•·▪◦]+\s*/, "").replace(/^\d+[\.\)]\s*/, "").replace(/^#+\s*/, "").trim();
+      // explicit "Course:" / "Goal:" prefixes always count
+      var m = s.match(/^(?:course|class|subject|goal)\s*[:\-]\s*(.+)$/i);
+      if (m) s = m[1].trim();
+      else {
+        // heuristic: title-ish line — short, no sentence-ending period, starts with a capital/number
+        if (s.length < 3 || s.length > 60) continue;
+        if (/[.!?]$/.test(s)) continue;
+        if (!/^[A-Z0-9]/.test(s)) continue;
+        // skip lines that read like prose (too many lowercase connector words)
+        var words = s.split(/\s+/);
+        if (words.length > 8) continue;
+      }
+      s = s.replace(/\s{2,}/g, " ");
+      var key = s.toLowerCase();
+      if (seen[key]) continue;
+      seen[key] = true;
+      var dup = false;
+      for (var k = 0; k < state.items.length; k++) {
+        if (state.items[k].name.toLowerCase() === key) { dup = true; break; }
+      }
+      if (!dup) found.push(s);
+      if (found.length >= 20) break;
+    }
+    var wrap = $("suggestChips");
+    if (!found.length) {
+      wrap.innerHTML = '<p class="hint">I didn’t spot obvious course titles — no problem, just type them into the list below.</p>';
+      return;
+    }
+    var html = '<p class="hint" style="flex-basis:100%;margin:4px 0 2px;">Tap any of these to add them to your list:</p>';
+    for (var j = 0; j < found.length; j++) {
+      html += '<button type="button" data-name="' + esc(found[j]) + '">+ ' + esc(found[j]) + "</button>";
+    }
+    wrap.innerHTML = html;
+  }
+  $("suggestChips").addEventListener("click", function (e) {
+    var b = e.target.closest("button"); if (!b) return;
+    addItem(b.getAttribute("data-name"));
+    b.remove();
+  });
+
+  /* ============================================================
+     WIRING — STEP 4 (time + parent)
+  ============================================================ */
+  wireMulti("dayChoices", function () { return state.days; });
+  wireMulti("blockChoices", function () { return state.blocks; });
+  wireSingle("parentChoices", function (v) {
+    state.parentCoord = v;
+    $("parentNote").style.display = (v === "yes" || v === "unsure") ? "" : "none";
+  });
+
+  /* ============================================================
+     WIRING — STEP 5 (metacognition)
+  ============================================================ */
+  wireSingle("focusTimeChoices", function (v) {
+    state.focusTime = v;
+    $("findoutNote").style.display = v === "findout" ? "" : "none";
+  });
+  wireSingle("focusSpanChoices", function (v) { state.focusSpan = +v; refreshSpanHint(); });
+  wireSingle("distractionChoices", function (v) {
+    // allow deselect on second tap
+    if (state.distraction === v) {
+      state.distraction = null; setSingleSelect("distractionChoices", "__none__");
+    } else state.distraction = v;
+  });
+  function refreshSpanHint() {
+    var b = state.grade ? band(state.grade) : null;
+    var el = $("spanHint");
+    if (!b) { el.textContent = ""; return; }
+    if (state.focusSpan === 0) {
+      el.textContent = "No problem — we'll start you at " + SPAN_DEFAULT[b] + "-minute work blocks, a comfortable length for " + BAND_LABEL[b] + ". You can stretch it as you learn what works.";
+    } else if (state.focusSpan && state.focusSpan > SPAN_CAP[b]) {
+      el.textContent = "Impressive! We'll plan " + SPAN_CAP[b] + "-minute blocks with short breaks — even strong focus works better with breathing room.";
+    } else el.textContent = "";
+  }
+
+  /* ============================================================
+     EFFECTIVE VALUES (defaults applied)
+  ============================================================ */
+  function effSpan() {
+    var b = band(state.grade);
+    var s = state.focusSpan;
+    if (!s) s = SPAN_DEFAULT[b];
+    return Math.min(s, SPAN_CAP[b]);
+  }
+  function effLiveEnd() { return state.liveEnd === "varies" ? 14 : parseFloat(state.liveEnd); }
+  function isLiveDay(d) { return (state.enroll === "live" || state.enroll === "mix") && state.liveDays.indexOf(d) !== -1; }
+  function blockCapacity(blockObj, day) {
+    var cap = (blockObj.end - blockObj.start) * 60;
+    if (isLiveDay(day)) {
+      var overlap = Math.max(0, Math.min(blockObj.end, effLiveEnd()) - Math.max(blockObj.start, LIVE_CLASS_START));
+      cap -= Math.round(overlap * 60);
+    }
+    return cap;
+  }
+  function focusBlocks() {
+    if (state.focusTime && state.focusTime !== "findout") return FOCUS_BLOCK_MAP[state.focusTime];
+    return [];
+  }
+
+  /* ============================================================
+     SCHEDULER — distribute weekly minutes into (day, block) slots
+  ============================================================ */
+  function buildSchedule() {
+    var span = effSpan();
+    var breakMin = band(state.grade) === "hs" ? 10 : 10;
+    var selDays = DAYS.filter(function (d) { return state.days.indexOf(d) !== -1; });
+    var selBlocks = BLOCKS.filter(function (b) { return state.blocks.indexOf(b.id) !== -1; });
+
+    // slot table: capacity + assigned chunks
+    var slots = {};
+    selDays.forEach(function (d) {
+      slots[d] = {};
+      selBlocks.forEach(function (b) {
+        slots[d][b.id] = { cap: blockCapacity(b, d), used: 0, chunks: [] };
+      });
+    });
+
+    function tryPlace(day, blockId, item) {
+      var s = slots[day] && slots[day][blockId];
+      if (!s) return false;
+      if (s.cap - s.used < span) return false;
+      s.chunks.push({ name: item.name, mins: span, star: item.star });
+      s.used += span + breakMin;
+      return true;
+    }
+
+    // order: starred first, then On-Demand, live homework, goals
+    var order = state.items.slice().sort(function (a, b) {
+      function rank(x) {
+        if (x.prio) return -1; // the project being planned always schedules first
+        return (x.star ? 0 : 4) + (x.type === "od" ? 0 : x.type === "live" ? 1 : 2);
+      }
+      return rank(a) - rank(b);
+    });
+
+    var fb = focusBlocks();
+    var leftover = [];
+    var dayCursor = 0;
+
+    order.forEach(function (item) {
+      var chunks = Math.max(1, Math.ceil(item.mins / span));
+      var unplaced = 0;
+      for (var c = 0; c < chunks; c++) {
+        var placed = false;
+        // try to spread across days: start from a rotating day cursor
+        for (var dOff = 0; dOff < selDays.length && !placed; dOff++) {
+          var day = selDays[(dayCursor + dOff) % selDays.length];
+          // starred items try focus blocks first; everyone falls back to any block
+          var blockOrder = selBlocks.map(function (b) { return b.id; });
+          if (item.star && fb.length) {
+            blockOrder = fb.filter(function (id) { return blockOrder.indexOf(id) !== -1; })
+              .concat(blockOrder.filter(function (id) { return fb.indexOf(id) === -1; }));
+          }
+          for (var bi = 0; bi < blockOrder.length && !placed; bi++) {
+            placed = tryPlace(day, blockOrder[bi], item);
+          }
+        }
+        if (placed) dayCursor++; else unplaced++;
+      }
+      if (unplaced > 0) leftover.push({ name: item.name, mins: unplaced * span });
+    });
+
+    return { slots: slots, selDays: selDays, selBlocks: selBlocks, span: span, leftover: leftover };
+  }
+
+  /* ============================================================
+     PLAN RENDERERS
+  ============================================================ */
+  function planHeader(title, sub) {
+    return (
+      '<div class="plan-brand"><span class="pb-left">🦉 Optima Academy Online</span><span class="pb-right">Created ' + todayStr() + "</span></div>" +
+      '<div class="plan-title">' + esc(title) + "</div>" +
+      '<div class="plan-sub">' + sub + "</div>"
+    );
+  }
+  function nameLine() {
+    var who = state.name ? esc(state.name) : "My";
+    return (state.name ? esc(state.name) + "'s" : "My");
+  }
+  function gradeLine() {
+    return "Grade " + esc(state.grade) + (state.enroll === "live" ? " · Live courses" : state.enroll === "od" ? " · On-Demand" : " · Live + On-Demand");
+  }
+
+  function renderWeekGrid(sched) {
+    var html = '<div class="plan-section"><h3>📅 My Weekly Schedule</h3><div class="tablewrap"><table class="sched"><tr><th style="width:120px;">Time</th>';
+    sched.selDays.forEach(function (d) { html += "<th>" + DAY_FULL[d] + "</th>"; });
+    html += "</tr>";
+    sched.selBlocks.forEach(function (b) {
+      html += '<tr><td class="blocklabel">' + b.label + "<br><span style='font-weight:400;font-size:11px;'>" + b.time + "</span></td>";
+      sched.selDays.forEach(function (d) {
+        var s = sched.slots[d][b.id];
+        var liveHere = isLiveDay(d) && b.start < effLiveEnd() && b.end > LIVE_CLASS_START;
+        var cells = "";
+        if (liveHere && s.cap < (b.end - b.start) * 60) {
+          cells += '<span class="slot-item">🎓 <strong>Live classes</strong></span>';
+        }
+        s.chunks.forEach(function (c) {
+          cells += '<span class="slot-item">' + (c.star ? "⭐ " : "▸ ") + esc(c.name) + " · " + c.mins + " min</span>";
+        });
+        if (!cells) cells = '<span class="freecell">free</span>';
+        html += "<td" + (liveHere && !s.chunks.length && s.cap === 0 ? ' class="liveblock"' : "") + ">" + cells + "</td>";
+      });
+      html += "</tr>";
+    });
+    html += "</table></div>";
+    html += '<p class="hint" style="margin-top:8px;">Each work block is ' + sched.span + " minutes, with a short break after. ⭐ = your most challenging work, placed when your brain is at its best.</p>";
+    if (sched.leftover.length) {
+      html += '<div class="notice">⚠️ <strong>Not everything fit.</strong> Still needs a home: ';
+      html += sched.leftover.map(function (l) { return esc(l.name) + " (" + fmtMins(l.mins) + ")"; }).join(", ");
+      html += ". Try adding another day or time block, or trim minutes somewhere — then rebuild your plan.</div>";
+    }
+    html += "</div>";
+    return html;
+  }
+
+  function renderRoutine(sched) {
+    var b = band(state.grade);
+    var fb = focusBlocks();
+    var selBlocks = sched.selBlocks;
+    var hardest = null, others = [];
+    state.items.forEach(function (it) { if (it.star && !hardest) hardest = it; else others.push(it); });
+    if (!hardest && state.items.length) { hardest = state.items[0]; others = state.items.slice(1); }
+
+    var html = '<div class="plan-section"><h3>🔁 My Daily Rhythm</h3>';
+    html += '<p>The same shape every day — that’s what makes a routine powerful. Here’s your day:</p>';
+
+    var steps = [];
+    steps.push({ t: "Start", w: "<strong>Launch (5–10 min):</strong> same spot, same start. Look at today’s list, get water, open what you need." });
+    var usedHardest = false;
+    selBlocks.forEach(function (blk) {
+      var isFocus = fb.length ? fb.indexOf(blk.id) !== -1 : selBlocks.indexOf(blk) === 0;
+      if (isFocus && hardest && !usedHardest) {
+        steps.push({ t: blk.label, w: "⭐ <strong>Hardest thing first:</strong> " + esc(hardest.name) + ". Your best brain time goes to your biggest challenge — about " + sched.span + " minutes, then a real break (move your body!)." });
+        usedHardest = true;
+      } else {
+        var names = others.length ? others.map(function (o) { return esc(o.name); }).join(", ") : "your other courses and goals";
+        steps.push({ t: blk.label, w: "Work blocks of " + sched.span + " min with short breaks: rotate through " + names + "." });
+      }
+    });
+    if (hardest && !usedHardest) {
+      steps.splice(1, 0, { t: selBlocks.length ? selBlocks[0].label : "First block", w: "⭐ <strong>Hardest thing first:</strong> " + esc(hardest.name) + " — about " + sched.span + " minutes, then a real break." });
+    }
+    steps.push({ t: "Wrap-up", w: "<strong>Shutdown (5 min):</strong> check off what you finished, write tomorrow’s top thing on a sticky note, close everything. Done means done." });
+    steps.forEach(function (s) {
+      html += '<div class="routine-step"><span class="rtime">' + s.t + '</span><span class="rwhat">' + s.w + "</span></div>";
+    });
+    if (state.enroll !== "od") {
+      html += '<p class="hint">On live-class days (' + state.liveDays.join(", ") + "), your live classes come first — this rhythm starts after they end.</p>";
+    }
+    html += "</div>";
+
+    // weekly anchors
+    html += '<div class="plan-section"><h3>📌 Weekly Anchors</h3>';
+    html += '<div class="checkrow"><strong>Monday (10 min):</strong> look at the whole week — anything due? Anything big coming?</div>';
+    html += '<div class="checkrow"><strong>Friday (15 min):</strong> review the week — what got done, what moves to next week, tidy your files and workspace.</div>';
+    html += "</div>";
+
+    // horizon checkpoints
+    var horizonName = { quarter: "Quarter", semester: "Semester", year: "School Year" }[state.horizon || "quarter"];
+    var checkpoints = {
+      quarter: [["Week 1", "Set up your routine. Don’t aim for perfect — aim for started."], ["Week 3", "Routine check: what’s working? What time keeps failing? Adjust once."], ["Week 5 (midpoint)", "Look at your grades and progress in each course. Anything slipping gets an extra block."], ["Week 8", "Finish-strong week: list everything due by the end of the quarter."], ["Week 9", "Wrap up, celebrate, and note one thing to do differently next quarter."]],
+      semester: [["Week 1", "Set up your routine. Don’t aim for perfect — aim for started."], ["Week 4", "Routine check: adjust one thing that isn’t working."], ["Week 9 (midpoint)", "Half-time review: progress in every course, one honest fix."], ["Week 13", "Re-commit: routines drift — pull yours back to shape."], ["Week 17–18", "Finals/finish-strong: list everything due, plan extra blocks."]],
+      year: [["Quarter 1", "Build the habit. The routine itself is the goal this quarter."], ["Quarter 2", "Strengthen: stretch your focus blocks a little. Mid-year review in December."], ["Quarter 3", "The long middle — this is where routines win. Re-commit in January."], ["Quarter 4", "Finish strong: review the year, celebrate growth, note what you learned about how you work."]]
+    }[state.horizon || "quarter"];
+    html += '<div class="plan-section"><h3>🗺️ ' + horizonName + " Checkpoints</h3>";
+    html += '<div class="tablewrap"><table class="sched"><tr><th style="width:140px;">When</th><th>Checkpoint</th></tr>';
+    checkpoints.forEach(function (c) { html += "<tr><td class='blocklabel'>" + c[0] + "</td><td>" + c[1] + "</td></tr>"; });
+    html += "</table></div></div>";
+    return html;
+  }
+
+  function renderProject(sched) {
+    var due = state.projDue ? new Date(state.projDue + "T12:00:00") : null;
+    var today = new Date(); today.setHours(12, 0, 0, 0);
+    var daysLeft = due ? Math.max(0, Math.round((due - today) / 86400000)) : null;
+    var hours = parseInt(state.projSize, 10) || 8;
+    var span = sched.span;
+    var sessionsPerWeek = Math.max(1, state.days.length);
+    var sessionsNeeded = Math.ceil((hours * 60) / span);
+    var weeksAvailable = daysLeft !== null ? Math.max(0.5, daysLeft / 7) : 4;
+    var sessionsAvailable = Math.floor(weeksAvailable * sessionsPerWeek);
+
+    var STEPS = [
+      { name: "Understand the task", pct: 0.10, what: "Read the assignment twice. Write what “done” looks like in your own words. List questions for your teacher." },
+      { name: "Gather & research", pct: 0.25, what: "Collect sources, materials, notes. Capture everything in one place." },
+      { name: "Draft / build", pct: 0.30, what: "Make the messy first version. Done is better than perfect at this stage." },
+      { name: "Revise & improve", pct: 0.20, what: "Now make it good. Read it aloud, test it, get feedback if you can." },
+      { name: "Finish & check", pct: 0.10, what: "Final polish. Check the requirements one by one against your work." },
+      { name: "Submit", pct: 0.05, what: "Turn it in EARLY — the day before beats the hour before." }
+    ];
+
+    var html = '<div class="plan-section"><h3>🎯 Project: ' + esc(state.projName || "My Project") + "</h3>";
+    if (state.projDeliverable) html += "<p><strong>What I’m making:</strong> " + esc(state.projDeliverable) + "</p>";
+    if (due) html += "<p><strong>Due:</strong> " + due.toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" }) + " — <strong>" + daysLeft + " days from today</strong></p>";
+    html += "<p><strong>Estimated size:</strong> about " + hours + " hours ≈ " + sessionsNeeded + " work sessions of " + span + " minutes</p>";
+
+    if (due && sessionsAvailable < sessionsNeeded) {
+      html += '<div class="notice">⚠️ <strong>Tight timeline.</strong> You have roughly ' + sessionsAvailable + " sessions before the due date but need about " + sessionsNeeded + ". Add work days, lengthen sessions, or start today — not tomorrow.</div>";
+    }
+
+    // milestone table with dates
+    html += '<div class="tablewrap"><table class="sched"><tr><th>Milestone</th><th style="width:130px;">Target date</th><th>What it looks like</th><th style="width:50px;">Done</th></tr>';
+    var elapsed = 0;
+    STEPS.forEach(function (s) {
+      elapsed += s.pct;
+      var target = "—";
+      if (due && daysLeft !== null) {
+        var d = new Date(today.getTime() + Math.round(daysLeft * elapsed) * 86400000);
+        // last milestone lands the day before the due date when possible
+        if (s.name === "Submit" && daysLeft > 1) d = new Date(due.getTime() - 86400000);
+        target = d.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+      }
+      html += "<tr><td class='blocklabel'>" + s.name + "</td><td>" + target + "</td><td>" + s.what + "</td><td style='text-align:center;font-size:16px;'>☐</td></tr>";
+    });
+    html += "</table></div>";
+    html += '<p class="hint" style="margin-top:8px;">Your project sessions (🎯) are scheduled into the week below, alongside your courses.</p>';
+    html += "</div>";
+
+    // also show the weekly grid so they know WHEN project sessions happen
+    html += renderWeekGrid(sched).replace("📅 My Weekly Schedule", "📅 When the work happens — my week");
+    return html;
+  }
+
+  function renderMetacog() {
+    var html = '<div class="plan-section"><h3>🧠 Knowing How I Work</h3>';
+    if (state.focusTime === "findout") {
+      html += "<p><strong>My experiment: finding my best focus time.</strong> For the next two weeks, try your hardest subject at <em>different times of day</em>. After each session, rate your focus from 1 (couldn’t concentrate) to 5 (totally locked in). After two weeks, your scores will show you your answer.</p>";
+      html += '<div class="tablewrap"><table class="sched"><tr><th style="width:90px;">Day</th><th style="width:120px;">Time I tried</th><th>What I worked on</th><th style="width:110px;">Focus (1–5)</th><th>Notes</th></tr>';
+      for (var i = 0; i < 10; i++) html += "<tr><td>&nbsp;</td><td></td><td></td><td></td><td></td></tr>";
+      html += "</table></div>";
+      html += '<p class="hint" style="margin-top:8px;">After two weeks: which time of day got your highest scores? That’s your focus time — rebuild your plan and claim it for your hardest work.</p>';
+    } else if (state.focusTime) {
+      var label = { morning: "the morning", afternoon: "the afternoon", evening: "the evening" }[state.focusTime];
+      html += "<p>You said your brain is at its best in <strong>" + label + "</strong> — so this plan puts your most challenging work there. Protect that time: it’s your most valuable hours of the day.</p>";
+    }
+    if (state.distraction && DISTRACTION_TIPS[state.distraction]) {
+      html += "<p><strong>My distraction plan:</strong> " + DISTRACTION_TIPS[state.distraction] + "</p>";
+    }
+    if (state.focusSpan === 0) {
+      var b = band(state.grade);
+      html += "<p><strong>Finding my focus span:</strong> we started you at " + SPAN_DEFAULT[b] + "-minute blocks. When a block starts feeling easy, stretch it by 5 minutes. When you keep fading early, shrink it. Your span will grow with practice — like a muscle.</p>";
+    }
+    html += "</div>";
+    return html;
+  }
+
+  function renderParentSection() {
+    if (state.parentCoord !== "yes" && state.parentCoord !== "unsure") return "";
+    var html = '<div class="plan-section"><h3>👨‍👩‍👧 Family Schedule Huddle</h3>';
+    html += "<p>Sit down with your family for 10 minutes and settle these together:</p>";
+    html += '<div class="checkrow">What times of day is a quiet workspace (and the computer) available for me?</div>';
+    html += '<div class="checkrow">Which evenings or weekend times are usually busy with family plans?</div>';
+    html += '<div class="checkrow">Where exactly will I work? (Same place every day works best.)</div>';
+    html += '<div class="checkrow">When can a parent help if I get stuck or need something checked?</div>';
+    html += '<div class="checkrow">Our agreed daily start time is: ________________</div>';
+    html += '<div class="signoff">We reviewed this plan together. &nbsp;&nbsp; Student: ____________________ &nbsp;&nbsp; Parent: ____________________ &nbsp;&nbsp; Date: ____________</div>';
+    html += "</div>";
+    return html;
+  }
+
+  function renderBandTips() {
+    var b = band(state.grade);
+    var tips = {
+      k2: ["Short and happy beats long and grumpy — " + effSpan() + " minutes of real focus is a big win at your age.", "Do your work in the same cozy spot each day, with a grown-up nearby.", "Wiggle breaks are part of the plan, not a break from it — jump, stretch, run a lap!", "Put a sticker or checkmark on the plan every time you finish a block. Watch them add up!"],
+      el: ["Same time, same place, every day — that’s how a plan becomes a habit.", "Hardest subject first, while your brain is freshest. Save the easy stuff for later.", "Real breaks mean moving your body — not switching to a screen.", "Check things off as you finish them. The checkmark is the reward!"],
+      ms: ["Your plan is a promise to yourself — keep it the way you’d keep one to a friend.", "Start before you feel ready. The first 5 minutes are the hardest part of any work block.", "One subject per block. Multitasking is just doing two things badly at once.", "When a week goes sideways (they will), don’t quit the plan — just restart it the next day."],
+      hs: ["Spacing beats cramming: three 45-minute sessions across a week outperform one 3-hour marathon, every time.", "Schedule the work, not the mood. You won’t “feel like it” later either — the block is when it happens.", "End each session by writing the first step of the next one. Future-you starts faster.", "Guard your ⭐ focus block like an appointment. Everything else can flex; that one can’t."]
+    }[b];
+    var html = '<div class="plan-section"><h3>💡 Tips for ' + (b === "k2" ? "Young Planners" : b === "el" ? "Grades 3–5" : b === "ms" ? "Middle Schoolers" : "High Schoolers") + "</h3><ul>";
+    tips.forEach(function (t) { html += "<li>" + t + "</li>"; });
+    html += "</ul></div>";
+    return html;
+  }
+
+  function generatePlan() {
+    // for project plans, schedule the project itself into the week as a starred work item
+    var injected = false;
+    if (state.planType === "project") {
+      var hours = parseInt(state.projSize, 10) || 8;
+      var due = state.projDue ? new Date(state.projDue + "T12:00:00") : null;
+      var today = new Date(); today.setHours(12, 0, 0, 0);
+      var weeks = due ? Math.max(1, (due - today) / 86400000 / 7) : 4;
+      var weeklyMins = Math.min(600, Math.max(effSpan(), Math.round((hours * 60) / weeks)));
+      var hasStar = state.items.some(function (i) { return i.star; });
+      state.items.unshift({ name: "🎯 " + (state.projName || "My Project"), type: "goal", mins: weeklyMins, star: !hasStar, prio: true });
+      injected = true;
+    }
+    var sched = buildSchedule();
+    if (injected) state.items.shift();
+    var titles = { week: "Weekly Study Plan", routine: "Daily Routine Plan", project: "Project Plan" };
+    var html = planHeader(nameLine() + " " + titles[state.planType], gradeLine());
+
+    if (state.planType === "week") html += renderWeekGrid(sched);
+    else if (state.planType === "routine") html += renderRoutine(sched);
+    else html += renderProject(sched);
+
+    html += renderMetacog();
+    html += renderParentSection();
+    html += renderBandTips();
+
+    html += '<div class="plan-section" style="border-top:2px solid var(--line);padding-top:10px;"><p class="hint">Made with the Optima Study Planner · A plan you wrote yourself is a plan you’ll actually follow. Revisit it whenever your week changes shape.</p></div>';
+
+    $("planSheet").innerHTML = html;
+    $("wizard").style.display = "none";
+    $("planScreen").style.display = "block";
+    window.scrollTo(0, 0);
+  }
+
+  /* ============================================================
+     REVIEW SUMMARY
+  ============================================================ */
+  function buildReview() {
+    var d = [];
+    d.push(["Who", (state.name || "Student") + " · Grade " + state.grade]);
+    d.push(["Courses", { live: "Live (classes " + state.liveDays.join("/") + ")", od: "On-Demand — independent", mix: "Mix of live (" + state.liveDays.join("/") + ") and On-Demand" }[state.enroll]]);
+    var pt = { week: "Plan my week", routine: "Daily routine — " + ({ quarter: "one quarter", semester: "one semester", year: "the year" }[state.horizon] || "quarter"), project: "Project: " + (state.projName || "(unnamed)") + (state.projDue ? ", due " + state.projDue : "") }[state.planType];
+    d.push(["Plan type", pt]);
+    d.push(["Planning for", state.items.map(function (i) { return (i.star ? "⭐ " : "") + i.name + " (" + fmtMins(i.mins) + "/wk)"; }).join(" · ") || "—"]);
+    d.push(["Work days", state.days.join(", ")]);
+    d.push(["Times of day", state.blocks.map(function (id) { for (var i = 0; i < BLOCKS.length; i++) if (BLOCKS[i].id === id) return BLOCKS[i].label; return id; }).join(", ")]);
+    d.push(["Family coordination", { yes: "Yes — Family Huddle included", unsure: "Not sure — Family Huddle included", no: "No" }[state.parentCoord] || "—"]);
+    d.push(["Best focus", { morning: "Morning", afternoon: "Afternoon", evening: "Evening", findout: "Finding out — 2-week experiment included" }[state.focusTime] || "—"]);
+    d.push(["Focus span", state.focusSpan === 0 ? "Not sure — starting at " + effSpan() + " min" : effSpan() + " min blocks"]);
+    var html = "";
+    d.forEach(function (row) { html += "<dt>" + row[0] + "</dt><dd>" + esc(row[1]).replace(/⭐/g, "⭐") + "</dd>"; });
+    $("reviewSummary").innerHTML = html;
+  }
+
+  /* ============================================================
+     STEP NAVIGATION
+  ============================================================ */
+  function validateStep(n) {
+    switch (n) {
+      case 0: return state.grade ? "" : "Pick your grade to continue.";
+      case 1:
+        if (!state.enroll) return "Choose how you take your courses.";
+        if ((state.enroll === "live" || state.enroll === "mix") && !state.liveDays.length) return "Pick at least one live-class day.";
+        return "";
+      case 2:
+        if (!state.planType) return "Pick the kind of plan you want.";
+        if (state.planType === "routine" && !state.horizon) return "Choose how long the routine should run.";
+        if (state.planType === "project" && !state.projDue) return "Enter the project due date.";
+        return "";
+      case 3: return state.items.length ? "" : "Add at least one course or goal.";
+      case 4:
+        if (!state.days.length) return "Pick at least one work day.";
+        if (!state.blocks.length) return "Pick at least one time of day.";
+        if (!state.parentCoord) return "Answer the family-coordination question.";
+        return "";
+      case 5:
+        if (!state.focusTime) return "Tell me when your brain is at its best (or pick “I’d like to find out”).";
+        if (state.focusSpan === null) return "How long can you focus? (“Not sure” is a fine answer.)";
+        return "";
+      default: return "";
+    }
+  }
+
+  function showStep(n) {
+    currentStep = n;
+    var steps = document.querySelectorAll(".step");
+    for (var i = 0; i < steps.length; i++) steps[i].classList.toggle("active", +steps[i].getAttribute("data-step") === n);
+    // progress bar
+    var html = "";
+    for (var p = 0; p < TOTAL_STEPS; p++) html += '<span class="' + (p < n ? "done" : p === n ? "now" : "") + '"></span>';
+    $("progressBar").innerHTML = html;
+    $("backBtn").style.visibility = n === 0 ? "hidden" : "visible";
+    $("nextBtn").style.display = n === TOTAL_STEPS - 1 ? "none" : "";
+    if (n === 6) buildReview();
+    if (n === 3) renderItems();
+    save();
+    window.scrollTo(0, 0);
+  }
+
+  $("nextBtn").addEventListener("click", function () {
+    var err = validateStep(currentStep);
+    if (err) { alert(err); return; }
+    showStep(Math.min(currentStep + 1, TOTAL_STEPS - 1));
+  });
+  $("backBtn").addEventListener("click", function () { showStep(Math.max(currentStep - 1, 0)); });
+  $("generateBtn").addEventListener("click", function () {
+    var err = validateStep(currentStep);
+    if (err) { alert(err); return; }
+    generatePlan();
+  });
+
+  /* ============================================================
+     PLAN SCREEN ACTIONS
+  ============================================================ */
+  $("printBtn").addEventListener("click", function () { window.print(); });
+  $("editBtn").addEventListener("click", function () {
+    $("planScreen").style.display = "none";
+    $("wizard").style.display = "";
+    showStep(6);
+  });
+  $("restartBtn").addEventListener("click", function () {
+    if (!confirm("Start over? This clears all your answers.")) return;
+    try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+    location.reload();
+  });
+
+  /* ============================================================
+     INIT — restore saved progress and paint controls
+  ============================================================ */
+  restore();
+  $("studentName").value = state.name || "";
+  if (state.grade) { setSingleSelect("gradeChoices", state.grade); $("k2note").style.display = band(state.grade) === "k2" ? "" : "none"; }
+  if (state.enroll) { setSingleSelect("enrollChoices", state.enroll); $("liveDetails").style.display = (state.enroll === "live" || state.enroll === "mix") ? "" : "none"; }
+  setMultiSelect("liveDayChoices", state.liveDays);
+  $("liveEnd").value = state.liveEnd;
+  if (state.planType) {
+    setSingleSelect("planTypeChoices", state.planType);
+    $("routineDetails").style.display = state.planType === "routine" ? "" : "none";
+    $("projectDetails").style.display = state.planType === "project" ? "" : "none";
+  }
+  if (state.horizon) setSingleSelect("horizonChoices", state.horizon);
+  $("projName").value = state.projName; $("projDeliverable").value = state.projDeliverable;
+  if (state.projDue) $("projDue").value = state.projDue;
+  $("projSize").value = state.projSize;
+  setMultiSelect("dayChoices", state.days);
+  setMultiSelect("blockChoices", state.blocks);
+  if (state.parentCoord) {
+    setSingleSelect("parentChoices", state.parentCoord);
+    $("parentNote").style.display = (state.parentCoord === "yes" || state.parentCoord === "unsure") ? "" : "none";
+  }
+  if (state.focusTime) {
+    setSingleSelect("focusTimeChoices", state.focusTime);
+    $("findoutNote").style.display = state.focusTime === "findout" ? "" : "none";
+  }
+  if (state.focusSpan !== null) { setSingleSelect("focusSpanChoices", state.focusSpan); refreshSpanHint(); }
+  if (state.distraction) setSingleSelect("distractionChoices", state.distraction);
+  renderItems();
+  showStep(currentStep);
+})();
+</script>
+</body>
+</html>
