@@ -7,6 +7,16 @@ Cross-course interactive widgets for Optima Academy Online, hosted on GitHub Pag
 | File | What it does | Lives in |
 |------|--------------|----------|
 | `study-planner.html` | K–12 study planner: a questionnaire (grade, live vs On-Demand enrollment, courses/goals via paste or .txt upload, available days/times, parent coordination, metacognitive focus questions) that generates a personalized weekly schedule, daily routine, or project plan, downloadable as PDF via print. | Canvas homeroom page; embeddable in any course |
+| `course-home-builder.html` | **Teacher-facing.** A form that generates a branded Optima course home page. Teachers fill in course name, term/section/meeting time, their own name and email, weekly announcements, quick-access tiles, module cards, and a Commonplace Corner quote; the widget outputs paste-ready HTML with a live preview, a **Copy HTML** button, and a `.html` download. | Not embedded in a course — teachers open it directly and paste the output into a Canvas page |
+
+### course-home-builder notes
+
+- Output matches the `course-home.html` reference template: every style is inline, since Canvas strips `<style>` blocks.
+- All non-ASCII characters (emoji, curly quotes, en/em dashes) are emitted as numeric character references, so the paste survives Canvas's encoding handling.
+- The Tech Help tile ships pre-filled with the Optima tech support Teams meeting link and `target="_blank"`. If that meeting link ever changes, update `TEAMS_TECH_HELP` near the top of the script block.
+- Tile and module link fields expect a full Canvas URL — teachers open the destination in Canvas and copy the address bar.
+- Work in progress persists in `localStorage`, so a teacher can close the tab and come back to the same form.
+- Because this widget is a teacher tool rather than a student activity, it isn't iframed into a course page. Link teachers to the GitHub Pages URL, or hand them the file.
 
 ## Embedding in Canvas
 

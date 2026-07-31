@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Course Home Page Builder &middot; Optima Academy Online</title>
+<style>
+  :root {
+    --navy: #0E1C42;
+    --cyan: #55C8E8;
+    --gold: #E0A82E;
+    --page: #F4F6FB;
+    --line: #D0D9E8;
+    --muted: #6b7a99;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    background: var(--page);
+    color: var(--navy);
+    font-size: 15px;
+    line-height: 1.45;
+  }
+
+  /* ---------- page chrome ---------- */
+  header.app {
+    background: var(--navy);
+    border-bottom: 5px solid var(--cyan);
+    padding: 18px 26px;
+  }
+  header.app .brand { font-size: 13px; color: var(--cyan); letter-spacing: 1px; text-transform: uppercase; }
+  header.app h1 { margin: 4px 0 2px; font-size: 26px; color: #fff; font-weight: 600; }
+  header.app p { margin: 0; font-size: 13px; color: rgba(255,255,255,.75); }
+
+  .layout { display: flex; align-items: flex-start; gap: 22px; padding: 22px; max-width: 1720px; margin: 0 auto; }
+  .col-form { flex: 1 1 520px; min-width: 420px; }
+  .col-out  { flex: 1 1 640px; min-width: 420px; position: sticky; top: 22px; }
+  @media (max-width: 1100px) {
+    .layout { flex-direction: column; }
+    .col-form, .col-out { min-width: 0; width: 100%; position: static; }
+  }
+
+  /* ---------- cards ---------- */
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 18px; overflow: hidden; }
+  .card > h2 {
+    margin: 0; padding: 13px 18px; font-size: 15px; font-weight: 600;
+    background: #EDF1F9; border-bottom: 1px solid var(--line); color: var(--navy);
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .card > h2 .step {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 22px; height: 22px; border-radius: 50%; background: var(--navy);
+    color: #fff; font-size: 12px; margin-right: 9px; flex-shrink: 0;
+  }
+  .card .body { padding: 16px 18px 18px; }
+  .hint { font-size: 12.5px; color: var(--muted); margin: 0 0 14px; }
+
+  /* ---------- fields ---------- */
+  label.f { display: block; margin-bottom: 12px; }
+  label.f > span { display: block; font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+  input[type=text], input[type=url], textarea, select {
+    width: 100%; padding: 8px 10px; font: inherit; font-size: 14px;
+    border: 1px solid var(--line); border-radius: 6px; background: #fff; color: var(--navy);
+  }
+  input:focus, textarea:focus, select:focus { outline: 2px solid var(--cyan); outline-offset: -1px; border-color: var(--cyan); }
+  textarea { min-height: 62px; resize: vertical; line-height: 1.4; }
+  .row { display: flex; gap: 12px; }
+  .row > * { flex: 1; min-width: 0; }
+  .chk { display: flex; align-items: flex-start; gap: 8px; font-size: 13.5px; margin-bottom: 10px; }
+  .chk input { margin-top: 3px; flex-shrink: 0; }
+
+  /* ---------- repeatable items ---------- */
+  .item { border: 1px solid var(--line); border-left: 4px solid var(--cyan); border-radius: 7px; padding: 13px 14px 4px; margin-bottom: 12px; background: #FBFCFE; }
+  .item .item-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 9px; }
+  .item .item-title { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--muted); text-transform: uppercase; }
+  .item .tools { display: flex; gap: 5px; }
+
+  button {
+    font: inherit; cursor: pointer; border-radius: 6px; border: 1px solid var(--line);
+    background: #fff; color: var(--navy); padding: 6px 11px; font-size: 13px;
+  }
+  button:hover { background: #EDF1F9; }
+  button.mini { padding: 2px 8px; font-size: 13px; line-height: 1.5; }
+  button.danger:hover { background: #FBE9E9; border-color: #E3A3A3; color: #8C2C2C; }
+  button.primary { background: var(--navy); border-color: var(--navy); color: #fff; font-weight: 600; padding: 9px 16px; }
+  button.primary:hover { background: #16295c; }
+  button.add { border-style: dashed; border-color: #B9C6DC; color: var(--muted); width: 100%; padding: 9px; }
+  button.add:hover { color: var(--navy); border-color: var(--cyan); }
+  button[disabled] { opacity: .4; cursor: default; }
+
+  /* ---------- output ---------- */
+  .tabs { display: flex; gap: 0; border-bottom: 1px solid var(--line); background: #EDF1F9; }
+  .tabs button {
+    border: none; border-radius: 0; background: transparent; padding: 12px 18px;
+    font-size: 14px; font-weight: 600; color: var(--muted); border-bottom: 3px solid transparent;
+  }
+  .tabs button[aria-selected=true] { color: var(--navy); border-bottom-color: var(--cyan); background: #fff; }
+  #previewFrame { width: 100%; height: 720px; border: none; display: block; background: #fff; }
+  #code { width: 100%; height: 640px; font-family: Consolas, 'Courier New', monospace; font-size: 12px; line-height: 1.45; white-space: pre; border: none; border-radius: 0; padding: 14px; }
+  #code:focus { outline: none; }
+  .outbar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 13px 16px; border-top: 1px solid var(--line); background: #FBFCFE; }
+  .outbar .grow { flex: 1; }
+  .flash { font-size: 13px; color: #1E7A46; font-weight: 600; opacity: 0; transition: opacity .2s; }
+  .flash.show { opacity: 1; }
+
+  ol.steps { margin: 0; padding-left: 20px; font-size: 13.5px; }
+  ol.steps li { margin-bottom: 7px; }
+  code.k { background: #EDF1F9; border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; font-family: Consolas, monospace; font-size: 12.5px; }
+  .toolbar { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 18px; }
+</style>
+</head>
+<body>
+
+<header class="app">
+  <div class="brand">Optima Academy Online</div>
+  <h1>Course Home Page Builder</h1>
+  <p>Fill in your course details, then copy the generated HTML into a Canvas page and set it as your course home.</p>
+</header>
+
+<div class="layout">
+
+  <!-- ============================ FORM ============================ -->
+  <div class="col-form" id="form">
+
+    <div class="toolbar">
+      <button type="button" data-action="loadExample">Load example (Algebra 1)</button>
+      <button type="button" data-action="reset">Start blank</button>
+    </div>
+
+    <!-- 1. Course -->
+    <section class="card">
+      <h2><span><span class="step">1</span>Course details</span></h2>
+      <div class="body">
+        <label class="f"><span>Course name (shown large in the header)</span>
+          <input type="text" data-path="course.title" placeholder="ALGEBRA 1" /></label>
+        <label class="f"><span>Header tagline</span>
+          <input type="text" data-path="course.tagline" placeholder="Course Home &middot; Start here every week." /></label>
+        <label class="f"><span>Module section note (right side of the &ldquo;Course Modules&rdquo; heading)</span>
+          <input type="text" data-path="course.moduleNote" placeholder="Semester 1 &middot; select a module to begin" /></label>
+      </div>
+    </section>
+
+    <!-- 2. Teacher & section -->
+    <section class="card">
+      <h2><span><span class="step">2</span>Your section &amp; your name</span></h2>
+      <div class="body">
+        <p class="hint">These show up as a row of chips under the course name in the header. Leave any of them blank and that chip disappears &mdash; an On-Demand section with no meeting time can skip the time field entirely.</p>
+        <div class="row">
+          <label class="f"><span>Term</span>
+            <input type="text" data-path="course.term" placeholder="Fall 2026" /></label>
+          <label class="f"><span>Section / period</span>
+            <input type="text" data-path="course.section" placeholder="Section 2 &middot; On-Demand" /></label>
+        </div>
+        <label class="f"><span>Meeting time (skip if fully On-Demand)</span>
+          <input type="text" data-path="course.meetingTime" placeholder="Tue/Thu 10:00&ndash;10:50 AM ET" /></label>
+        <hr style="border:none; border-top:1px solid var(--line); margin:6px 0 14px;" />
+        <div class="row">
+          <label class="f"><span>Your name (as students should address you)</span>
+            <input type="text" data-path="course.teacherName" placeholder="Ms. Rivera" /></label>
+          <label class="f"><span>Your role</span>
+            <input type="text" data-path="course.teacherTitle" placeholder="Course Instructor" /></label>
+        </div>
+        <label class="f"><span>Your email (turns your name into a mailto link)</span>
+          <input type="text" data-path="course.teacherEmail" placeholder="arivera@optimaed.com" /></label>
+      </div>
+    </section>
+
+    <!-- 3. Announcements -->
+    <section class="card">
+      <h2>
+        <span><span class="step">3</span>Announcements</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="showAnnouncements" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <p class="hint">Update these each week. The pinned entry gets the gold highlight. If you'd rather let Canvas feed this automatically, turn the section off and enable <em>Show recent announcements</em> in Course Settings.</p>
+        <div class="row">
+          <label class="f"><span>Small label</span>
+            <input type="text" data-path="labels.announcementsEyebrow" placeholder="ANNOUNCEMENTS" /></label>
+          <label class="f"><span>Heading</span>
+            <input type="text" data-path="labels.announcementsHeading" placeholder="Latest Updates" /></label>
+        </div>
+        <div id="list-announcements"></div>
+        <button type="button" class="add" data-action="add" data-list="announcements">+ Add announcement</button>
+      </div>
+    </section>
+
+    <!-- 4. Tiles -->
+    <section class="card">
+      <h2><span><span class="step">4</span>Quick-access tiles</span></h2>
+      <div class="body">
+        <p class="hint">Paste the full Canvas URL for each destination &mdash; open the page in Canvas and copy the address bar. The Tech Help tile is pre-filled with the Optima tech support Teams meeting.</p>
+        <div id="list-tiles"></div>
+        <button type="button" class="add" data-action="add" data-list="tiles">+ Add tile</button>
+      </div>
+    </section>
+
+    <!-- 5. Modules -->
+    <section class="card">
+      <h2><span><span class="step">5</span>Module cards</span></h2>
+      <div class="body">
+        <p class="hint">One card per module. Link each to that module's intro page (Canvas &rsaquo; Pages &rsaquo; the intro page &rsaquo; copy the URL), or to the module itself in the Modules list.</p>
+        <label class="f"><span>Section heading</span>
+          <input type="text" data-path="labels.modulesHeading" placeholder="Course Modules" /></label>
+        <div id="list-modules"></div>
+        <button type="button" class="add" data-action="add" data-list="modules">+ Add module</button>
+        <hr style="border:none; border-top:1px solid var(--line); margin:18px 0 14px;" />
+        <label class="chk"><input type="checkbox" data-path="spacer.show" />
+          <span>Add a closing note card after the modules</span></label>
+        <label class="f"><span>Note text</span>
+          <textarea data-path="spacer.text" placeholder="Modules 6&ndash;11 continue in Semester 2 and unlock in the spring."></textarea></label>
+      </div>
+    </section>
+
+    <!-- 6. Commonplace -->
+    <section class="card">
+      <h2>
+        <span><span class="step">6</span>Commonplace Corner</span>
+        <label class="chk" style="margin:0; font-size:13px; font-weight:400;">
+          <input type="checkbox" data-path="commonplace.show" /> Show section
+        </label>
+      </h2>
+      <div class="body">
+        <div class="row">
+          <label class="f"><span>Small label</span>
+            <input type="text" data-path="labels.commonplaceEyebrow" placeholder="COMMONPLACE CORNER" /></label>
+          <label class="f"><span>Heading</span>
+            <input type="text" data-path="commonplace.heading" placeholder="This Week's Idea Worth Keeping" /></label>
+        </div>
+        <label class="f"><span>Quotation</span>
+          <textarea data-path="commonplace.quote" placeholder="Pure mathematics is, in its way, the poetry of logical ideas."></textarea></label>
+        <label class="f"><span>Attribution</span>
+          <input type="text" data-path="commonplace.author" placeholder="Albert Einstein" /></label>
+        <label class="f"><span>What students should do with it</span>
+          <textarea data-path="commonplace.prompt" placeholder="Copy this week's line into your commonplace book&hellip;"></textarea></label>
+      </div>
+    </section>
+
+    <!-- 7. Footer -->
+    <section class="card">
+      <h2><span><span class="step">7</span>Footer line</span></h2>
+      <div class="body">
+        <p class="hint">The footer already carries the school name, your course name, and the copyright line. Add one more line here if you want &mdash; a support email, an office-hours reminder, a class motto.</p>
+        <label class="f"><span>Extra footer line (optional)</span>
+          <input type="text" data-path="labels.footerNote" placeholder="Questions? Email me any time &mdash; I answer within one school day." /></label>
+      </div>
+    </section>
+
+    <!-- How to use -->
+    <section class="card">
+      <h2><span>Putting it in Canvas</span></h2>
+      <div class="body">
+        <ol class="steps">
+          <li>Click <strong>Copy HTML</strong> in the panel to the right.</li>
+          <li>In Canvas, go to <strong>Pages &rsaquo; + Page</strong> and title it <em>Course Home</em> (or edit your existing home page).</li>
+          <li>In the editor toolbar, switch to HTML view &mdash; the <code class="k">&lt;/&gt;</code> button on the right end.</li>
+          <li>Select everything already in the box, delete it, then paste. Click <strong>Save</strong>.</li>
+          <li>From <strong>Pages</strong>, open the page's <code class="k">&hellip;</code> menu and choose <strong>Use as Front Page</strong>.</li>
+          <li>Go to <strong>Home &rsaquo; Choose Home Page</strong> and pick <strong>Pages Front Page</strong>.</li>
+        </ol>
+        <p class="hint" style="margin:14px 0 0;">Every style is written inline because Canvas strips <code class="k">&lt;style&gt;</code> blocks. Editing the page in Canvas's rich-text view can scramble that formatting &mdash; come back here to make changes, then re-paste.</p>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ============================ OUTPUT ============================ -->
+  <div class="col-out">
+    <div class="card" style="margin-bottom:0;">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" id="tab-preview" aria-selected="true" data-action="tab" data-tab="preview">Preview</button>
+        <button type="button" role="tab" id="tab-code" aria-selected="false" data-action="tab" data-tab="code">HTML to paste</button>
+      </div>
+      <div id="pane-preview"><iframe id="previewFrame" title="Course home page preview"></iframe></div>
+      <div id="pane-code" hidden><textarea id="code" readonly spellcheck="false"></textarea></div>
+      <div class="outbar">
+        <button type="button" class="primary" data-action="copy">Copy HTML</button>
+        <button type="button" data-action="download">Download .html</button>
+        <span class="flash" id="flash">Copied</span>
+        <span class="grow"></span>
+        <span class="hint" style="margin:0;" id="sizeNote"></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var TEAMS_TECH_HELP = 'https://teams.microsoft.com/l/meetup-join/19%3ameeting_YWVmZjZjZDEtNjIxZS00ZDcyLWJmYjktZTc2MmYzNDU1ZThh%40thread.v2/0?context=%7b%22Tid%22%3a%22c7b2fe95-5305-4143-a425-262bd0ed6d5e%22%2c%22Oid%22%3a%22213a79fc-fe79-4a88-908c-fe6868f93e92%22%7d';
+
+  var ICONS = [
+    ['📜', 'Scroll (syllabus)'],
+    ['🎓', 'Graduation cap (teacher)'],
+    ['🔧', 'Wrench (tech help)'],
+    ['📚', 'Books (study hall)'],
+    ['📅', 'Calendar'],
+    ['📝', 'Notes'],
+    ['✅', 'Check mark'],
+    ['🎯', 'Target (goals)'],
+    ['💬', 'Speech bubble (discussion)'],
+    ['📧', 'Email'],
+    ['🧭', 'Compass (getting started)'],
+    ['🏛', 'Classical building'],
+    ['🖼', 'Framed picture (gallery)'],
+    ['🎧', 'Headset (VR)'],
+    ['🧪', 'Flask (lab)'],
+    ['📊', 'Chart (grades)'],
+    ['❓', 'Question mark (FAQ)'],
+    ['🗂', 'Card index (resources)'],
+    ['✨', 'Sparkles']
+  ];
+
+  var STORE_KEY = 'optima-course-home-builder-v1';
+
+  // ------------------------------------------------------------------ state
+  function blankState() {
+    return {
+      course: {
+        title: '', tagline: 'Course Home · Start here every week.',
+        moduleNote: 'Semester 1 · select a module to begin',
+        term: '', section: '', meetingTime: '',
+        teacherName: '', teacherTitle: '', teacherEmail: ''
+      },
+      labels: {
+        announcementsEyebrow: 'ANNOUNCEMENTS',
+        announcementsHeading: 'Latest Updates',
+        modulesHeading: 'Course Modules',
+        commonplaceEyebrow: 'COMMONPLACE CORNER',
+        footerNote: ''
+      },
+      showAnnouncements: true,
+      announcements: [ { pinned: true, when: '', text: '' } ],
+      tiles: [
+        { icon: '📜', label: 'Syllabus',         desc: 'Grading, pacing & policies',        url: '', blank: false },
+        { icon: '🎓', label: 'Meet the Teacher', desc: "Who's guiding your learning",       url: '', blank: false },
+        { icon: '🔧', label: 'Tech Help',        desc: 'Live support with the tech team',   url: TEAMS_TECH_HELP, blank: true },
+        { icon: '📚', label: 'Study Hall',       desc: 'Office hours & support',            url: '', blank: false }
+      ],
+      modules: [ { title: '', url: '' } ],
+      spacer: { show: false, text: '' },
+      commonplace: { show: true, heading: "This Week's Idea Worth Keeping", quote: '', author: '', prompt: '' }
+    };
+  }
+
+  function exampleState() {
+    var s = blankState();
+    s.course.title = 'Algebra 1';
+    s.course.term = 'Fall 2026';
+    s.course.section = 'Section 2 · On-Demand';
+    s.course.meetingTime = 'Study Hall: Thursdays, 1:00–1:45 PM ET';
+    s.course.teacherName = 'Ms. Rivera';
+    s.course.teacherTitle = 'Course Instructor';
+    s.course.teacherEmail = 'arivera@optimaed.com';
+    s.announcements = [
+      { pinned: true,  when: 'Monday, Aug 17 · 9:00 AM',   text: 'Welcome to Module 1: Laws of Exponents & Radicals. Read the Start Here! section before Wednesday, then open Lesson 1.01.' },
+      { pinned: false, when: 'Thursday, Aug 13 · 3:15 PM', text: 'Study Hall meets Thursday this week. Bring a question from your Independent Practice and your reference sheet.' },
+      { pinned: false, when: 'Monday, Aug 10 · 8:30 AM',   text: 'Set up your online calculator and headset from the Tech Help tile before our first VR lesson.' }
+    ];
+    s.modules = [
+      { title: 'Laws of Exponents & Radicals', url: '' },
+      { title: 'One-Variable Equations & Inequalities', url: '' },
+      { title: 'Linear Equations & Functions', url: '' },
+      { title: 'Linear Inequalities & Absolute Value Equations', url: '' },
+      { title: 'Systems of Linear Equations & Inequalities', url: '' }
+    ];
+    s.spacer = { show: true, text: 'Modules 6–11 continue in Semester 2 and unlock in the spring.' };
+    s.commonplace.quote = 'Pure mathematics is, in its way, the poetry of logical ideas.';
+    s.commonplace.author = 'Albert Einstein';
+    s.commonplace.prompt = 'Copy this week’s line into your commonplace book. In Study Hall, share one place you saw its idea at work — in a problem you solved, a pattern you noticed, or something outside class.';
+    return s;
+  }
+
+  var state = load() || exampleState();
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      if (!raw) return null;
+      var s = JSON.parse(raw), b = blankState();
+      // merge two levels deep so a saved file from an older version still opens
+      for (var k in b) {
+        if (!(k in s) || s[k] == null) { s[k] = b[k]; continue; }
+        if (!Array.isArray(b[k]) && typeof b[k] === 'object') {
+          for (var k2 in b[k]) if (!(k2 in s[k])) s[k][k2] = b[k][k2];
+        }
+      }
+      return s;
+    } catch (e) { return null; }
+  }
+  function save() {
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  function getPath(p) {
+    var parts = p.split('.'), o = state;
+    for (var i = 0; i < parts.length; i++) o = o[parts[i]];
+    return o;
+  }
+  function setPath(p, v) {
+    var parts = p.split('.'), o = state;
+    for (var i = 0; i < parts.length - 1; i++) o = o[parts[i]];
+    o[parts[parts.length - 1]] = v;
+  }
+
+  // ------------------------------------------------------- escaping helpers
+  // Canvas is happiest with pure ASCII, so every non-ASCII character (emoji,
+  // curly quotes, dashes) goes out as a numeric character reference.
+  function esc(str) {
+    str = String(str == null ? '' : str);
+    var out = '';
+    for (var i = 0; i < str.length; i++) {
+      var cp = str.codePointAt(i);
+      var ch = String.fromCodePoint(cp);
+      if (cp > 0xFFFF) i++;
+      if (ch === '&') out += '&amp;';
+      else if (ch === '<') out += '&lt;';
+      else if (ch === '>') out += '&gt;';
+      else if (ch === '"') out += '&quot;';
+      else if (cp > 126 || (cp < 32 && ch !== '\n')) out += '&#' + cp + ';';
+      else out += ch;
+    }
+    return out;
+  }
+  // Multi-line plain text -> HTML with <br /> between lines.
+  function escML(str) {
+    return esc(str).split('\n').map(function (l) { return l.trim(); })
+      .filter(function (l, i, a) { return l !== '' || (i > 0 && i < a.length - 1); })
+      .join('<br />');
+  }
+  function href(url) {
+    url = String(url || '').trim();
+    if (!url) return '#';
+    // a bare canvas path or full URL both pass through; only quotes need care
+    return esc(url);
+  }
+  function slug(s) {
+    return String(s || 'course').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'course';
+  }
+
+  // -------------------------------------------------------- HTML generation
+  var S = {
+    wrap:      "max-width: 960px; margin: 0 auto; font-family: 'Segoe UI', Arial, sans-serif; color: #0e1c42;",
+    header:    'background: #0E1C42; border-bottom: 5px solid #55C8E8; padding: 24px 34px; border-radius: 10px 10px 0 0;',
+    body:      'background: #F4F6FB; padding: 24px; border-radius: 0 0 10px 10px;',
+    tile:      'box-sizing: border-box; flex: 1; min-width: 190px; text-decoration: none; background: #FFFFFF; border: 1px solid #D0D9E8; border-top: 4px solid #55C8E8; border-radius: 8px; padding: 22px 16px; text-align: center; display: block;',
+    modCard:   'flex: 1 1 280px; text-decoration: none; background: #FFFFFF; border: 1px solid #D0D9E8; border-left: 5px solid #0E1C42; border-radius: 8px; padding: 16px 18px; display: flex; align-items: center; gap: 14px;',
+    modNum:    'width: 34px; height: 34px; border-radius: 50%; background: #0E1C42; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0;',
+    eyebrow:   'font-size: 11px; letter-spacing: 1px; color: #6b7a99;',
+    footer:    'background: #0E1C42; border-top: 3px solid #55C8E8; padding: 18px 34px; text-align: center; border-radius: 0 0 10px 10px; margin-top: 4px;'
+  };
+
+  var CHIP = 'background: rgba(255,255,255,0.10); border: 1px solid rgba(85,200,232,0.45); border-radius: 20px; padding: 5px 14px; font-size: 13px; color: #ffffff;';
+  var CHIP_LABEL = 'color: #55c8e8; letter-spacing: 0.5px; font-size: 11px; text-transform: uppercase; margin-right: 7px;';
+
+  function build() {
+    var c = state.course;
+    var L = state.labels || {};
+    var title = (c.title || 'Course Name').toUpperCase();
+    var h = [];
+
+    h.push('<!--');
+    h.push('  ============================================================================');
+    h.push('  ' + esc(title) + ' - COURSE HOME PAGE  (Optima Academy Online)');
+    h.push('  ----------------------------------------------------------------------------');
+    h.push('  HOW TO USE THIS FILE IN CANVAS:');
+    h.push('    1. Select all of this code (Ctrl+A), copy (Ctrl+C).');
+    h.push('    2. In Canvas: Pages > "+ Page" (or edit your existing Home page) >');
+    h.push('       switch the editor to HTML view (the "</' + '>" button) > paste > Save.');
+    h.push('    3. From the Pages list, set this page as the Front Page, then go to');
+    h.push('       Home > "Choose Home Page" > "Pages Front Page".');
+    h.push('');
+    h.push('  All styling is inline because Canvas strips <style> and <script> blocks.');
+    h.push('  Editing this page in Canvas\'s rich-text view can scramble the layout.');
+    h.push('  Rebuild it any time with the Course Home Page Builder.');
+    h.push('  ============================================================================');
+    h.push('-->');
+    h.push('');
+    h.push('<div style="' + S.wrap + '">');
+    h.push('');
+
+    // ---- header
+    h.push('  <!-- ===================== HEADER ===================== -->');
+    h.push('  <div style="' + S.header + '">');
+    h.push('    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 12px;">');
+    h.push('      <div style="width: 52px; height: 52px; border-radius: 50%; background: #FFFFFF; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><img src="https://raw.githubusercontent.com/optimaondemand/optima-assets/eeb0b335630058906d52f478028361d352253a93/images/Optima%20Final%20Circle%20-%20Owl%20Only.png" alt="Optima Academy" style="width: 50px; height: 40px; object-fit: contain;" /></div>');
+    h.push('      <div>');
+    h.push('        <div style="font-size: 24px; color: #ffffff; line-height: 1.2;">Optima Academy Online</div>');
+    h.push('        <div style="font-size: 12px; color: #55c8e8;">An Education Experience Company</div>');
+    h.push('      </div>');
+    h.push('    </div>');
+    h.push('    <div style="font-size: 36px; color: #ffffff; margin-bottom: 4px; letter-spacing: 0.5px;">' + esc(title) + '</div>');
+    if (String(c.tagline || '').trim())
+      h.push('    <div style="font-size: 14px; color: rgba(255,255,255,0.75);">' + esc(c.tagline) + '</div>');
+
+    // section / time / teacher chips
+    var chips = [];
+    function chip(label, value, inner) {
+      if (!String(value || '').trim()) return;
+      chips.push('      <div style="' + CHIP + '">' +
+        '<span style="' + CHIP_LABEL + '">' + esc(label) + '</span>' +
+        (inner || esc(value)) + '</div>');
+    }
+    chip('Term', c.term);
+    chip('Section', c.section);
+    chip('Meets', c.meetingTime);
+    var teacher = String(c.teacherName || '').trim();
+    if (teacher) {
+      var email = String(c.teacherEmail || '').trim();
+      var name = email
+        ? '<a href="mailto:' + esc(email) + '" style="color: #ffffff; text-decoration: underline;">' + esc(teacher) + '</a>'
+        : esc(teacher);
+      var role = String(c.teacherTitle || '').trim();
+      chip(role || 'Your teacher', teacher, name);
+    }
+    if (chips.length) {
+      h.push('    <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px;">');
+      chips.forEach(function (x) { h.push(x); });
+      h.push('    </div>');
+    }
+    h.push('  </div>');
+    h.push('');
+    h.push('  <div style="' + S.body + '">');
+    h.push('');
+
+    // ---- announcements
+    var anns = state.announcements.filter(function (a) { return String(a.text || '').trim() || String(a.when || '').trim(); });
+    if (state.showAnnouncements && anns.length) {
+      h.push('    <!-- ===================== ANNOUNCEMENTS ===================== -->');
+      h.push('    <!-- Update these each week. -->');
+      h.push('    <div style="background: #FFFFFF; border: 1px solid #D0D9E8; border-top: 4px solid #E0A82E; border-radius: 8px; padding: 20px 24px; margin-bottom: 22px;">');
+      h.push('      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">');
+      h.push('        <span style="font-size: 20px;">&#128226;</span>');
+      h.push('        <div>');
+      h.push('          <div style="font-size: 11px; letter-spacing: 1px; color: #E0A82E; font-weight: 600;">' + esc((L.announcementsEyebrow || 'ANNOUNCEMENTS').toUpperCase()) + '</div>');
+      h.push('          <div style="font-size: 18px; color: #0e1c42;">' + esc(L.announcementsHeading || 'Latest Updates') + '</div>');
+      h.push('        </div>');
+      h.push('      </div>');
+      anns.forEach(function (a, i) {
+        var last = (i === anns.length - 1);
+        var mb = last ? '' : ' margin-bottom: 12px;';
+        if (a.pinned) {
+          h.push('      <div style="background: #FDF6E7; border-left: 4px solid #E0A82E; border-radius: 4px; padding: 12px 16px;' + mb + '">');
+          h.push('        <div style="font-size: 12px; color: #b07d1a; margin-bottom: 4px;">' + esc(a.when) + '</div>');
+        } else {
+          h.push('      <div style="border-left: 3px solid #D0D9E8; padding: 4px 16px;' + mb + '">');
+          h.push('        <div style="font-size: 12px; color: #6b7a99; margin-bottom: 4px;">' + esc(a.when) + '</div>');
+        }
+        h.push('        <div style="font-size: 15px; color: #333;">' + escML(a.text) + '</div>');
+        h.push('      </div>');
+      });
+      h.push('    </div>');
+      h.push('');
+    }
+
+    // ---- tiles
+    var tiles = state.tiles.filter(function (t) { return String(t.label || '').trim(); });
+    if (tiles.length) {
+      h.push('    <!-- ===================== QUICK-ACCESS TILES ===================== -->');
+      h.push('    <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-bottom: 26px;">');
+      tiles.forEach(function (t) {
+        h.push('');
+        h.push('      <!-- ' + esc(String(t.label).toUpperCase()) + ' -->');
+        var tgt = t.blank ? ' target="_blank" rel="noopener"' : '';
+        h.push('      <a href="' + href(t.url) + '"' + tgt + ' style="' + S.tile + '">');
+        if (String(t.icon || '').trim())
+          h.push('        <div style="font-size: 30px; margin-bottom: 8px;">' + esc(t.icon) + '</div>');
+        h.push('        <div style="font-size: 17px; color: #0e1c42;">' + esc(t.label) + '</div>');
+        if (String(t.desc || '').trim())
+          h.push('        <div style="font-size: 12px; color: #6b7a99; margin-top: 4px;">' + esc(t.desc) + '</div>');
+        h.push('      </a>');
+      });
+      h.push('    </div>');
+      h.push('');
+    }
+
+    // ---- modules
+    var mods = state.modules.filter(function (m) { return String(m.title || '').trim(); });
+    if (mods.length) {
+      h.push('    <!-- ===================== COURSE MODULES ===================== -->');
+      h.push('    <div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 2px solid #D0D9E8; padding-bottom: 8px; margin-bottom: 16px;">');
+      h.push('      <div style="font-size: 20px; color: #0e1c42;">' + esc(L.modulesHeading || 'Course Modules') + '</div>');
+      if (String(c.moduleNote || '').trim())
+        h.push('      <div style="font-size: 13px; color: #6b7a99;">' + esc(c.moduleNote) + '</div>');
+      h.push('    </div>');
+      h.push('');
+      h.push('    <div style="display: flex; flex-wrap: wrap; gap: 14px;">');
+      mods.forEach(function (m, i) {
+        var n = i + 1;
+        h.push('');
+        h.push('      <a href="' + href(m.url) + '" style="' + S.modCard + '">');
+        h.push('        <div style="' + S.modNum + '">' + n + '</div>');
+        h.push('        <div>');
+        h.push('          <div style="' + S.eyebrow + '">MODULE ' + n + '</div>');
+        h.push('          <div style="font-size: 16px; color: #0e1c42;">' + esc(m.title) + '</div>');
+        h.push('        </div>');
+        h.push('      </a>');
+      });
+      if (state.spacer.show && String(state.spacer.text || '').trim()) {
+        h.push('');
+        h.push('      <!-- Closing note card -->');
+        h.push('      <div style="flex: 1 1 280px; border-radius: 8px; padding: 16px 18px; display: flex; align-items: center; gap: 12px; color: #6b7a99; font-size: 13px; border: 1px dashed #C4CFE0;">');
+        h.push('        <span style="font-size: 22px;">&#10145;</span>');
+        h.push('        <div>' + escML(state.spacer.text) + '</div>');
+        h.push('      </div>');
+      }
+      h.push('    </div>');
+      h.push('');
+    }
+
+    // ---- commonplace
+    var cp = state.commonplace;
+    if (cp.show && (String(cp.quote || '').trim() || String(cp.prompt || '').trim())) {
+      h.push('    <!-- ===================== COMMONPLACE CORNER ===================== -->');
+      h.push('    <div style="background: #0E1C42; border-radius: 10px; padding: 24px 28px; margin-top: 26px;">');
+      h.push('      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 14px;">');
+      h.push('        <span style="font-size: 20px;">&#10024;</span>');
+      h.push('        <div>');
+      h.push('          <div style="font-size: 11px; letter-spacing: 1px; color: #55c8e8; font-weight: 600;">' + esc((L.commonplaceEyebrow || 'COMMONPLACE CORNER').toUpperCase()) + '</div>');
+      h.push('          <div style="font-size: 18px; color: #ffffff;">' + esc(cp.heading || "This Week's Idea Worth Keeping") + '</div>');
+      h.push('        </div>');
+      h.push('      </div>');
+      if (String(cp.quote || '').trim()) {
+        h.push('      <div style="border-left: 4px solid #55c8e8; padding: 4px 18px; margin-bottom: 14px;">');
+        h.push('        <div style="font-size: 17px; color: #ffffff; font-style: italic;">&#8220;' + esc(cp.quote) + '&#8221;</div>');
+        if (String(cp.author || '').trim())
+          h.push('        <div style="font-size: 13px; color: rgba(255,255,255,0.6); margin-top: 6px;">&mdash; ' + esc(cp.author) + '</div>');
+        h.push('      </div>');
+      }
+      if (String(cp.prompt || '').trim())
+        h.push('      <div style="font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.5;">' + escML(cp.prompt) + '</div>');
+      h.push('    </div>');
+      h.push('');
+    }
+
+    h.push('  </div>');
+    h.push('');
+
+    // ---- footer
+    h.push('  <!-- ===================== FOOTER ===================== -->');
+    h.push('  <div style="' + S.footer + '">');
+    var footLine = '<span style="color: #55c8e8;">Optima Academy Online</span> &middot; ' + esc(title);
+    if (String(c.section || '').trim()) footLine += ' &middot; ' + esc(c.section);
+    if (String(c.teacherName || '').trim()) footLine += ' &middot; ' + esc(c.teacherName);
+    h.push('    <div style="font-size: 16px; color: #ffffff; margin-bottom: 6px;">' + footLine + '</div>');
+    if (String(L.footerNote || '').trim())
+      h.push('    <div style="font-size: 13px; color: rgba(255,255,255,0.75); margin-bottom: 8px;">' + esc(L.footerNote) + '</div>');
+    h.push('    <div style="font-size: 12px; color: rgba(255,255,255,0.4);">&copy; Optima Academy Online &middot; An Education Experience Company</div>');
+    h.push('  </div>');
+    h.push('');
+    h.push('</div>');
+    h.push('');
+
+    return h.join('\n');
+  }
+
+  // ------------------------------------------------------------ form render
+  function iconSelect(path, current) {
+    var o = ['<select data-path="' + path + '">'];
+    var found = false;
+    ICONS.forEach(function (p) {
+      var sel = (p[0] === current) ? ' selected' : '';
+      if (sel) found = true;
+      o.push('<option value="' + p[0] + '"' + sel + '>' + p[0] + '  ' + p[1] + '</option>');
+    });
+    o.push('<option value=""' + (current ? '' : ' selected') + '>(no icon)</option>');
+    if (current && !found) o.push('<option value="' + current + '" selected>' + current + '  (custom)</option>');
+    o.push('</select>');
+    return o.join('');
+  }
+
+  function tools(list, i, len) {
+    return '<div class="tools">' +
+      '<button type="button" class="mini" data-action="up" data-list="' + list + '" data-idx="' + i + '"' + (i === 0 ? ' disabled' : '') + ' title="Move up">&uarr;</button>' +
+      '<button type="button" class="mini" data-action="down" data-list="' + list + '" data-idx="' + i + '"' + (i === len - 1 ? ' disabled' : '') + ' title="Move down">&darr;</button>' +
+      '<button type="button" class="mini danger" data-action="del" data-list="' + list + '" data-idx="' + i + '" title="Remove">&times;</button>' +
+      '</div>';
+  }
+
+  function renderLists() {
+    // announcements
+    var a = state.announcements.map(function (x, i) {
+      return '<div class="item">' +
+        '<div class="item-head"><span class="item-title">Announcement ' + (i + 1) + '</span>' + tools('announcements', i, state.announcements.length) + '</div>' +
+        '<label class="f"><span>Date &amp; time (free text)</span><input type="text" data-path="announcements.' + i + '.when" value="' + escAttr(x.when) + '" placeholder="Monday, Aug 17 &middot; 9:00 AM" /></label>' +
+        '<label class="f"><span>Message</span><textarea data-path="announcements.' + i + '.text" placeholder="What students need to do this week.">' + escAttr(x.text) + '</textarea></label>' +
+        '<label class="chk"><input type="checkbox" data-path="announcements.' + i + '.pinned"' + (x.pinned ? ' checked' : '') + ' /><span>Pin this one (gold highlight)</span></label>' +
+        '</div>';
+    }).join('');
+    document.getElementById('list-announcements').innerHTML = a;
+
+    // tiles
+    var t = state.tiles.map(function (x, i) {
+      return '<div class="item">' +
+        '<div class="item-head"><span class="item-title">Tile ' + (i + 1) + '</span>' + tools('tiles', i, state.tiles.length) + '</div>' +
+        '<div class="row">' +
+          '<label class="f" style="flex:0 0 190px;"><span>Icon</span>' + iconSelect('tiles.' + i + '.icon', x.icon) + '</label>' +
+          '<label class="f"><span>Tile label</span><input type="text" data-path="tiles.' + i + '.label" value="' + escAttr(x.label) + '" placeholder="Syllabus" /></label>' +
+        '</div>' +
+        '<label class="f"><span>One-line description</span><input type="text" data-path="tiles.' + i + '.desc" value="' + escAttr(x.desc) + '" placeholder="Grading, pacing &amp; policies" /></label>' +
+        '<label class="f"><span>Link</span><input type="url" data-path="tiles.' + i + '.url" value="' + escAttr(x.url) + '" placeholder="https://optimaacademyonline.instructure.com/courses/000/assignments/syllabus" /></label>' +
+        '<label class="chk"><input type="checkbox" data-path="tiles.' + i + '.blank"' + (x.blank ? ' checked' : '') + ' /><span>Open in a new tab (use for Teams, Zoom, and other outside links)</span></label>' +
+        '</div>';
+    }).join('');
+    document.getElementById('list-tiles').innerHTML = t;
+
+    // modules
+    var m = state.modules.map(function (x, i) {
+      return '<div class="item">' +
+        '<div class="item-head"><span class="item-title">Module ' + (i + 1) + '</span>' + tools('modules', i, state.modules.length) + '</div>' +
+        '<label class="f"><span>Module title</span><input type="text" data-path="modules.' + i + '.title" value="' + escAttr(x.title) + '" placeholder="Laws of Exponents &amp; Radicals" /></label>' +
+        '<label class="f"><span>Link to the module intro page</span><input type="url" data-path="modules.' + i + '.url" value="' + escAttr(x.url) + '" placeholder="https://optimaacademyonline.instructure.com/courses/000/pages/module-1-intro" /></label>' +
+        '</div>';
+    }).join('');
+    document.getElementById('list-modules').innerHTML = m;
+  }
+
+  function escAttr(s) {
+    return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function renderScalars() {
+    var nodes = document.querySelectorAll('#form [data-path]');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i], p = el.getAttribute('data-path');
+      if (/\.\d+\./.test(p)) continue; // list items are rendered wholesale
+      var v = getPath(p);
+      if (el.type === 'checkbox') el.checked = !!v; else el.value = v == null ? '' : v;
+    }
+  }
+
+  // --------------------------------------------------------------- plumbing
+  var codeEl = document.getElementById('code');
+  var frameEl = document.getElementById('previewFrame');
+  var sizeEl = document.getElementById('sizeNote');
+
+  function updateOutput() {
+    var html = build();
+    codeEl.value = html;
+    frameEl.srcdoc = '<!DOCTYPE html><html><head><meta charset="utf-8" /></head>' +
+      '<body style="margin:0; padding:14px; background:#e8ecf5;">' + html + '</body></html>';
+    var kb = Math.max(1, Math.round(html.length / 1024));
+    sizeEl.textContent = kb + ' KB · ' + state.modules.filter(function (m) { return m.title; }).length + ' modules';
+    save();
+  }
+
+  function redrawAll() { renderLists(); renderScalars(); updateOutput(); }
+
+  document.getElementById('form').addEventListener('input', function (e) {
+    var p = e.target.getAttribute('data-path');
+    if (!p) return;
+    setPath(p, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
+    updateOutput();
+  });
+  document.getElementById('form').addEventListener('change', function (e) {
+    var p = e.target.getAttribute('data-path');
+    if (!p) return;
+    setPath(p, e.target.type === 'checkbox' ? e.target.checked : e.target.value);
+    updateOutput();
+  });
+
+  var NEW_ITEM = {
+    announcements: function () { return { pinned: false, when: '', text: '' }; },
+    tiles: function () { return { icon: '✨', label: '', desc: '', url: '', blank: false }; },
+    modules: function () { return { title: '', url: '' }; }
+  };
+
+  document.addEventListener('click', function (e) {
+    var btn = e.target.closest ? e.target.closest('button[data-action]') : null;
+    if (!btn) return;
+    var act = btn.getAttribute('data-action');
+    var list = btn.getAttribute('data-list');
+    var idx = parseInt(btn.getAttribute('data-idx'), 10);
+
+    if (act === 'add')       { state[list].push(NEW_ITEM[list]()); redrawAll(); }
+    else if (act === 'del')  { state[list].splice(idx, 1); if (!state[list].length) state[list].push(NEW_ITEM[list]()); redrawAll(); }
+    else if (act === 'up')   { swap(state[list], idx, idx - 1); redrawAll(); }
+    else if (act === 'down') { swap(state[list], idx, idx + 1); redrawAll(); }
+    else if (act === 'loadExample') { state = exampleState(); redrawAll(); }
+    else if (act === 'reset') {
+      if (confirm('Clear everything and start from a blank form?')) { state = blankState(); redrawAll(); }
+    }
+    else if (act === 'tab')  { showTab(btn.getAttribute('data-tab')); }
+    else if (act === 'copy') { doCopy(); }
+    else if (act === 'download') { doDownload(); }
+  });
+
+  function swap(arr, i, j) {
+    if (j < 0 || j >= arr.length) return;
+    var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+  }
+
+  function showTab(which) {
+    document.getElementById('tab-preview').setAttribute('aria-selected', which === 'preview');
+    document.getElementById('tab-code').setAttribute('aria-selected', which === 'code');
+    document.getElementById('pane-preview').hidden = (which !== 'preview');
+    document.getElementById('pane-code').hidden = (which !== 'code');
+  }
+
+  function flash(msg) {
+    var f = document.getElementById('flash');
+    f.textContent = msg;
+    f.classList.add('show');
+    setTimeout(function () { f.classList.remove('show'); }, 2200);
+  }
+
+  function doCopy() {
+    var text = codeEl.value;
+    function fallback() {
+      showTab('code');
+      codeEl.removeAttribute('readonly');
+      codeEl.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) {}
+      codeEl.setAttribute('readonly', 'readonly');
+      flash(ok ? 'Copied to clipboard' : 'Press Ctrl+C to copy');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () { flash('Copied to clipboard'); }, fallback);
+    } else { fallback(); }
+  }
+
+  function doDownload() {
+    var blob = new Blob([codeEl.value], { type: 'text/html;charset=utf-8' });
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'course-home-' + slug(state.course.title) + '.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    flash('Downloaded');
+  }
+
+  redrawAll();
+})();
+</script>
+</body>
+</html>
