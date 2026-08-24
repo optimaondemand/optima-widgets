@@ -1,0 +1,11 @@
+# ORDER MATTERS: git applies the LAST matching pattern, so the catch-all goes
+# first and the exceptions after it. Reversing these two blocks silently puts
+# the generated pages back under text conversion.
+* text=auto
+
+# These are generated artifacts. The builder writes explicit LF, so a Windows
+# build byte-matches a Linux build. Git must not rewrite line endings on them,
+# on any platform, ever.
+optima-literature/ela-reference-library.html -text
+optima-literature/library.json               -text
+optima-literature/data/*.json                -text

@@ -1,0 +1,45 @@
+  ...25/226
+  ...50/226
+  ...75/226
+  ...100/226
+  ...125/226
+  ...150/226
+  ...175/226
+  ...200/226
+  ...225/226
+
+records            : 226
+resolved by ISBN   : 151
+a.co resolved      : 12  (failed 0)
+resolved by title  : 57
+unresolved         : 18
+
+records with a named role (translator/editor/etc): 33
+
+-- TRANSLATORS found (the column that decides rights) --
+   G 1 The Little Prince                      | Richard Howard
+   G 9 The Divine Comedy                      | John Ciardi
+   G10 The Odyssey                            | Robert Fitzgerald
+   G10 Night                                  | Marion Wiesel
+   G12 The Aeneid                             | Robert Fagles
+   (5 total)
+
+-- unresolved records --
+   G K Aesop's Fables ( The Lion's Share)The An | no search result
+   G K Briar Rose                               | no search result
+   G K The Story of Babar                       | no search result
+   G K The 4 Seasons of Fun                     | no search result
+   G K Take Care of the Earth Everyday          | no search result
+   G K The Sun is My Favorite Star              | no search result
+   G 1 The Scarab's Secret                      | no search result
+   G 1 You Can't See Your Bones With Binoculars | no search result
+   G 2 The Animal Life Cycle                    | no search result
+   G 2 The Fisherman and His Wife retold        | no search result
+   G 2 Awesome, Disgusting, and Unusual Facts A | no search result
+   G 6 The Arabian Nights                       | no search result
+   G 9 The Sniper                               | no search result
+   G 9 The Dinner Party                         | no search result
+   G 9 Death by Scrabble                        | no search result
+   G10 A War That is Finished                   | no search result
+   G12 Republic- Allegory of the Cave           | no search result
+   G12 Excerpts from Nietzsche's writings       | no search result
