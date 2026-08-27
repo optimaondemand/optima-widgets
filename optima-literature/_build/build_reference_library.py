@@ -34,6 +34,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 import course_editions as CE
+import clt_titles as CT
 import first_pub as FP
 import genres as G
 
@@ -49,6 +50,7 @@ OWL = ("https://raw.githubusercontent.com/optimaondemand/optima-assets/"
 # so white-on-colour text clears the 4.5:1 contrast rule.
 NAVY, ACCENT = "#0E1C42", "#55C8E8"
 TAUGHT_C = "#B85F00"   # Dark Odyssey Orange
+CLT_C    = "#0E1C42"   # Binary Blue -- provenance, not a rights status
 
 STATE_LABEL = {"identical": "Free", "similar": "Similar", "none": "Buy"}
 STATE_COLOR = {"identical": "#4B7F20",   # Dark Gamer Green
@@ -193,7 +195,13 @@ def enrich(book):
         # the edition.
         c = CE.COURSE.get(key)
         b["_course"] = c
-        b["_taught"] = bool(c)
+        # Every title in this catalogue is parsed from the official book list,
+        # so book-list membership is universal here. Kept as a field rather
+        # than hardcoded at the badge, so the day the catalogue takes in a
+        # title from somewhere else this is the one line that has to change.
+        b["_taught"] = True
+        b["_clt"] = CT.is_clt(b["grade"], b["title"])
+        b["_clt_bank"] = CT.bank_entry(b["grade"], b["title"])
         b["_course_verify"] = bool(c and c.get("verify"))
 
         b["_verify"] = (b["_date_conf"] == "verify") or b["_course_verify"]
@@ -389,11 +397,21 @@ def book_card(b, idx):
                       'title="Public domain, but no trusted free source found yet">'
                       'No source</span>')
 
+    if b.get("_clt"):
+        bank = b.get("_clt_bank") or ""
+        badges.insert(0, f'<span class="bdg" style="--bc:{CLT_C};" '
+                         f'title="{attr("In the CLT Author Bank: " + bank)}">'
+                         f'CLT</span>')
+
     if b["_taught"]:
         c = b["_course"]
-        tip = {"on-page": "Optima reproduces this text in the coursework",
-               "student": "Taught, but students supply their own copy",
-               "reference": "In the course folder as a reading copy only"}[c["used"]]
+        tip = ("On the OAO 2026-27 approved book list")
+        if c:
+            tip += ". " + {
+                "on-page": "Optima reproduces this text in the coursework",
+                "student": "Students supply their own copy",
+                "reference": "In the course folder as a reading copy only",
+            }[c["used"]]
         badges.insert(0, f'<span class="bdg tg" style="--bc:{TAUGHT_C};" '
                          f'title="{attr(tip)}">&#9733; Taught</span>')
 
@@ -459,6 +477,8 @@ def client_record(b, idx):
         "shelfSlug": slug(b["_shelf"]),
         "state": b["_state"],
         "taught": "yes" if b["_taught"] else "no",
+        "clt": "yes" if b.get("_clt") else "no",
+        "cltBank": b.get("_clt_bank"),
         "courseNote": (b["_course"] or {}).get("note"),
         "courseEdition": (b["_course"] or {}).get("edition"),
         "courseUse": (b["_course"] or {}).get("used"),
@@ -514,9 +534,15 @@ def key_block():
         'A date or rights claim that still needs a human check</div>')
     items.insert(0,
         f'<div class="keyitem">'
+        f'<span class="bdg" style="--bc:{CLT_C};">CLT</span>'
+        f'By an author in the Classic Learning Test Author Bank. CLT publishes '
+        f'authors, not titles, so this marks the author, not the exact book</div>')
+    items.insert(0,
+        f'<div class="keyitem">'
         f'<span class="bdg tg" style="--bc:{TAUGHT_C};">&#9733; Taught</span>'
-        f'An Optima course actually teaches this. The gold note on the card says '
-        f'which edition, which is the only thing that settles rights</div>')
+        f'On the OAO 2026-27 approved book list. Every title here carries it. '
+        f'Where a course has an audited edition, the gold note on the card names '
+        f'it, and that edition is what settles rights</div>')
     return (
         '<div class="key"><h2>What the words mean</h2>'
         f'<div class="keyrow">{"".join(items)}</div>'
@@ -543,9 +569,12 @@ def controls(book):
                    for s in shelves)
     stopt = "".join(f'<option value="{attr(s)}">{esc(STATE_LABEL[s])}</option>'
                     for s in ("identical", "similar", "none"))
-    topt = ('<option value="">Listed and taught</option>'
-            '<option value="yes">Taught in a course</option>'
-            '<option value="no">Listed only</option>')
+    # Was a Taught filter. Every title on this page is now Taught, so that
+    # control could only return all 226 or none. CLT membership is the thing
+    # that actually divides the list, so the slot goes to it.
+    topt = ('<option value="">Every title</option>'
+            '<option value="yes">In the CLT Author Bank</option>'
+            '<option value="no">Not in the CLT bank</option>')
 
     sorts = [("az", "A&ndash;Z"), ("author", "By author"),
              ("grade", "By grade"), ("shelf", "By genre")]
@@ -602,7 +631,7 @@ def controls(book):
         f'<select id="fGrade" aria-label="Filter by grade"><option value="">All grades</option>{gopt}</select>'
         f'<select id="fShelf" aria-label="Filter by genre"><option value="">All genres</option>{sopt}</select>'
         f'<select id="fState" aria-label="Filter by access"><option value="">Free and paid</option>{stopt}</select>'
-        f'<select id="fTaught" aria-label="Filter by whether a course teaches it">{topt}</select>'
+        f'<select id="fClt" aria-label="Filter by CLT Author Bank membership">{topt}</select>'
         '</div>'
         '<div class="crow">'
         '<span class="lbl">Shelve</span>'
@@ -738,7 +767,7 @@ def gate(page, book, client):
     # structural markers the JS depends on
     for marker in ('id="grid"', 'id="q"', 'id="fGrade"', 'id="fShelf"',
                    'id="fState"', 'id="fab"', 'id="panel"',
-                   'id="listBox"', 'id="count"', 'sortbtn', 'id="fTaught"',
+                   'id="listBox"', 'id="count"', 'sortbtn', 'id="fClt"',
                    'id="views"', 'class="vtab"',
                    'id="viewbar"', 'id="adminToggle"', 'class="vtab admin"',
                    'data-view="compare"', 'data-view="grades"',

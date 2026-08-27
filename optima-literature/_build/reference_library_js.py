@@ -21,7 +21,7 @@ JS = """
   var selGrade = document.getElementById('fGrade');
   var selShelf = document.getElementById('fShelf');
   var selState = document.getElementById('fState');
-  var selTaught = document.getElementById('fTaught');
+  var selClt = document.getElementById('fClt');
   var sortBtns = document.querySelectorAll('.sortbtn');
   var viewTabs = document.querySelectorAll('.vtab');
   var countEl = document.getElementById('count');
@@ -75,7 +75,7 @@ JS = """
     if (selGrade.value && rec.grade !== selGrade.value) return false;
     if (selShelf.value && rec.shelfSlug !== selShelf.value) return false;
     if (selState.value && rec.state !== selState.value) return false;
-    if (selTaught.value && rec.taught !== selTaught.value) return false;
+    if (selClt.value && rec.clt !== selClt.value) return false;
     var s = (q.value || '').trim().toLowerCase();
     if (s && rec.k.indexOf(s) === -1) return false;
     return true;
@@ -1190,7 +1190,7 @@ JS = """
   selGrade.addEventListener('change', draw);
   selShelf.addEventListener('change', draw);
   selState.addEventListener('change', draw);
-  selTaught.addEventListener('change', draw);
+  selClt.addEventListener('change', draw);
   for (var s=0;s<sortBtns.length;s++){
     sortBtns[s].addEventListener('click', (function(btn){
       return function(){
