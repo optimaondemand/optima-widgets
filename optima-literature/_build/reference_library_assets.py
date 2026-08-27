@@ -196,6 +196,10 @@ select,#q{font-family:inherit;font-size:13.5px;padding:8px 11px;
 .bdg{font-size:10px;letter-spacing:.6px;text-transform:uppercase;
      font-weight:700;color:#fff;background:var(--bc);border-radius:5px;
      padding:2.5px 8px;cursor:help;}
+/* Taught is provenance, not a rights state, so it does not wear a rights
+   colour. Outlined navy: away from Buy's orange in hue AND in form. */
+.bdg.tg{background:#fff;color:var(--navy);border:1.5px solid var(--navy);
+     padding:1px 7px;}
 .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:2px;}
 .act{font-size:11.5px;font-weight:600;text-decoration:none;border-radius:7px;
      padding:5px 11px;border:1.5px solid transparent;transition:.14s;}

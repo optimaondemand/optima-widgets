@@ -203,11 +203,11 @@ def enrich(book):
         # the edition.
         c = CE.COURSE.get(key)
         b["_course"] = c
-        # Every title in this catalogue is parsed from the official book list,
-        # so book-list membership is universal here. Kept as a field rather
-        # than hardcoded at the badge, so the day the catalogue takes in a
-        # title from somewhere else this is the one line that has to change.
-        b["_taught"] = True
+        # A course actually teaches this, from the coursework audit. NOT
+        # "is on the book list": the catalogue is parsed FROM the book list,
+        # so that would be every card and would mark nothing. Checked against
+        # the .docx 2026-08-27: 226 of 226 titles are on it.
+        b["_taught"] = bool(c)
         b["_clt"] = CT.is_clt(b["grade"], b["title"])
         b["_clt_bank"] = CT.bank_entry(b["grade"], b["title"])
         b["_course_verify"] = bool(c and c.get("verify"))
@@ -413,14 +413,10 @@ def book_card(b, idx):
 
     if b["_taught"]:
         c = b["_course"]
-        tip = ("On the OAO 2026-27 approved book list")
-        if c:
-            tip += ". " + {
-                "on-page": "Optima reproduces this text in the coursework",
-                "student": "Students supply their own copy",
-                "reference": "In the course folder as a reading copy only",
-            }[c["used"]]
-        badges.insert(0, f'<span class="bdg tg" style="--bc:{TAUGHT_C};" '
+        tip = {"on-page": "Optima reproduces this text in the coursework",
+               "student": "Taught, but students supply their own copy",
+               "reference": "In the course folder as a reading copy only"}[c["used"]]
+        badges.insert(0, f'<span class="bdg tg" '
                          f'title="{attr(tip)}">&#9733; Taught</span>')
 
     art, colour = G.SHELF_ART.get(b["_shelf"], G.SHELF_ART["Unclassified"])
@@ -547,12 +543,11 @@ def key_block():
         f'authors, not titles, so this marks the author, not the exact book</div>')
     items.insert(0,
         f'<div class="keyitem">'
-        f'<span class="bdg tg" style="--bc:{TAUGHT_C};">&#9733; Taught</span>'
-        f'On the OAO 2026-27 approved book list. Every title here carries it. '
-        f'Where a course has an audited edition, the gold note on the card names '
-        f'it, and that edition is what settles rights</div>')
+        f'<span class="bdg tg">&#9733; Taught</span>'
+        f'An Optima course actually teaches this. The note on the card says '
+        f'which edition, which is the only thing that settles rights</div>')
     return (
-        '<div class="key"><h2>What the words mean</h2>'
+        '<div class="key"><h2>What the words mean</h2><p class="fine" style="margin:0 0 10px 0;">Every title on this page is on the OAO 2026&ndash;27 approved book list. The badges below say what is different <em>between</em> them.</p>'
         f'<div class="keyrow">{"".join(items)}</div>'
         '<p class="fine">A free PDF on a school or personal website is not a '
         'licence. Free versions here come only from Project Gutenberg, Standard '
@@ -577,10 +572,10 @@ def controls(book):
                    for s in shelves)
     stopt = "".join(f'<option value="{attr(s)}">{esc(STATE_LABEL[s])}</option>'
                     for s in ("identical", "similar", "none"))
-    # Was a Taught filter. Every title on this page is now Taught, so that
-    # control could only return all 226 or none. CLT membership is the thing
-    # that actually divides the list, so the slot goes to it.
-    topt = ('<option value="">Every title</option>'
+    topt = ('<option value="">Listed and taught</option>'
+            '<option value="yes">Taught in a course</option>'
+            '<option value="no">Listed only</option>')
+    copt = ('<option value="">Every title</option>'
             '<option value="yes">In the CLT Author Bank</option>'
             '<option value="no">Not in the CLT bank</option>')
 
@@ -639,7 +634,8 @@ def controls(book):
         f'<select id="fGrade" aria-label="Filter by grade"><option value="">All grades</option>{gopt}</select>'
         f'<select id="fShelf" aria-label="Filter by genre"><option value="">All genres</option>{sopt}</select>'
         f'<select id="fState" aria-label="Filter by access"><option value="">Free and paid</option>{stopt}</select>'
-        f'<select id="fClt" aria-label="Filter by CLT Author Bank membership">{topt}</select>'
+        f'<select id="fTaught" aria-label="Filter by whether a course teaches it">{topt}</select>'
+        f'<select id="fClt" aria-label="Filter by CLT Author Bank membership">{copt}</select>'
         '</div>'
         '<div class="crow">'
         '<span class="lbl">Shelve</span>'
@@ -776,7 +772,8 @@ def gate(page, book, client):
     # structural markers the JS depends on
     for marker in ('id="grid"', 'id="q"', 'id="fGrade"', 'id="fShelf"',
                    'id="fState"', 'id="fab"', 'id="panel"',
-                   'id="listBox"', 'id="count"', 'sortbtn', 'id="fClt"',
+                   'id="listBox"', 'id="count"', 'sortbtn', 'id="fTaught"',
+                   'id="fClt"',
                    'id="views"', 'class="vtab"',
                    'id="viewbar"', 'id="adminToggle"', 'class="vtab admin"',
                    'data-view="compare"', 'data-view="grades"',
