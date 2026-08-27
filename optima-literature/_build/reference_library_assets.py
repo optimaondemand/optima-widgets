@@ -45,6 +45,14 @@ a{color:var(--accent-ink);}
       linear-gradient(135deg,#0E1C42 0%,#16294E 55%,#0A1631 100%);
       padding:30px 34px 26px 34px;border-bottom:4px solid var(--accent);}
 .brandrow{display:flex;align-items:center;gap:16px;}
+/* The official OAO wordmark, reversed for the navy hero. Sized in CSS as
+   well as on the element, so it cannot jump while the page paints. */
+.oaologo{height:46px;width:auto;flex-shrink:0;display:block;}
+@media (max-width:820px){ .oaologo{height:36px;} }
+@media (max-width:430px){ .oaologo{height:30px;} }
+
+/* .owl is no longer emitted; the wordmark contains the owl. Kept so the
+   owl-only mark can be restored without rewriting the stylesheet. */
 .owl{width:52px;height:52px;border-radius:50%;background:#fff;display:flex;
      align-items:center;justify-content:center;flex-shrink:0;
      box-shadow:0 0 0 3px rgba(85,200,232,.4);overflow:hidden;}

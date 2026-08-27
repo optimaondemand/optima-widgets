@@ -42,6 +42,10 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "data"
 OUT = ROOT / "ela-reference-library.html"
 
+import brand_assets as BRAND
+
+# Superseded 2026-08-27 by the embedded wordmark in brand_assets.py, which
+# already contains this owl. Kept in case the owl-only mark is wanted again.
 OWL = ("https://raw.githubusercontent.com/optimaondemand/optima-assets/"
        "main/optima-owl.png")
 
@@ -694,8 +698,9 @@ def build():
 
 <div class="hero">
   <div class="brandrow">
-    <div class="owl"><img src="{attr(OWL)}" alt=""
-      onerror="this.parentNode.style.display='none'" /></div>
+    <img class="oaologo" src="{BRAND.OAO_LOGO}"
+      width="{BRAND.OAO_LOGO_W // 2}" height="{BRAND.OAO_LOGO_H // 2}"
+      alt="Optima Academy Online" />
     <div>
       <h1>ELA <span class="accent">Reference Library</span></h1>
       <div class="sub">Every title on the Optima book list, K&ndash;12, with what
@@ -781,6 +786,7 @@ def gate(page, book, client):
                    'window.__LIB__',
                    'fonts.googleapis.com/css2?family=Wix+Madefor',
                    'covers.openlibrary.org', 'class="cover-ph"',
+                   'class="oaologo"', 'data:image/png;base64,',
                    'cardhead', 'ch-stamp'):
         if marker not in page:
             problems.append(f"missing structural marker: {marker}")
