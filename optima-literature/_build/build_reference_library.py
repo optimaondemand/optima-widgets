@@ -617,6 +617,15 @@ def build():
     if not src.exists():
         raise SystemExit("run match_free.py first (data/stage3_records.json missing)")
     recs = json.loads(src.read_text(encoding="utf8"))
+
+    # Known typos in the source .docx, corrected before anything is derived
+    # from the title: the id, the search key and the printed book list all
+    # come off it.
+    import source_corrections as SC
+    fixed = SC.apply_to_records(recs["booklist"])
+    for old, new in fixed:
+        print("  source correction: %r -> %r" % (old, new))
+
     book = enrich(recs["booklist"])
     book.sort(key=sort_key)
 
