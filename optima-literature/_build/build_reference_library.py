@@ -200,6 +200,57 @@ def enrich(book):
     return book
 
 
+
+# ------------------------------------------------------- teacher bookshelves
+
+CLASSROOMS = ROOT / "classrooms.json"
+
+
+def load_classrooms():
+    """The shelves teachers have published, from the file the team maintains.
+
+    Missing file is not an error: a school year starts with nobody's shelf in
+    yet, and the Teacher Bookshelves view says so rather than looking broken.
+    A malformed file IS an error, because a silently-empty directory would read
+    as "no teacher has chosen anything" when the truth is "the file is wrong".
+    """
+    if not CLASSROOMS.exists():
+        return "", []
+    raw = json.loads(CLASSROOMS.read_text(encoding="utf8"))
+    if not isinstance(raw, dict):
+        raise SystemExit("classrooms.json: top level must be an object")
+    year = raw.get("school_year") or ""
+    rooms = raw.get("classrooms")
+    if rooms is None:
+        raise SystemExit('classrooms.json: no "classrooms" key')
+    if not isinstance(rooms, list):
+        raise SystemExit('classrooms.json: "classrooms" must be a list')
+    out = []
+    for i, c in enumerate(rooms):
+        where = f"classrooms[{i}]"
+        for req in ("teacher", "course", "grade", "titles"):
+            if not c.get(req):
+                raise SystemExit(f"{where}: missing required field {req!r}")
+        if not isinstance(c["titles"], list):
+            raise SystemExit(f"{where}: titles must be a list")
+        delivery = c.get("delivery") or "Live"
+        if delivery not in ("Live", "On-Demand"):
+            raise SystemExit(f"{where}: delivery must be Live or On-Demand, "
+                             f"got {delivery!r}")
+        level = c.get("level") or ""
+        if level not in ("", "Honors", "AP"):
+            raise SystemExit(f"{where}: level must be blank, Honors or AP, "
+                             f"got {level!r}")
+        out.append({
+            "teacher": c["teacher"], "course": c["course"],
+            "subject": c.get("subject") or "ELA", "grade": str(c["grade"]),
+            "level": level, "delivery": delivery,
+            "period": c.get("period") or None,
+            "titles": list(c["titles"]),
+        })
+    return year, out
+
+
 # ------------------------------------------------------------------ rendering
 
 # A link labelled "Read free" next to a pill reading FREE says the same thing
@@ -515,6 +566,10 @@ def controls(book):
          "Side by side, where both exist"),
         ("grades",   "&#128202;", "Cost by grade",
          "What each grade must purchase"),
+        ("mine",     "&#9998;",   "My Classroom",
+         "Choose the titles you are teaching this year"),
+        ("shelves",  "&#128214;", "Teacher Bookshelves",
+         "What every teacher has selected from the approved list"),
     ]
     admin_views = [
         ("sources",  "&#128209;", "Three lists",
@@ -570,6 +625,17 @@ def build():
         cards.append(book_card(b, i))
         client.append(client_record(b, i))
 
+    # Teacher shelves name catalogue ids. An id that does not resolve would
+    # render as a blank line on a shelf, so it fails the build instead.
+    year, shelves = load_classrooms()
+    known = {c["id"] for c in client}
+    for room in shelves:
+        for tid in room["titles"]:
+            if tid not in known:
+                raise SystemExit(
+                    f'classrooms.json: {room["teacher"]} / {room["course"]} '
+                    f'names unknown title id {tid!r}')
+
     page = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -612,7 +678,9 @@ def build():
 <div class="panel" id="panel"><div class="sheetbox" id="listBox"></div></div>
 
 </div>
-<script>window.__LIB__ = {json.dumps(client, ensure_ascii=False)};</script>
+<script>window.__LIB__ = {json.dumps(client, ensure_ascii=False)};
+window.__SHELVES__ = {json.dumps(shelves, ensure_ascii=False)};
+window.__SCHOOL_YEAR__ = {json.dumps(year)};</script>
 <script>{JSMOD.JS}</script>
 </body>
 </html>
@@ -666,6 +734,8 @@ def gate(page, book, client):
                    'id="viewbar"', 'id="adminToggle"', 'class="vtab admin"',
                    'data-view="compare"', 'data-view="grades"',
                    'data-view="sources"', 'data-view="attention"',
+                   'data-view="mine"', 'data-view="shelves"',
+                   'window.__SHELVES__', 'window.__SCHOOL_YEAR__',
                    'window.__LIB__',
                    'fonts.googleapis.com/css2?family=Wix+Madefor',
                    'covers.openlibrary.org', 'class="cover-ph"',

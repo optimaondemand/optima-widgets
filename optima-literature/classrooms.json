@@ -1,0 +1,33 @@
+{
+  "school_year": "2026-27",
+
+  "_what_this_is": "The shelves teachers have published: which titles from the approved catalogue each course is actually teaching. Maintained by hand, once a year. The ELA Reference Library reads this file at build time and renders the Teacher Bookshelves view from it.",
+
+  "_how_a_new_year_works": "Start a new file. Change school_year, empty the classrooms list, and keep last year's file so the previous year stays readable. Nothing here expires on its own.",
+
+  "_how_to_add_a_teacher": "Add one object to classrooms below, per course. A teacher with three courses is three objects with the same teacher name. Teachers can produce their own block from the My Classroom tab in the Reference Library and send it to you; paste it in rather than retyping.",
+
+  "_fields": {
+    "teacher": "required, free text, exactly as it should appear on the shelf",
+    "course": "required, free text, e.g. English III",
+    "subject": "optional, defaults to ELA",
+    "grade": "required, K through 12, as a string",
+    "level": "blank, Honors or AP. Blank means Standard.",
+    "delivery": "Live or On-Demand. Defaults to Live.",
+    "period": "class period for a Live course, or null. Ignored for On-Demand.",
+    "titles": "list of catalogue ids, e.g. 11-the-adventures-of-huckleberry-finn. Ids come from library.json. An id that does not exist FAILS THE BUILD rather than rendering a blank line."
+  },
+
+  "_example_do_not_publish": {
+    "teacher": "A. Rivera",
+    "course": "English III",
+    "subject": "ELA",
+    "grade": "11",
+    "level": "Honors",
+    "delivery": "Live",
+    "period": "2",
+    "titles": ["11-the-adventures-of-huckleberry-finn"]
+  },
+
+  "classrooms": []
+}

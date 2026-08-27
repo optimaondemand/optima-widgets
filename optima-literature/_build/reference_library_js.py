@@ -314,15 +314,578 @@ JS = """
             'Nothing needs attention among the current filters.'));
   }
 
+
+  /* ---------------- teacher bookshelves ----------------
+
+     Two views that share the catalogue with everything else on the page:
+     My Classroom writes a shelf, Teacher Bookshelves reads every shelf.
+
+     Published shelves arrive in window.__SHELVES__, built from classrooms.json.
+     A teacher's own unsent work lives in localStorage and is labelled a draft,
+     because a draft is visible to nobody else until the team commits it, and a
+     shelf that looks published when it is not would be a lie to the teacher. */
+
+  var SHELVES = window.__SHELVES__ || [];
+  var YEAR = window.__SCHOOL_YEAR__ || '';
+  var LSC = 'optima-ela-classroom';
+  var GRADE_LIST = ['K','1','2','3','4','5','6','7','8','9','10','11','12'];
+
+  var me = {teacher:'', subject:'ELA', grade:'11', level:'', course:'',
+            delivery:'Live', period:'', courses:[]};
+  try {
+    var savedMe = JSON.parse(localStorage.getItem(LSC) || 'null');
+    if (savedMe && typeof savedMe === 'object') {
+      me = savedMe;
+      if (!me.courses) me.courses = [];
+    }
+  } catch(e){}
+
+  var tbPick = {};
+  var tbScope = true;
+  var tbEdit = -1;
+
+  function saveMe(){ try{ localStorage.setItem(LSC, JSON.stringify(me)); }catch(e){} }
+
+  var byIdMap = null;
+  function recFor(id){
+    if (!byIdMap){
+      byIdMap = {};
+      for (var i=0;i<DATA.length;i++) byIdMap[DATA[i].id] = DATA[i];
+    }
+    return byIdMap[id] || null;
+  }
+
+  function hostOf(url){
+    var m = /^https?:[/][/]([^/]+)/.exec(url || '');
+    return m ? m[1].toLowerCase().replace('www.','') : '';
+  }
+  var VENDOR = {'amazon.com':'Amazon', 'a.co':'Amazon', 'folger.edu':'Folger',
+                'guides.loc.gov':'Library of Congress'};
+  function vendorName(url){ var h = hostOf(url); return VENDOR[h] || h || 'purchase'; }
+
+  function tbCount(n, word){
+    countEl.textContent = n + ' ' + word + (n === 1 ? '' : 's');
+  }
+
+  /* ---- shared rendering ---- */
+
+  function tbBadges(s){
+    var lv = s.level === 'AP' ? '#B85F00' : (s.level === 'Honors' ? '#0E5568' : null);
+    var h = '<span class="bdg" style="--bc:#8DA0B6">Grade ' + esc(s.grade) + '</span>';
+    h += lv ? '<span class="bdg" style="--bc:'+lv+'">'+esc(s.level)+'</span>'
+            : '<span class="bdg" style="--bc:#8DA0B6">Standard</span>';
+    if (s.delivery === 'On-Demand'){
+      h += '<span class="bdg" style="--bc:#0E5568">On-Demand</span>';
+    } else {
+      h += '<span class="bdg" style="--bc:#8DA0B6">'
+         + (s.period ? 'Period ' + esc(s.period) : 'Live') + '</span>';
+    }
+    return h;
+  }
+
+  function tbEditionLine(r){
+    var bits = [];
+    if (r.translator)  bits.push('trans. ' + esc(r.translator));
+    if (r.editor)      bits.push('ed. ' + esc(r.editor));
+    if (r.publisher)   bits.push(esc(r.publisher));
+    if (r.editionYear) bits.push(esc(r.editionYear));
+    if (r.isbn)        bits.push('ISBN ' + esc(r.isbn));
+    return bits.join(' ' + DASH + ' ');
+  }
+
+  function tbBook(r){
+    if (!r) return '';
+    var h = '<div class="tbbk"><div class="tbbktop">' + statePill(r.state)
+          + '<span><span class="tbbkt">' + esc(r.title) + '</span> '
+          + '<span class="tbbka">' + esc(r.authorDisplay || '') + '</span>';
+    var ed = tbEditionLine(r);
+    if (ed) h += '<div class="tbbked">' + ed + '</div>';
+    h += '</span></div>';
+    var acts = '';
+    if (r.buyUrl){
+      acts += '<a class="act buy" href="' + esc(r.buyUrl) + '" target="_blank" '
+            + 'rel="noopener" title="Buy the edition the book list names">'
+            + esc(vendorName(r.buyUrl)) + '</a>';
+    }
+    if (r.freeUrl){
+      acts += '<a class="act ' + (r.state === 'identical' ? 'free' : 'sim') + '" href="'
+            + esc(r.freeUrl) + '" target="_blank" rel="noopener">'
+            + esc(sourceName(r.freeSource)) + '</a>';
+    }
+    if (r.readOnlineUrl){
+      acts += '<a class="act ro" href="' + esc(r.readOnlineUrl) + '" target="_blank" '
+            + 'rel="noopener" title="Read on the publisher site; not a download">'
+            + esc(sourceName(hostOf(r.readOnlineUrl))) + '</a>';
+    }
+    h += acts ? '<div class="acts">' + acts + '</div>'
+              : '<span class="tbnolink">No link on the catalogue entry.</span>';
+    return h + '</div>';
+  }
+
+  function tbShelfCard(s, draft){
+    var ids = s.titles || [];
+    var books = '';
+    for (var i=0;i<ids.length;i++) books += tbBook(recFor(ids[i]));
+    return '<div class="tbshelf"' + (draft ? ' style="border-top-color:#8DA0B6"' : '') + '>'
+      + '<div class="tbsh"><div class="tbsteach">' + esc(s.teacher)
+      + (draft ? ' <span class="bdg" style="--bc:#8F347F">Draft</span>' : '')
+      + '</div><div class="tbscourse">' + esc(s.course) + '</div>'
+      + '<div class="tbsmeta">' + tbBadges(s) + '</div></div>'
+      + '<div class="tbscount"><b>' + ids.length + '</b>'
+      + '<span>titles from the approved catalogue</span></div>'
+      + '<div class="tbsbooks">' + books + '</div>'
+      + (draft ? '<div class="tbsfoot"><span class="tbnolink">Visible only to you '
+               + 'until your team publishes it.</span></div>' : '')
+      + '</div>';
+  }
+
+  /* ---- view: My Classroom ---- */
+
+  function tbCatalogue(){
+    var s = (document.getElementById('tbSearch') || {}).value || '';
+    s = s.trim().toLowerCase();
+    var out = [];
+    for (var i=0;i<DATA.length;i++){
+      var r = DATA[i];
+      if (tbScope && !s && r.grade !== me.grade) continue;
+      if (s && r.k.indexOf(s) === -1) continue;
+      out.push(r);
+    }
+    out.sort(function(a,b){ return a.sortTitle < b.sortTitle ? -1 : 1; });
+    return out;
+  }
+
+  function tbNPick(){ var n=0; for (var k in tbPick){ if (tbPick[k]) n++; } return n; }
+
+  function tbSelect(id, label, value, opts){
+    var h = '<div class="tbfield" id="' + id + 'Wrap"><label for="' + id + '">'
+          + label + '</label><select id="' + id + '">';
+    for (var i=0;i<opts.length;i++){
+      var v = opts[i][0], t = opts[i][1];
+      h += '<option value="' + esc(v) + '"' + (v === value ? ' selected' : '') + '>'
+         + esc(t) + '</option>';
+    }
+    return h + '</select></div>';
+  }
+
+  function viewMine(){
+    var grades = [];
+    for (var g=0;g<GRADE_LIST.length;g++) grades.push([GRADE_LIST[g], 'Grade ' + GRADE_LIST[g]]);
+
+    var form = '<div class="tbcard"><div class="tbhead"><span class="tbnum">1</span>'
+      + '<span class="tbname">Your course</span>'
+      + '<span class="tbnote">Every field stays editable</span></div>'
+      + '<div class="tbbody"><div class="tbgrid">'
+      + '<div class="tbfield"><label for="tbTeacher">Teacher name</label>'
+      + '<input id="tbTeacher" type="text" value="' + esc(me.teacher)
+      + '" placeholder="e.g. A. Rivera" /></div>'
+      + tbSelect('tbSubject', 'Subject', me.subject, [['ELA','ELA'],['History','History']])
+      + tbSelect('tbGrade', 'Grade', me.grade, grades)
+      + tbSelect('tbLevel', 'Level', me.level,
+                 [['','Standard'],['Honors','Honors'],['AP','AP']])
+      + '<div class="tbfield"><label for="tbCourse">Course name</label>'
+      + '<input id="tbCourse" type="text" value="' + esc(me.course)
+      + '" placeholder="e.g. English III" /></div>'
+      + tbSelect('tbDelivery', 'Delivery', me.delivery,
+                 [['Live','Live class'],['On-Demand','On-Demand']])
+      + '<div class="tbfield' + (me.delivery === 'Live' ? '' : ' off') + '" id="tbPeriodWrap">'
+      + '<label for="tbPeriod">Class period</label>'
+      + '<input id="tbPeriod" type="text" value="' + esc(me.period)
+      + '" placeholder="e.g. 2" />'
+      + '<span class="tbhint">Leave blank if it does not apply.</span></div>'
+      + '</div></div></div>';
+
+    var picker = '<div class="tbcard"><div class="tbhead"><span class="tbnum">2</span>'
+      + '<span class="tbname">Choose your titles</span>'
+      + '<span class="tbnote" id="tbScopeNote"></span></div>'
+      + '<div class="tbpick">'
+      + '<input id="tbSearch" type="search" placeholder="Search title or author&hellip;" '
+      + 'aria-label="Search the catalogue" />'
+      + '<button class="tick" id="tbScope" aria-pressed="' + (tbScope ? 'true' : 'false')
+      + '">' + (tbScope ? 'Titles for my grade' : 'All ' + DATA.length + ' titles')
+      + '</button>'
+      + '<button class="tick" id="tbClear">Clear selection</button></div>'
+      + '<div class="tblist" id="tbList"></div>'
+      + '<div class="tbrun"><span class="tbrunN" id="tbN">0</span>'
+      + '<span class="tbrunL">titles selected<br />for this course</span>'
+      + '<span class="tbright">'
+      + '<button class="tbbtn gh tbhide" id="tbCancel">Cancel edit</button>'
+      + '<button class="tbbtn pri" id="tbSave" disabled>Save this course</button>'
+      + '</span></div></div>';
+
+    var mineCard = '<div class="tbcard tbhide" id="tbMineCard">'
+      + '<div class="tbhead"><span class="tbnum">3</span>'
+      + '<span class="tbname">My courses</span>'
+      + '<span class="tbnote" id="tbMineNote"></span></div>'
+      + '<div id="tbMineList"></div>'
+      + '<div class="tbrun"><button class="tbbtn gh" id="tbAnother">Add another course</button>'
+      + '</div></div>';
+
+    var outCard = '<div class="tbcard tbhide" id="tbOutCard">'
+      + '<div class="tbhead"><span class="tbnum">4</span>'
+      + '<span class="tbname">Send this to your team</span>'
+      + '<span class="tbnote">classrooms.json</span></div>'
+      + '<div class="tbbody"><div class="tbfile"><pre id="tbJson"></pre></div>'
+      + '<div class="tbsay"><b>How this reaches the library.</b> Copy the block above '
+      + 'and send it to whoever maintains the book lists. One record per course, in a '
+      + 'file your team owns; a teacher with three courses is three records under the '
+      + 'same name. Your shelf appears under Teacher Bookshelves once that file is '
+      + 'published. Nothing you type here is sent anywhere on its own.</div>'
+      + '</div></div>';
+
+    return shell('My Classroom',
+      'Tell us who you are and which titles you are teaching. You are choosing from the '
+      + 'approved catalogue, so every title arrives already cleared for rights and edition '
+      + 'and carries its purchase and free-text links with it. Teach more than one course? '
+      + 'Save one, then add another &mdash; your name carries over.',
+      form + picker + mineCard + outCard);
+  }
+
+  function tbDrawList(){
+    var rows = tbCatalogue();
+    var list = document.getElementById('tbList');
+    if (!list) return;
+    var h = '';
+    for (var i=0;i<rows.length;i++){
+      var r = rows[i];
+      h += '<label class="tbtrow"><input type="checkbox" data-tbid="' + esc(r.id) + '"'
+        + (tbPick[r.id] ? ' checked' : '') + ' />' + statePill(r.state)
+        + '<span class="tbtmid"><span class="tbtt">' + esc(r.title) + '</span> '
+        + '<span class="tbta">' + esc(r.authorDisplay || '') + '</span></span>'
+        + '<span class="tbtg">Grade ' + esc(r.grade) + '</span></label>';
+    }
+    if (!rows.length) h = '<div class="tbblank">No titles match that search.</div>';
+    list.innerHTML = h;
+    var note = document.getElementById('tbScopeNote');
+    if (note){
+      note.textContent = tbScope
+        ? rows.length + ' titles listed for Grade ' + me.grade
+        : rows.length + ' of ' + DATA.length + ' titles';
+    }
+    var boxes = list.querySelectorAll('input[data-tbid]');
+    for (var b=0;b<boxes.length;b++){
+      boxes[b].addEventListener('change', (function(box){
+        return function(){
+          var id = box.getAttribute('data-tbid');
+          if (box.checked) tbPick[id] = true; else delete tbPick[id];
+          tbSync();
+        };
+      })(boxes[b]));
+    }
+    tbSync();
+  }
+
+  function tbSync(){
+    var n = tbNPick();
+    var nEl = document.getElementById('tbN');
+    if (nEl) nEl.textContent = n;
+    var save = document.getElementById('tbSave');
+    if (save){
+      save.disabled = !(n > 0 && me.teacher && me.course);
+      save.textContent = (tbEdit >= 0) ? 'Update this course' : 'Save this course';
+    }
+    var cancel = document.getElementById('tbCancel');
+    if (cancel) cancel.className = (tbEdit >= 0) ? 'tbbtn gh' : 'tbbtn gh tbhide';
+    tbCount(n, 'title');
+  }
+
+  function tbClearCourse(){
+    tbPick = {}; tbEdit = -1;
+    me.course = ''; me.period = ''; me.level = ''; me.delivery = 'Live';
+    saveMe();
+    var c = document.getElementById('tbCourse'); if (c) c.value = '';
+    var p = document.getElementById('tbPeriod'); if (p) p.value = '';
+    var l = document.getElementById('tbLevel'); if (l) l.value = '';
+    var d = document.getElementById('tbDelivery'); if (d) d.value = 'Live';
+    tbSyncDelivery(); tbDrawList(); tbDrawMine();
+  }
+
+  function tbSyncDelivery(){
+    var w = document.getElementById('tbPeriodWrap');
+    if (w) w.className = (me.delivery === 'Live') ? 'tbfield' : 'tbfield off';
+  }
+
+  function tbDrawMine(){
+    var card = document.getElementById('tbMineCard');
+    var list = document.getElementById('tbMineList');
+    if (!card || !list) return;
+    if (!me.courses.length){ card.className = 'tbcard tbhide'; tbDrawJson(); return; }
+    card.className = 'tbcard';
+    var h = '';
+    for (var i=0;i<me.courses.length;i++){
+      var s = me.courses[i];
+      h += '<div class="tbmrow' + (tbEdit === i ? ' on' : '') + '">'
+        + '<span class="tbmc">' + esc(s.course) + '</span>'
+        + '<span class="tbmm">' + tbBadges(s) + '</span>'
+        + '<span class="tbmn">' + (s.titles || []).length + ' titles</span>'
+        + '<span class="tbma">'
+        + '<button class="tick" data-tbedit="' + i + '">Edit</button>'
+        + '<button class="tick" data-tbdel="' + i + '">Remove</button>'
+        + '</span></div>';
+    }
+    list.innerHTML = h;
+    var note = document.getElementById('tbMineNote');
+    if (note){
+      note.textContent = me.courses.length
+        + (me.courses.length === 1 ? ' course' : ' courses') + ' for ' + me.teacher;
+    }
+    var eb = list.querySelectorAll('[data-tbedit]');
+    for (var e=0;e<eb.length;e++){
+      eb[e].addEventListener('click', (function(btn){
+        return function(){
+          var n = parseInt(btn.getAttribute('data-tbedit'), 10);
+          var s = me.courses[n];
+          tbEdit = n;
+          me.course = s.course; me.grade = s.grade; me.level = s.level;
+          me.subject = s.subject; me.delivery = s.delivery; me.period = s.period || '';
+          saveMe();
+          var f = {tbCourse:me.course, tbGrade:me.grade, tbLevel:me.level,
+                   tbSubject:me.subject, tbDelivery:me.delivery, tbPeriod:me.period};
+          for (var k in f){
+            var el = document.getElementById(k);
+            if (el) el.value = f[k];
+          }
+          tbSyncDelivery();
+          tbPick = {};
+          for (var q=0;q<s.titles.length;q++) tbPick[s.titles[q]] = true;
+          tbDrawList(); tbDrawMine();
+          window.scrollTo({top: 0, behavior: 'smooth'});
+        };
+      })(eb[e]));
+    }
+    var db = list.querySelectorAll('[data-tbdel]');
+    for (var d=0;d<db.length;d++){
+      db[d].addEventListener('click', (function(btn){
+        return function(){
+          var n = parseInt(btn.getAttribute('data-tbdel'), 10);
+          me.courses.splice(n, 1);
+          if (tbEdit === n) tbEdit = -1;
+          saveMe(); tbDrawMine(); tbSync();
+        };
+      })(db[d]));
+    }
+    tbDrawJson();
+  }
+
+  function tbDrawJson(){
+    var card = document.getElementById('tbOutCard');
+    var pre = document.getElementById('tbJson');
+    if (!card || !pre) return;
+    if (!me.courses.length){ card.className = 'tbcard tbhide'; return; }
+    var recs = [];
+    for (var i=0;i<me.courses.length;i++){
+      var s = me.courses[i];
+      recs.push({school_year: YEAR, teacher: s.teacher, course: s.course,
+                 subject: s.subject, grade: s.grade, level: s.level || null,
+                 delivery: s.delivery, period: s.period || null, titles: s.titles});
+    }
+    var txt = esc(JSON.stringify({school_year: YEAR, classrooms: recs}, null, 2))
+      .replace(/&quot;([a-z_]+)&quot;:/g, '<span class="k">&quot;$1&quot;</span>:')
+      .replace(/: &quot;([^&]*)&quot;/g, ': <span class="s">&quot;$1&quot;</span>')
+      .replace(/^( +)&quot;([^&]+)&quot;(,?)$/gm, '$1<span class="s">&quot;$2&quot;</span>$3')
+      .replace(/: null/g, ': <span class="n">null</span>');
+    pre.innerHTML = txt;
+    card.className = 'tbcard';
+  }
+
+  function wireMine(){
+    tbSyncDelivery();
+    tbDrawList();
+    tbDrawMine();
+
+    var fields = [['tbTeacher','teacher'], ['tbCourse','course'], ['tbPeriod','period']];
+    for (var i=0;i<fields.length;i++){
+      (function(id, key){
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('input', function(){
+          me[key] = el.value.trim();
+          saveMe(); tbSync();
+          if (key === 'teacher') tbDrawMine();
+        });
+      })(fields[i][0], fields[i][1]);
+    }
+
+    var selects = [['tbSubject','subject'], ['tbGrade','grade'],
+                   ['tbLevel','level'], ['tbDelivery','delivery']];
+    for (var s=0;s<selects.length;s++){
+      (function(id, key){
+        var el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('change', function(){
+          me[key] = el.value;
+          saveMe();
+          if (key === 'delivery') tbSyncDelivery();
+          if (key === 'grade') tbDrawList();
+          tbSync();
+        });
+      })(selects[s][0], selects[s][1]);
+    }
+
+    var scope = document.getElementById('tbScope');
+    if (scope) scope.addEventListener('click', function(){
+      tbScope = !tbScope;
+      scope.setAttribute('aria-pressed', tbScope ? 'true' : 'false');
+      scope.textContent = tbScope ? 'Titles for my grade' : 'All ' + DATA.length + ' titles';
+      tbDrawList();
+    });
+    var search = document.getElementById('tbSearch');
+    if (search) search.addEventListener('input', tbDrawList);
+    var clr = document.getElementById('tbClear');
+    if (clr) clr.addEventListener('click', function(){ tbPick = {}; tbDrawList(); });
+    var another = document.getElementById('tbAnother');
+    if (another) another.addEventListener('click', function(){
+      tbClearCourse();
+      var c = document.getElementById('tbCourse');
+      if (c) c.focus();
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+    var cancel = document.getElementById('tbCancel');
+    if (cancel) cancel.addEventListener('click', tbClearCourse);
+
+    var save = document.getElementById('tbSave');
+    if (save) save.addEventListener('click', function(){
+      var ids = [];
+      for (var k in tbPick){ if (tbPick[k]) ids.push(k); }
+      ids.sort();
+      var rec = {teacher: me.teacher, course: me.course, subject: me.subject,
+                 grade: me.grade, level: me.level,
+                 delivery: me.delivery,
+                 period: (me.delivery === 'Live' ? (me.period || null) : null),
+                 titles: ids};
+      if (tbEdit >= 0){ me.courses[tbEdit] = rec; }
+      else {
+        var hit = -1;
+        for (var i=0;i<me.courses.length;i++){
+          var c = me.courses[i];
+          if (c.course.toLowerCase() === rec.course.toLowerCase()
+           && c.delivery === rec.delivery
+           && (c.period || '') === (rec.period || '')) hit = i;
+        }
+        if (hit >= 0) me.courses[hit] = rec; else me.courses.push(rec);
+      }
+      tbEdit = -1;
+      saveMe(); tbDrawMine(); tbSync();
+    });
+  }
+
+  /* ---- view: Teacher Bookshelves ---- */
+
+  function tbAllShelves(){
+    var out = [];
+    for (var i=0;i<SHELVES.length;i++) out.push({s: SHELVES[i], draft: false});
+    for (var j=0;j<me.courses.length;j++){
+      var c = me.courses[j];
+      if (c.teacher) out.push({s: c, draft: true});
+    }
+    return out;
+  }
+
+  function tbShelfHit(s){
+    var q = (document.getElementById('tbFind') || {}).value || '';
+    q = q.trim().toLowerCase();
+    if (q){
+      var hay = (s.teacher + ' ' + s.course + ' ' + (s.period || '') + ' '
+                 + s.delivery).toLowerCase();
+      if (hay.indexOf(q) === -1) return false;
+    }
+    var g = (document.getElementById('tbFindGrade') || {}).value || '';
+    if (g && s.grade !== g) return false;
+    var lv = (document.getElementById('tbFindLevel') || {}).value || '';
+    if (lv === 'Standard' && s.level) return false;
+    if (lv && lv !== 'Standard' && s.level !== lv) return false;
+    var d = (document.getElementById('tbFindDelivery') || {}).value || '';
+    if (d && s.delivery !== d) return false;
+    return true;
+  }
+
+  function tbDrawShelves(){
+    var box = document.getElementById('tbShelfGrid');
+    if (!box) return;
+    var all = tbAllShelves();
+    var rows = [];
+    for (var i=0;i<all.length;i++){ if (tbShelfHit(all[i].s)) rows.push(all[i]); }
+    rows.sort(function(a, b){
+      if (a.draft !== b.draft) return a.draft ? 1 : -1;
+      if (a.s.teacher !== b.s.teacher) return a.s.teacher < b.s.teacher ? -1 : 1;
+      return a.s.course < b.s.course ? -1 : 1;
+    });
+    var h = '';
+    for (var r=0;r<rows.length;r++) h += tbShelfCard(rows[r].s, rows[r].draft);
+    if (!rows.length){
+      h = '<div class="tbblank">' + (all.length
+        ? 'No bookshelf matches that search.'
+        : 'No bookshelves published yet. Teachers build one under <b>My Classroom</b>; '
+          + 'they appear here once the team publishes <b>classrooms.json</b>.') + '</div>';
+    }
+    box.innerHTML = h;
+    var hits = document.getElementById('tbHits');
+    if (hits) hits.textContent = rows.length + (rows.length === 1 ? ' course' : ' courses');
+    tbCount(rows.length, 'course');
+  }
+
+  function viewShelves(){
+    var total = SHELVES.length;
+    var teachers = {};
+    for (var i=0;i<SHELVES.length;i++) teachers[SHELVES[i].teacher] = true;
+    var nT = 0; for (var t in teachers) nT++;
+
+    var grades = '<option value="">All grades</option>';
+    for (var g=0;g<GRADE_LIST.length;g++){
+      grades += '<option value="' + GRADE_LIST[g] + '">Grade ' + GRADE_LIST[g] + '</option>';
+    }
+
+    var strip = '<div class="tbstrip"><div class="tbstripItem">'
+      + '<span class="tbstripN">' + total + '</span>'
+      + '<span class="tbstripL">' + (total === 1 ? 'course' : 'courses')
+      + ' published<br />' + (YEAR ? 'for ' + esc(YEAR) : '&nbsp;') + '</span></div>'
+      + '<div class="tbstripItem"><span class="tbstripN">' + nT + '</span>'
+      + '<span class="tbstripL">' + (nT === 1 ? 'teacher' : 'teachers')
+      + '<br />with a shelf</span></div></div>';
+
+    var find = '<div class="tbfind">'
+      + '<input id="tbFind" type="search" placeholder="Search by teacher or course&hellip;" '
+      + 'aria-label="Search bookshelves" />'
+      + '<select id="tbFindGrade">' + grades + '</select>'
+      + '<select id="tbFindLevel"><option value="">All levels</option>'
+      + '<option value="Standard">Standard</option>'
+      + '<option value="Honors">Honors</option><option value="AP">AP</option></select>'
+      + '<select id="tbFindDelivery"><option value="">Live and On-Demand</option>'
+      + '<option value="Live">Live only</option>'
+      + '<option value="On-Demand">On-Demand only</option></select>'
+      + '<span class="tbhits" id="tbHits"></span></div>';
+
+    return shell('Teacher Bookshelves',
+      'What each teacher has selected from the approved catalogue, with the purchase and '
+      + 'free-text links carried over from the Reference Library entry. Search by teacher '
+      + 'or by course &mdash; both find the same shelf.',
+      strip + find + '<div class="tbshelves" id="tbShelfGrid"></div>');
+  }
+
+  function wireShelves(){
+    tbDrawShelves();
+    var ids = ['tbFind', 'tbFindGrade', 'tbFindLevel', 'tbFindDelivery'];
+    for (var i=0;i<ids.length;i++){
+      var el = document.getElementById(ids[i]);
+      if (!el) continue;
+      el.addEventListener(ids[i] === 'tbFind' ? 'input' : 'change', tbDrawShelves);
+    }
+  }
+
   var VIEWS = {compare:viewCompare, grades:viewGrades, sources:viewSources,
-               attention:viewAttention};
+               attention:viewAttention, mine:viewMine, shelves:viewShelves};
+
+  // Views that render their own interactive body and set their own count.
+  var VIEW_WIRE = {mine:wireMine, shelves:wireShelves};
 
   function drawView(){
     grid.style.display = 'none';
     viewsEl.hidden = false;
     viewsEl.innerHTML = VIEWS[view]();
-    var n = viewsEl.querySelectorAll('table.vt tbody tr').length;
-    countEl.textContent = n + ' row' + (n===1?'':'s');
+    if (!VIEW_WIRE[view]){
+      var n = viewsEl.querySelectorAll('table.vt tbody tr').length;
+      countEl.textContent = n + ' row' + (n===1?'':'s');
+    }
     // wire the row buttons
     var ticks = viewsEl.querySelectorAll('[data-tick]');
     for (var i=0;i<ticks.length;i++){
@@ -347,6 +910,9 @@ JS = """
         };
       })(gb[j]));
     }
+    // The two teacher views build their own controls, so they bind after the
+    // shared row wiring above rather than instead of it.
+    if (VIEW_WIRE[view]) VIEW_WIRE[view]();
   }
 
   function draw(){ if (view === 'library') drawLibrary(); else drawView(); }
