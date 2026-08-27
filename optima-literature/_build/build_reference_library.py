@@ -62,12 +62,14 @@ STATE_BLURB = {
     "none":      "In copyright. Students need a licensed copy.",
 }
 
-FLAG_LABEL = {"archaic": "Archaic", "older": "Older"}
-FLAG_COLOR = {"archaic": "#8F347F",   # Dark Portal Purple — the strong warning
-              "older": "#51617C"}     # slate — a note, not an alarm
+# One translation flag, not two. The 1850-1899 tier was retired 2026-08-27:
+# it fired on a single title and told a teacher nothing they could act on.
+# NOTE the key is "archaic" and the label is "Older". The key names the date
+# rule in first_pub.flag_tier (pre-1850); the label is what a reader sees.
+FLAG_LABEL = {"archaic": "Older"}
+FLAG_COLOR = {"archaic": "#8F347F"}   # Dark Portal Purple
 FLAG_TITLE = {
-    "archaic": "Translation published before 1850 - expect dated, difficult English",
-    "older":   "Translation from 1850-1899 - readable, but not modern English",
+    "archaic": "Translation published before 1850",
 }
 
 
@@ -189,6 +191,8 @@ def enrich(book):
         b["_flag"] = FP.flag_tier(tyear, b["_lang"]) if tyear is not None else "none"
         if b["_flag"] == "unknown":
             b["_flag"] = "none"          # unknown translation year is not a warning
+        if b["_flag"] == "older":
+            b["_flag"] = "none"          # retired tier: 1850-1899 no longer flagged
 
         # What the built coursework actually teaches. This is the authoritative
         # layer: the other two lists are organised by title, and rights live in
@@ -524,7 +528,7 @@ def key_block():
             f'<div class="keyitem">'
             f'<span class="bdg" style="--bc:{STATE_COLOR[st]};">{STATE_LABEL[st]}</span>'
             f'{esc(STATE_BLURB[st])}</div>')
-    for fl in ("archaic", "older"):
+    for fl in ("archaic",):
         items.append(
             f'<div class="keyitem">'
             f'<span class="bdg" style="--bc:{FLAG_COLOR[fl]};">{FLAG_LABEL[fl]}</span>'
@@ -849,8 +853,12 @@ def gate(page, book, client):
 
     # flag correctness, both directions
     for b in book:
-        if b["_flag"] in ("archaic", "older") and b["_lang"] in FP.ENGLISH_ORIGINAL:
+        if b["_flag"] in FLAG_LABEL and b["_lang"] in FP.ENGLISH_ORIGINAL:
             problems.append(f"translation flag on an English original: {b['title']!r}")
+        if b["_flag"] == "older":
+            problems.append(
+                f"retired 'older' flag reappeared on {b['title']!r} - the "
+                f"1850-1899 tier was removed 2026-08-27")
         if b["_flag"] == "archaic" and (b["_translation_year"] or 9999) >= 1850:
             problems.append(f"archaic flag on a post-1850 translation: {b['title']!r}")
 

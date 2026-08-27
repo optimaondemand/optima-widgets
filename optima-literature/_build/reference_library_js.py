@@ -58,7 +58,7 @@ JS = """
   // Brand palette (Optima guidelines v2.0) — keep in sync with the Python
   // STATE_COLOR / FLAG_COLOR in build_reference_library.py.
   var STATE_COLOR = {identical:'#4B7F20', similar:'#0E5568', none:'#B85F00'};
-  var FLAG_COLOR  = {archaic:'#8F347F', older:'#51617C'};
+  var FLAG_COLOR  = {archaic:'#8F347F'};   // label is 'Older'; see the Python
 
   function esc(s){
     return String(s == null ? '' : s)
@@ -283,7 +283,7 @@ JS = """
   }
 
   // The 'Translations by age' view was removed 2026-08-24 (Jessica: the
-  // category earned no tab of its own). The Archaic/Older flags still render
+  // category earned no tab of its own). The Older flag still renders
   // on every card and in the key; the per-translation data stays in __LIB__.
 
   function viewAttention(){
