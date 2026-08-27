@@ -284,6 +284,44 @@ select,#q{font-family:inherit;font-size:13.5px;padding:8px 11px;
 @media (prefers-reduced-motion: reduce){
   *{transition:none !important;}
 }
+
+/* One shelf, on paper. The main @media print block hides .views, so printing a
+   shelf means turning that back on for the marked card only. Links print with
+   their URL spelled out, because a printed link nobody can type is decoration. */
+.tbprintonly{display:none;}
+@media print{
+  body.tbprinting .views{display:block !important;}
+  body.tbprinting .hero,
+  body.tbprinting .key,
+  body.tbprinting .controls,
+  body.tbprinting .viewbar,
+  body.tbprinting .grid,
+  body.tbprinting .fab,
+  body.tbprinting .panel,
+  body.tbprinting .vhead,
+  body.tbprinting .vlede,
+  body.tbprinting .tbstrip,
+  body.tbprinting .tbfind{display:none !important;}
+  body.tbprinting .views{padding:0;}
+  body.tbprinting .tbshelves{display:block !important;}
+  body.tbprinting .tbshelf{display:none !important;}
+  body.tbprinting .tbshelf.tbprintme{display:block !important;border:none;
+       box-shadow:none;border-top:3px solid #0E1C42 !important;}
+  body.tbprinting .tbprintme .tbsfoot{display:none !important;}
+  body.tbprinting .tbprintme .tbprintonly{display:block !important;
+       font-size:11px;color:#333;margin-top:4px;}
+  body.tbprinting .tbprintme .tbbk{break-inside:avoid;page-break-inside:avoid;}
+  body.tbprinting .tbprintme .tbscount b{color:#000;}
+  body.tbprinting .tbprintme .act{border:none;padding:0 6px 0 0;color:#000;
+       font-weight:400;}
+  /* data-plain, not href: a third of the stored buy URLs are HTML-encoded,
+     and a printed URL has to be one a person can actually type. */
+  body.tbprinting .tbprintme .act::after{content:" " attr(data-plain);font-size:9px;
+       color:#444;word-break:break-all;}
+  body.tbprinting{background:#fff;}
+}
+.tbcopied{border-color:var(--free) !important;color:var(--free) !important;}
+
 /* ---------------- teacher bookshelves ----------------
    My Classroom (the form) and Teacher Bookshelves (the directory). All new
    selectors are tb-prefixed to avoid colliding with .shelf/.empty/.noresult,

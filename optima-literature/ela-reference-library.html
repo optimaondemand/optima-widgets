@@ -272,6 +272,44 @@ select,#q{font-family:inherit;font-size:13.5px;padding:8px 11px;
 @media (prefers-reduced-motion: reduce){
   *{transition:none !important;}
 }
+
+/* One shelf, on paper. The main @media print block hides .views, so printing a
+   shelf means turning that back on for the marked card only. Links print with
+   their URL spelled out, because a printed link nobody can type is decoration. */
+.tbprintonly{display:none;}
+@media print{
+  body.tbprinting .views{display:block !important;}
+  body.tbprinting .hero,
+  body.tbprinting .key,
+  body.tbprinting .controls,
+  body.tbprinting .viewbar,
+  body.tbprinting .grid,
+  body.tbprinting .fab,
+  body.tbprinting .panel,
+  body.tbprinting .vhead,
+  body.tbprinting .vlede,
+  body.tbprinting .tbstrip,
+  body.tbprinting .tbfind{display:none !important;}
+  body.tbprinting .views{padding:0;}
+  body.tbprinting .tbshelves{display:block !important;}
+  body.tbprinting .tbshelf{display:none !important;}
+  body.tbprinting .tbshelf.tbprintme{display:block !important;border:none;
+       box-shadow:none;border-top:3px solid #0E1C42 !important;}
+  body.tbprinting .tbprintme .tbsfoot{display:none !important;}
+  body.tbprinting .tbprintme .tbprintonly{display:block !important;
+       font-size:11px;color:#333;margin-top:4px;}
+  body.tbprinting .tbprintme .tbbk{break-inside:avoid;page-break-inside:avoid;}
+  body.tbprinting .tbprintme .tbscount b{color:#000;}
+  body.tbprinting .tbprintme .act{border:none;padding:0 6px 0 0;color:#000;
+       font-weight:400;}
+  /* data-plain, not href: a third of the stored buy URLs are HTML-encoded,
+     and a printed URL has to be one a person can actually type. */
+  body.tbprinting .tbprintme .act::after{content:" " attr(data-plain);font-size:9px;
+       color:#444;word-break:break-all;}
+  body.tbprinting{background:#fff;}
+}
+.tbcopied{border-color:var(--free) !important;color:var(--free) !important;}
+
 /* ---------------- teacher bookshelves ----------------
    My Classroom (the form) and Teacher Bookshelves (the directory). All new
    selectors are tb-prefixed to avoid colliding with .shelf/.empty/.noresult,
@@ -1043,17 +1081,20 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     var acts = '';
     if (r.buyUrl){
       acts += '<a class="act buy" href="' + esc(r.buyUrl) + '" target="_blank" '
-            + 'rel="noopener" title="Buy the edition the book list names">'
+            + 'rel="noopener" data-plain="' + esc(tbPlainUrl(r.buyUrl)) + '" '
+            + 'title="Buy the edition the book list names">'
             + esc(vendorName(r.buyUrl)) + '</a>';
     }
     if (r.freeUrl){
       acts += '<a class="act ' + (r.state === 'identical' ? 'free' : 'sim') + '" href="'
-            + esc(r.freeUrl) + '" target="_blank" rel="noopener">'
+            + esc(r.freeUrl) + '" target="_blank" rel="noopener" data-plain="'
+            + esc(tbPlainUrl(r.freeUrl)) + '">'
             + esc(sourceName(r.freeSource)) + '</a>';
     }
     if (r.readOnlineUrl){
       acts += '<a class="act ro" href="' + esc(r.readOnlineUrl) + '" target="_blank" '
-            + 'rel="noopener" title="Read on the publisher site; not a download">'
+            + 'rel="noopener" data-plain="' + esc(tbPlainUrl(r.readOnlineUrl)) + '" '
+            + 'title="Read on the publisher site; not a download">'
             + esc(sourceName(hostOf(r.readOnlineUrl))) + '</a>';
     }
     h += acts ? '<div class="acts">' + acts + '</div>'
@@ -1061,7 +1102,7 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     return h + '</div>';
   }
 
-  function tbShelfCard(s, draft){
+  function tbShelfCard(s, draft, idx){
     var ids = s.titles || [];
     var books = '';
     for (var i=0;i<ids.length;i++) books += tbBook(recFor(ids[i]));
@@ -1069,13 +1110,134 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
       + '<div class="tbsh"><div class="tbsteach">' + esc(s.teacher)
       + (draft ? ' <span class="bdg" style="--bc:#8F347F">Draft</span>' : '')
       + '</div><div class="tbscourse">' + esc(s.course) + '</div>'
-      + '<div class="tbsmeta">' + tbBadges(s) + '</div></div>'
+      + '<div class="tbsmeta">' + tbBadges(s) + '</div>'
+      + '<div class="tbprintonly">Optima Academy Online'
+      + (YEAR ? ' &middot; ' + esc(YEAR) : '')
+      + ' &middot; chosen from the approved ELA book list</div></div>'
       + '<div class="tbscount"><b>' + ids.length + '</b>'
       + '<span>titles from the approved catalogue</span></div>'
       + '<div class="tbsbooks">' + books + '</div>'
-      + (draft ? '<div class="tbsfoot"><span class="tbnolink">Visible only to you '
-               + 'until your team publishes it.</span></div>' : '')
-      + '</div>';
+      + '<div class="tbsfoot">'
+      + '<button class="tick" data-tbprint="' + idx + '">Print this shelf</button>'
+      + '<button class="tick" data-tbcopy="' + idx + '">Copy book list</button>'
+      + (draft ? '<span class="tbnolink">Visible only to you until your team '
+               + 'publishes it.</span>' : '')
+      + '</div></div>';
+  }
+
+
+  /* ---- clipboard and print ---- */
+
+  var NL = String.fromCharCode(10);
+  var tbRendered = [];
+
+  function tbFlash(btn, msg){
+    if (btn.getAttribute('data-busy')) return;
+    var was = btn.textContent;
+    btn.setAttribute('data-busy', '1');
+    btn.textContent = msg;
+    btn.className = btn.className + ' tbcopied';
+    setTimeout(function(){
+      btn.textContent = was;
+      btn.className = btn.className.replace(' tbcopied', '');
+      btn.removeAttribute('data-busy');
+    }, 1700);
+  }
+
+  function tbToClipboard(text, btn){
+    function fallback(){
+      // execCommand is deprecated but still the only route on an insecure
+      // origin, and a teacher opening the file locally is exactly that.
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'fixed';
+      ta.style.top = '-2000px';
+      document.body.appendChild(ta);
+      ta.select();
+      var done = false;
+      try { done = document.execCommand('copy'); } catch(e){ done = false; }
+      document.body.removeChild(ta);
+      tbFlash(btn, done ? 'Copied' : 'Could not copy');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(
+        function(){ tbFlash(btn, 'Copied'); }, fallback);
+    } else { fallback(); }
+  }
+
+
+  function tbPlainUrl(u){
+    if (!u) return '';
+    // &amp; is decoded LAST: doing it first would turn &amp;lt; into a real <.
+    return String(u)
+      .split('&lt;').join('<')
+      .split('&gt;').join('>')
+      .split('&quot;').join('"')
+      .split('&#39;').join(String.fromCharCode(39))
+      .split('&amp;').join('&');
+  }
+
+  function tbWhereLine(s){
+    var bits = ['Grade ' + s.grade];
+    if (s.level) bits.push(s.level);
+    bits.push(s.delivery === 'On-Demand'
+      ? 'On-Demand' : (s.period ? 'Period ' + s.period : 'Live'));
+    return bits.join(', ');
+  }
+
+  function tbEditionText(r){
+    var bits = [];
+    if (r.translator)  bits.push('trans. ' + r.translator);
+    if (r.editor)      bits.push('ed. ' + r.editor);
+    if (r.publisher)   bits.push(r.publisher);
+    if (r.editionYear) bits.push(r.editionYear);
+    if (r.isbn)        bits.push('ISBN ' + r.isbn);
+    return bits.join(' - ');
+  }
+
+  function tbShelfText(s){
+    var out = [];
+    out.push(s.teacher + ' - ' + s.course + ' (' + tbWhereLine(s) + ')');
+    out.push('Optima Academy Online' + (YEAR ? ' - ' + YEAR : ''));
+    out.push('Titles chosen from the approved ELA book list.');
+    out.push('');
+    var ids = s.titles || [];
+    var n = 0;
+    for (var i=0;i<ids.length;i++){
+      var r = recFor(ids[i]);
+      if (!r) continue;
+      n++;
+      out.push(n + '. ' + r.title + (r.authorDisplay ? ' - ' + r.authorDisplay : ''));
+      var ed = tbEditionText(r);
+      if (ed) out.push('   ' + ed);
+      if (r.state === 'identical') out.push('   Free: this exact text is public domain.');
+      else if (r.state === 'similar') out.push('   A free version exists in a different edition.');
+      else out.push('   Needs a purchased copy.');
+      if (r.buyUrl) out.push('   Buy: ' + tbPlainUrl(r.buyUrl));
+      if (r.freeUrl) out.push('   Free (' + sourceName(r.freeSource) + '): '
+                              + tbPlainUrl(r.freeUrl));
+      if (r.readOnlineUrl) out.push('   Read online: ' + tbPlainUrl(r.readOnlineUrl));
+      out.push('');
+    }
+    if (!n) out.push('No titles chosen yet.');
+    return out.join(NL);
+  }
+
+  function tbPrintShelf(idx){
+    var cards = document.querySelectorAll('#tbShelfGrid .tbshelf');
+    var el = cards[idx];
+    if (!el) return;
+    function cleanup(){
+      document.body.className = document.body.className.replace(' tbprinting', '');
+      el.className = el.className.replace(' tbprintme', '');
+      if (window.onafterprint === cleanup) window.onafterprint = null;
+    }
+    el.className = el.className + ' tbprintme';
+    document.body.className = document.body.className + ' tbprinting';
+    window.onafterprint = cleanup;
+    try { window.print(); } catch(e){}
+    setTimeout(cleanup, 500);
   }
 
   /* ---- view: My Classroom ---- */
@@ -1163,7 +1325,8 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     var outCard = '<div class="tbcard tbhide" id="tbOutCard">'
       + '<div class="tbhead"><span class="tbnum">4</span>'
       + '<span class="tbname">Send this to your team</span>'
-      + '<span class="tbnote">classrooms.json</span></div>'
+      + '<span class="tbnote"><button class="tick" id="tbCopyJson">Copy this block'
+      + '</button></span></div>'
       + '<div class="tbbody"><div class="tbfile"><pre id="tbJson"></pre></div>'
       + '<div class="tbsay"><b>How this reaches the library.</b> Copy the block above '
       + 'and send it to whoever maintains the book lists. One record per course, in a '
@@ -1306,11 +1469,7 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     tbDrawJson();
   }
 
-  function tbDrawJson(){
-    var card = document.getElementById('tbOutCard');
-    var pre = document.getElementById('tbJson');
-    if (!card || !pre) return;
-    if (!me.courses.length){ card.className = 'tbcard tbhide'; return; }
+  function tbRecords(){
     var recs = [];
     for (var i=0;i<me.courses.length;i++){
       var s = me.courses[i];
@@ -1318,13 +1477,30 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
                  subject: s.subject, grade: s.grade, level: s.level || null,
                  delivery: s.delivery, period: s.period || null, titles: s.titles});
     }
-    var txt = esc(JSON.stringify({school_year: YEAR, classrooms: recs}, null, 2))
+    return {school_year: YEAR, classrooms: recs};
+  }
+
+  function tbJsonText(){ return JSON.stringify(tbRecords(), null, 2); }
+
+  function tbDrawJson(){
+    var card = document.getElementById('tbOutCard');
+    var pre = document.getElementById('tbJson');
+    if (!card || !pre) return;
+    if (!me.courses.length){ card.className = 'tbcard tbhide'; return; }
+    var txt = esc(tbJsonText())
       .replace(/&quot;([a-z_]+)&quot;:/g, '<span class="k">&quot;$1&quot;</span>:')
       .replace(/: &quot;([^&]*)&quot;/g, ': <span class="s">&quot;$1&quot;</span>')
       .replace(/^( +)&quot;([^&]+)&quot;(,?)$/gm, '$1<span class="s">&quot;$2&quot;</span>$3')
       .replace(/: null/g, ': <span class="n">null</span>');
     pre.innerHTML = txt;
     card.className = 'tbcard';
+    var cj = document.getElementById('tbCopyJson');
+    if (cj && !cj.getAttribute('data-wired')){
+      cj.setAttribute('data-wired', '1');
+      // Rebuilt at click time: this handler is bound once, so closing over a
+      // render-time array would copy stale data after the next save.
+      cj.addEventListener('click', function(){ tbToClipboard(tbJsonText(), cj); });
+    }
   }
 
   function wireMine(){
@@ -1449,8 +1625,9 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
       if (a.s.teacher !== b.s.teacher) return a.s.teacher < b.s.teacher ? -1 : 1;
       return a.s.course < b.s.course ? -1 : 1;
     });
+    tbRendered = rows;
     var h = '';
-    for (var r=0;r<rows.length;r++) h += tbShelfCard(rows[r].s, rows[r].draft);
+    for (var r=0;r<rows.length;r++) h += tbShelfCard(rows[r].s, rows[r].draft, r);
     if (!rows.length){
       h = '<div class="tbblank">' + (all.length
         ? 'No bookshelf matches that search.'
@@ -1461,6 +1638,22 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     var hits = document.getElementById('tbHits');
     if (hits) hits.textContent = rows.length + (rows.length === 1 ? ' course' : ' courses');
     tbCount(rows.length, 'course');
+
+    var pb = box.querySelectorAll('[data-tbprint]');
+    for (var p=0;p<pb.length;p++){
+      pb[p].addEventListener('click', (function(btn){
+        return function(){ tbPrintShelf(parseInt(btn.getAttribute('data-tbprint'), 10)); };
+      })(pb[p]));
+    }
+    var cb = box.querySelectorAll('[data-tbcopy]');
+    for (var c=0;c<cb.length;c++){
+      cb[c].addEventListener('click', (function(btn){
+        return function(){
+          var row = tbRendered[parseInt(btn.getAttribute('data-tbcopy'), 10)];
+          if (row) tbToClipboard(tbShelfText(row.s), btn);
+        };
+      })(cb[c]));
+    }
   }
 
   function viewShelves(){
