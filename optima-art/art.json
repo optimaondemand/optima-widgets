@@ -1,10 +1,10 @@
 {
- "generated": "2026-08-28T08:52:05",
+ "generated": "2026-08-28T09:30:46",
  "n_works": 529,
  "asset_base": "https://optimaondemand.github.io/optima-art-assets/",
  "counts": {
-  "publish": 17,
-  "re-source": 53,
+  "publish": 33,
+  "re-source": 37,
   "link-only": 365,
   "research": 94
  },
@@ -136,6 +136,115 @@
    ]
   },
   {
+   "id": "aw_b211d3670189",
+   "title": "Water Lilies and Japanese Bridge",
+   "creator": "Claude Monet",
+   "creator_full": "Claude Monet",
+   "creator_filed": null,
+   "date": "1899",
+   "year": 1899,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_b211d3670189.jpg",
+   "image_w": 1600,
+   "image_h": 1600,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.16011213",
+   "courses": [
+    "HS2DStudioArt"
+   ],
+   "units": [
+    "Monet & Mondrian"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "claude-monet",
+     "label": "Claude Monet"
+    }
+   ]
+  },
+  {
+   "id": "aw_dfff86ef6c54",
+   "title": "Bonjour M. Courbet (Self Portrait)",
+   "creator": "Courbet, Gustave, 1819-1877",
+   "creator_full": "Courbet, Gustave, 1819-1877",
+   "creator_filed": null,
+   "date": "1855",
+   "year": 1855,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_dfff86ef6c54.jpg",
+   "image_w": 1600,
+   "image_h": 1385,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.13611699",
+   "courses": [
+    "MJ Visual Art 2"
+   ],
+   "units": [
+    "Realism"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "gustave-courbet",
+     "label": "Gustave Courbet"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "realism",
+     "label": "Realism"
+    }
+   ]
+  },
+  {
+   "id": "aw_7dda80018f44",
+   "title": "Grain sifters",
+   "creator": "Courbet, Gustave, 1819-1877",
+   "creator_full": "Courbet, Gustave, 1819-1877",
+   "creator_filed": null,
+   "date": "1855",
+   "year": 1855,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_7dda80018f44.jpg",
+   "image_w": 1266,
+   "image_h": 1000,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.13605362",
+   "courses": [
+    "HSDigitalArtImaging1",
+    "MJ Visual Art 2"
+   ],
+   "units": [
+    "Module 9 Industral Rev",
+    "Realism",
+    "images"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "gustave-courbet",
+     "label": "Gustave Courbet"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "realism",
+     "label": "Realism"
+    }
+   ]
+  },
+  {
    "id": "aw_039ff00d3e08",
    "title": "The Glorification of the Royal Hungarian Saints",
    "creator": "Franz Anton Maulbertsch",
@@ -206,6 +315,44 @@
    ]
   },
   {
+   "id": "aw_1d4be9b7606b",
+   "title": "Raft of the Medusa",
+   "creator": "Gericault, Theodore, 1791-1824",
+   "creator_full": "Gericault, Theodore, 1791-1824",
+   "creator_filed": null,
+   "date": "1819",
+   "year": 1819,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_1d4be9b7606b.jpg",
+   "image_w": 1600,
+   "image_h": 1088,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.13607125",
+   "courses": [
+    "Art History and Criticism"
+   ],
+   "units": [
+    "Neoclassicism, Romanticism, Realism & Impressionism",
+    "images"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "gericault",
+     "label": "Gericault"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "neoclassicism",
+     "label": "Neoclassicism"
+    }
+   ]
+  },
+  {
    "id": "aw_701d979d4830",
    "title": "Manuscript Illumination with David in Prayer in an Initial M, from a Psalter",
    "creator": "Girolamo dai Libri",
@@ -240,6 +387,148 @@
      "scheme": "art.movement",
      "code": "medieval",
      "label": "Medieval"
+    }
+   ]
+  },
+  {
+   "id": "aw_d5beaa12a391",
+   "title": "Red Vineyard",
+   "creator": "Gogh, Vincent van, 1853-1890",
+   "creator_full": "Gogh, Vincent van, 1853-1890",
+   "creator_filed": null,
+   "date": "1888",
+   "year": 1888,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_d5beaa12a391.jpg",
+   "image_w": 1600,
+   "image_h": 1275,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.13899725",
+   "courses": [
+    "MJ Visual Art 2"
+   ],
+   "units": [
+    "Van gogh"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "vincent-willem-van-gogh",
+     "label": "Vincent Willem Van Gogh"
+    }
+   ]
+  },
+  {
+   "id": "aw_9a50460a43c9",
+   "title": "Wheatfield with Crows",
+   "creator": "Gogh, Vincent van, Dutch",
+   "creator_full": "Gogh, Vincent van, Dutch",
+   "creator_filed": null,
+   "date": "1890",
+   "year": 1890,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_9a50460a43c9.jpg",
+   "image_w": 1600,
+   "image_h": 768,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.18118473",
+   "courses": [
+    "HS2DStudioArt",
+    "MJ Visual Art 2"
+   ],
+   "units": [
+    "Van Gogh",
+    "Van gogh",
+    "images"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "vincent-willem-van-gogh",
+     "label": "Vincent Willem Van Gogh"
+    }
+   ]
+  },
+  {
+   "id": "aw_dda35cff7f00",
+   "title": "Still Life with Apples and a Pomegranate",
+   "creator": "Gustave Courbet, 1819 - 1877",
+   "creator_full": "Gustave Courbet, 1819 - 1877",
+   "creator_filed": null,
+   "date": "1871-2",
+   "year": 1871,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_dda35cff7f00.jpg",
+   "image_w": 1600,
+   "image_h": 1174,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.15667918",
+   "courses": [
+    "MJ Visual Art 2"
+   ],
+   "units": [
+    "Realism"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "gustave-courbet",
+     "label": "Gustave Courbet"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "realism",
+     "label": "Realism"
+    }
+   ]
+  },
+  {
+   "id": "aw_547bf6ef6809",
+   "title": "Still Life with Apples, Pear, and Pomegranates",
+   "creator": "Gustave Courbet, French, 1819 - 1877",
+   "creator_full": "Gustave Courbet, French, 1819 - 1877",
+   "creator_filed": null,
+   "date": "1871 or 1872",
+   "year": 1872,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_547bf6ef6809.jpg",
+   "image_w": 1600,
+   "image_h": 1051,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.14365184",
+   "courses": [
+    "MJ Visual Art 2"
+   ],
+   "units": [
+    "Realism",
+    "images"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "gustave-courbet",
+     "label": "Gustave Courbet"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "realism",
+     "label": "Realism"
     }
    ]
   },
@@ -392,6 +681,244 @@
    ]
   },
   {
+   "id": "aw_98574b7bbca7",
+   "title": "Self-Portrait",
+   "creator": "Leonardo da Vinci",
+   "creator_full": "Leonardo da Vinci (Italian draftsman, 1452-1519)",
+   "creator_filed": null,
+   "date": "ca. 1512",
+   "year": 1512,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_98574b7bbca7.jpg",
+   "image_w": 1027,
+   "image_h": 1600,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.14404281",
+   "courses": [
+    "Art History and Criticism"
+   ],
+   "units": [
+    "Renaissance Art"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "leonardo-da-vinci",
+     "label": "Leonardo da Vinci"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "renaissance",
+     "label": "Renaissance"
+    }
+   ]
+  },
+  {
+   "id": "aw_a9829599b101",
+   "title": "Last Supper",
+   "creator": "Leonardo, da Vinci, 1452-1519",
+   "creator_full": "Leonardo, da Vinci, 1452-1519",
+   "creator_filed": null,
+   "date": "1495-7",
+   "year": 1495,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_a9829599b101.jpg",
+   "image_w": 1600,
+   "image_h": 833,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.13715905",
+   "courses": [
+    "MJ Visual Art 2",
+    "MJ Visual Art 3"
+   ],
+   "units": [
+    "Italian Ren",
+    "Italian Ren. Perspective",
+    "Module 06 - Italian Renaissance (Perspective)",
+    "images"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "leonardo-da-vinci",
+     "label": "Leonardo da Vinci"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "renaissance",
+     "label": "Renaissance"
+    }
+   ]
+  },
+  {
+   "id": "aw_2c6f40979f86",
+   "title": "Mona Lisa",
+   "creator": "Leonardo, da Vinci, 1452-1519",
+   "creator_full": "Leonardo, da Vinci, 1452-1519",
+   "creator_filed": null,
+   "date": "1503-07",
+   "year": 1503,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_2c6f40979f86.jpg",
+   "image_w": 1072,
+   "image_h": 1600,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.13718601",
+   "courses": [
+    "Art History and Criticism"
+   ],
+   "units": [
+    "Renaissance Art",
+    "images"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "leonardo-da-vinci",
+     "label": "Leonardo da Vinci"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "renaissance",
+     "label": "Renaissance"
+    }
+   ]
+  },
+  {
+   "id": "aw_35812469d4c8",
+   "title": "The Calling of Saint Matthew",
+   "creator": "Michelangelo Merisi da Caravaggio",
+   "creator_full": "Michelangelo Merisi da Caravaggio",
+   "creator_filed": null,
+   "date": "1599-1600",
+   "year": 1600,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_35812469d4c8.jpg",
+   "image_w": 1283,
+   "image_h": 1200,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.14490796",
+   "courses": [
+    "Art History and Criticism",
+    "HSDigitalArtImaging1",
+    "MJ Visual Art 2"
+   ],
+   "units": [
+    "Baroque",
+    "Baroque & Rococo",
+    "Module 8 European Ren",
+    "images"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "michelangelo-merisi-da-caravaggio",
+     "label": "Michelangelo Merisi Da Caravaggio"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "baroque-rococo",
+     "label": "Baroque Rococo"
+    }
+   ]
+  },
+  {
+   "id": "aw_c403f2bc62fc",
+   "title": "Saint John the Baptist in the Wilderness",
+   "creator": "Michelangelo Merisi, called Caravaggio",
+   "creator_full": "Michelangelo Merisi, called Caravaggio (Italian, 1571–1610)",
+   "creator_filed": null,
+   "date": "1604",
+   "year": 1604,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_c403f2bc62fc.jpg",
+   "image_w": 1213,
+   "image_h": 1600,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.40522524",
+   "courses": [
+    "MJ Visual Art 2"
+   ],
+   "units": [
+    "Baroque",
+    "images"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "michelangelo-merisi",
+     "label": "Michelangelo Merisi"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "baroque-rococo",
+     "label": "Baroque Rococo"
+    }
+   ]
+  },
+  {
+   "id": "aw_481f46db6c39",
+   "title": "Impression: Sunrise",
+   "creator": "Monet, Claude, 1840-1926",
+   "creator_full": "Monet, Claude, 1840-1926",
+   "creator_filed": null,
+   "date": "1873",
+   "year": 1873,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_481f46db6c39.jpg",
+   "image_w": 1600,
+   "image_h": 1241,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.13603630",
+   "courses": [
+    "Art History and Criticism",
+    "HS2DStudioArt",
+    "MJ Visual Art 2"
+   ],
+   "units": [
+    "Monet",
+    "Monet & Mondrian",
+    "Neoclassicism, Romanticism, Realism & Impressionism",
+    "images"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "claude-monet",
+     "label": "Claude Monet"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "neoclassicism",
+     "label": "Neoclassicism"
+    }
+   ]
+  },
+  {
    "id": "aw_b0f07da159b4",
    "title": "Dragon and Tiger / 龍虎図屏風",
    "creator": "Sesson Shūkei",
@@ -499,6 +1026,80 @@
      "scheme": "art.movement",
      "code": "japanese",
      "label": "Japanese"
+    }
+   ]
+  },
+  {
+   "id": "aw_a740c793ba34",
+   "title": "Van Gogh's Chair",
+   "creator": "Vincent van Gogh, 1853 - 1890",
+   "creator_full": "Vincent van Gogh, 1853 - 1890",
+   "creator_filed": null,
+   "date": "1888",
+   "year": 1888,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_a740c793ba34.jpg",
+   "image_w": 1231,
+   "image_h": 1600,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.15655824",
+   "courses": [
+    "MJ Visual Art 3"
+   ],
+   "units": [
+    "Module 12 - Post-Impressionism (Van Gogh Pop-Up Chairs)",
+    "Van Gogh"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "vincent-willem-van-gogh",
+     "label": "Vincent Willem Van Gogh"
+    },
+    {
+     "scheme": "art.movement",
+     "code": "post-impressionism",
+     "label": "Post Impressionism"
+    }
+   ]
+  },
+  {
+   "id": "aw_29a182315082",
+   "title": "The Starry Night",
+   "creator": "Vincent van Gogh, Dutch, 1853-1890",
+   "creator_full": "Vincent van Gogh, Dutch, 1853-1890",
+   "creator_filed": null,
+   "date": "Saint Rémy, June 1889",
+   "year": 1889,
+   "disposition": "publish",
+   "disposition_label": "Image available",
+   "why": "our own copy is not redistributable; publishing a verified Commons replacement instead (Public domain)",
+   "image": "https://optimaondemand.github.io/optima-art-assets/images/aw_29a182315082.jpg",
+   "image_w": 1600,
+   "image_h": 1267,
+   "licence": "CC0 1.0 Universal",
+   "jstor_url": "https://www.jstor.org/stable/community.14565149",
+   "courses": [
+    "HS2DStudioArt",
+    "MJ Visual Art 2"
+   ],
+   "units": [
+    "Color",
+    "Van Gogh",
+    "Van gogh",
+    "images"
+   ],
+   "sourced": true,
+   "tags_inferred": true,
+   "tags": [
+    {
+     "scheme": "art.artist",
+     "code": "vincent-willem-van-gogh",
+     "label": "Vincent Willem Van Gogh"
     }
    ]
   },
@@ -2228,38 +2829,6 @@
    ]
   },
   {
-   "id": "aw_b211d3670189",
-   "title": "Water Lilies and Japanese Bridge",
-   "creator": "Claude Monet",
-   "creator_full": "Claude Monet",
-   "creator_filed": null,
-   "date": "1899",
-   "year": 1899,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "licence class 'museum-contact-required' forbids redistribution; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.16011213",
-   "courses": [
-    "HS2DStudioArt"
-   ],
-   "units": [
-    "Monet & Mondrian"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "claude-monet",
-     "label": "Claude Monet"
-    }
-   ]
-  },
-  {
    "id": "aw_81698596faa7",
    "title": "Railroad Bridge, Argenteuil",
    "creator": "Claude Monet, French, 1840 - 1926",
@@ -2487,83 +3056,6 @@
      "scheme": "art.movement",
      "code": "mexican",
      "label": "Mexican"
-    }
-   ]
-  },
-  {
-   "id": "aw_dfff86ef6c54",
-   "title": "Bonjour M. Courbet (Self Portrait)",
-   "creator": "Courbet, Gustave, 1819-1877",
-   "creator_full": "Courbet, Gustave, 1819-1877",
-   "creator_filed": null,
-   "date": "1855",
-   "year": 1855,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.13611699",
-   "courses": [
-    "MJ Visual Art 2"
-   ],
-   "units": [
-    "Realism"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "gustave-courbet",
-     "label": "Gustave Courbet"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "realism",
-     "label": "Realism"
-    }
-   ]
-  },
-  {
-   "id": "aw_7dda80018f44",
-   "title": "Grain sifters",
-   "creator": "Courbet, Gustave, 1819-1877",
-   "creator_full": "Courbet, Gustave, 1819-1877",
-   "creator_filed": null,
-   "date": "1855",
-   "year": 1855,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.13605362",
-   "courses": [
-    "HSDigitalArtImaging1",
-    "MJ Visual Art 2"
-   ],
-   "units": [
-    "Module 9 Industral Rev",
-    "Realism",
-    "images"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "gustave-courbet",
-     "label": "Gustave Courbet"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "realism",
-     "label": "Realism"
     }
    ]
   },
@@ -3502,44 +3994,6 @@
    ]
   },
   {
-   "id": "aw_1d4be9b7606b",
-   "title": "Raft of the Medusa",
-   "creator": "Gericault, Theodore, 1791-1824",
-   "creator_full": "Gericault, Theodore, 1791-1824",
-   "creator_filed": null,
-   "date": "1819",
-   "year": 1819,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.13607125",
-   "courses": [
-    "Art History and Criticism"
-   ],
-   "units": [
-    "Neoclassicism, Romanticism, Realism & Impressionism",
-    "images"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "gericault",
-     "label": "Gericault"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "neoclassicism",
-     "label": "Neoclassicism"
-    }
-   ]
-  },
-  {
    "id": "aw_3bdecd5cf73a",
    "title": "Apollo and Daphne; view from right",
    "creator": "Gian Lorenzo Bernini",
@@ -3704,73 +4158,6 @@
    ],
    "units": [
     "Color"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "vincent-willem-van-gogh",
-     "label": "Vincent Willem Van Gogh"
-    }
-   ]
-  },
-  {
-   "id": "aw_d5beaa12a391",
-   "title": "Red Vineyard",
-   "creator": "Gogh, Vincent van, 1853-1890",
-   "creator_full": "Gogh, Vincent van, 1853-1890",
-   "creator_filed": null,
-   "date": "1888",
-   "year": 1888,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.13899725",
-   "courses": [
-    "MJ Visual Art 2"
-   ],
-   "units": [
-    "Van gogh"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "vincent-willem-van-gogh",
-     "label": "Vincent Willem Van Gogh"
-    }
-   ]
-  },
-  {
-   "id": "aw_9a50460a43c9",
-   "title": "Wheatfield with Crows",
-   "creator": "Gogh, Vincent van, Dutch",
-   "creator_full": "Gogh, Vincent van, Dutch",
-   "creator_filed": null,
-   "date": "1890",
-   "year": 1890,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.18118473",
-   "courses": [
-    "HS2DStudioArt",
-    "MJ Visual Art 2"
-   ],
-   "units": [
-    "Van Gogh",
-    "Van gogh",
-    "images"
    ],
    "sourced": true,
    "tags_inferred": true,
@@ -3959,81 +4346,6 @@
      "scheme": "art.movement",
      "code": "byzantine",
      "label": "Byzantine"
-    }
-   ]
-  },
-  {
-   "id": "aw_dda35cff7f00",
-   "title": "Still Life with Apples and a Pomegranate",
-   "creator": "Gustave Courbet, 1819 - 1877",
-   "creator_full": "Gustave Courbet, 1819 - 1877",
-   "creator_filed": null,
-   "date": "1871-2",
-   "year": 1871,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.15667918",
-   "courses": [
-    "MJ Visual Art 2"
-   ],
-   "units": [
-    "Realism"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "gustave-courbet",
-     "label": "Gustave Courbet"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "realism",
-     "label": "Realism"
-    }
-   ]
-  },
-  {
-   "id": "aw_547bf6ef6809",
-   "title": "Still Life with Apples, Pear, and Pomegranates",
-   "creator": "Gustave Courbet, French, 1819 - 1877",
-   "creator_full": "Gustave Courbet, French, 1819 - 1877",
-   "creator_filed": null,
-   "date": "1871 or 1872",
-   "year": 1872,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.14365184",
-   "courses": [
-    "MJ Visual Art 2"
-   ],
-   "units": [
-    "Realism",
-    "images"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "gustave-courbet",
-     "label": "Gustave Courbet"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "realism",
-     "label": "Realism"
     }
    ]
   },
@@ -5600,43 +5912,6 @@
    ]
   },
   {
-   "id": "aw_98574b7bbca7",
-   "title": "Self-Portrait",
-   "creator": "Leonardo da Vinci",
-   "creator_full": "Leonardo da Vinci (Italian draftsman, 1452-1519)",
-   "creator_filed": null,
-   "date": "ca. 1512",
-   "year": 1512,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.14404281",
-   "courses": [
-    "Art History and Criticism"
-   ],
-   "units": [
-    "Renaissance Art"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "leonardo-da-vinci",
-     "label": "Leonardo da Vinci"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "renaissance",
-     "label": "Renaissance"
-    }
-   ]
-  },
-  {
    "id": "aw_ee005c63c518",
    "title": "Studies of architecture",
    "creator": "Leonardo da Vinci",
@@ -5812,47 +6087,6 @@
    ]
   },
   {
-   "id": "aw_a9829599b101",
-   "title": "Last Supper",
-   "creator": "Leonardo, da Vinci, 1452-1519",
-   "creator_full": "Leonardo, da Vinci, 1452-1519",
-   "creator_filed": null,
-   "date": "1495-7",
-   "year": 1495,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.13715905",
-   "courses": [
-    "MJ Visual Art 2",
-    "MJ Visual Art 3"
-   ],
-   "units": [
-    "Italian Ren",
-    "Italian Ren. Perspective",
-    "Module 06 - Italian Renaissance (Perspective)",
-    "images"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "leonardo-da-vinci",
-     "label": "Leonardo da Vinci"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "renaissance",
-     "label": "Renaissance"
-    }
-   ]
-  },
-  {
    "id": "aw_ac0ceae58c18",
    "title": "Last Supper: study for the Head of James Major",
    "creator": "Leonardo, da Vinci, 1452-1519",
@@ -5884,44 +6118,6 @@
      "scheme": "art.artist",
      "code": "leonardo-da-vinci",
      "label": "Leonardo da Vinci"
-    }
-   ]
-  },
-  {
-   "id": "aw_2c6f40979f86",
-   "title": "Mona Lisa",
-   "creator": "Leonardo, da Vinci, 1452-1519",
-   "creator_full": "Leonardo, da Vinci, 1452-1519",
-   "creator_filed": null,
-   "date": "1503-07",
-   "year": 1503,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.13718601",
-   "courses": [
-    "Art History and Criticism"
-   ],
-   "units": [
-    "Renaissance Art",
-    "images"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "leonardo-da-vinci",
-     "label": "Leonardo da Vinci"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "renaissance",
-     "label": "Renaissance"
     }
    ]
   },
@@ -6961,48 +7157,6 @@
    ]
   },
   {
-   "id": "aw_35812469d4c8",
-   "title": "The Calling of Saint Matthew",
-   "creator": "Michelangelo Merisi da Caravaggio",
-   "creator_full": "Michelangelo Merisi da Caravaggio",
-   "creator_filed": null,
-   "date": "1599-1600",
-   "year": 1600,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "licence class 'commercial-agency' forbids redistribution; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.14490796",
-   "courses": [
-    "Art History and Criticism",
-    "HSDigitalArtImaging1",
-    "MJ Visual Art 2"
-   ],
-   "units": [
-    "Baroque",
-    "Baroque & Rococo",
-    "Module 8 European Ren",
-    "images"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "michelangelo-merisi-da-caravaggio",
-     "label": "Michelangelo Merisi Da Caravaggio"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "baroque-rococo",
-     "label": "Baroque Rococo"
-    }
-   ]
-  },
-  {
    "id": "aw_f5219d88c87e",
    "title": "The Supper at Emmaus",
    "creator": "Michelangelo Merisi da Caravaggio, 1571 - 1610",
@@ -7032,44 +7186,6 @@
      "scheme": "art.artist",
      "code": "michelangelo-merisi-da-caravaggio",
      "label": "Michelangelo Merisi Da Caravaggio"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "baroque-rococo",
-     "label": "Baroque Rococo"
-    }
-   ]
-  },
-  {
-   "id": "aw_c403f2bc62fc",
-   "title": "Saint John the Baptist in the Wilderness",
-   "creator": "Michelangelo Merisi, called Caravaggio",
-   "creator_full": "Michelangelo Merisi, called Caravaggio (Italian, 1571–1610)",
-   "creator_filed": null,
-   "date": "1604",
-   "year": 1604,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "licence class 'restricted' forbids redistribution; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.40522524",
-   "courses": [
-    "MJ Visual Art 2"
-   ],
-   "units": [
-    "Baroque",
-    "images"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "michelangelo-merisi",
-     "label": "Michelangelo Merisi"
     },
     {
      "scheme": "art.movement",
@@ -7243,48 +7359,6 @@
      "scheme": "art.artist",
      "code": "claude-monet",
      "label": "Claude Monet"
-    }
-   ]
-  },
-  {
-   "id": "aw_481f46db6c39",
-   "title": "Impression: Sunrise",
-   "creator": "Monet, Claude, 1840-1926",
-   "creator_full": "Monet, Claude, 1840-1926",
-   "creator_filed": null,
-   "date": "1873",
-   "year": 1873,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "licence class 'commercial-agency' forbids redistribution; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.13603630",
-   "courses": [
-    "Art History and Criticism",
-    "HS2DStudioArt",
-    "MJ Visual Art 2"
-   ],
-   "units": [
-    "Monet",
-    "Monet & Mondrian",
-    "Neoclassicism, Romanticism, Realism & Impressionism",
-    "images"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "claude-monet",
-     "label": "Claude Monet"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "neoclassicism",
-     "label": "Neoclassicism"
     }
    ]
   },
@@ -9470,44 +9544,6 @@
    ]
   },
   {
-   "id": "aw_a740c793ba34",
-   "title": "Van Gogh's Chair",
-   "creator": "Vincent van Gogh, 1853 - 1890",
-   "creator_full": "Vincent van Gogh, 1853 - 1890",
-   "creator_filed": null,
-   "date": "1888",
-   "year": 1888,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "Artstor collection item: paid access is not a right to republish; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.15655824",
-   "courses": [
-    "MJ Visual Art 3"
-   ],
-   "units": [
-    "Module 12 - Post-Impressionism (Van Gogh Pop-Up Chairs)",
-    "Van Gogh"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "vincent-willem-van-gogh",
-     "label": "Vincent Willem Van Gogh"
-    },
-    {
-     "scheme": "art.movement",
-     "code": "post-impressionism",
-     "label": "Post Impressionism"
-    }
-   ]
-  },
-  {
    "id": "aw_8072056c9476",
    "title": "The Olive Trees",
    "creator": "Vincent van Gogh, Dutch, 1853-1890",
@@ -9527,42 +9563,6 @@
     "MJ Visual Art 2"
    ],
    "units": [
-    "Van gogh",
-    "images"
-   ],
-   "sourced": true,
-   "tags_inferred": true,
-   "tags": [
-    {
-     "scheme": "art.artist",
-     "code": "vincent-willem-van-gogh",
-     "label": "Vincent Willem Van Gogh"
-    }
-   ]
-  },
-  {
-   "id": "aw_29a182315082",
-   "title": "The Starry Night",
-   "creator": "Vincent van Gogh, Dutch, 1853-1890",
-   "creator_full": "Vincent van Gogh, Dutch, 1853-1890",
-   "creator_filed": null,
-   "date": "Saint Rémy, June 1889",
-   "year": 1889,
-   "disposition": "re-source",
-   "disposition_label": "Public domain, image not yet sourced",
-   "why": "licence class 'restricted' forbids redistribution; artwork is public domain, so find a free copy",
-   "image": null,
-   "image_w": null,
-   "image_h": null,
-   "licence": null,
-   "jstor_url": "https://www.jstor.org/stable/community.14565149",
-   "courses": [
-    "HS2DStudioArt",
-    "MJ Visual Art 2"
-   ],
-   "units": [
-    "Color",
-    "Van Gogh",
     "Van gogh",
     "images"
    ],
