@@ -9,3 +9,5 @@
 optima-literature/ela-reference-library.html -text
 optima-literature/library.json               -text
 optima-literature/data/*.json                -text
+optima-art/art-reference-library.html       -text
+optima-art/art.json                         -text
