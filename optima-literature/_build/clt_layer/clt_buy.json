@@ -1,0 +1,252 @@
+{
+ "Tertullian": {
+  "isbn": "9780674992764",
+  "ol_title": "Apology",
+  "ol_authors": [
+   "Tertullian"
+  ],
+  "first_publish_year": 1718,
+  "publisher": "Clarendon Press",
+  "url": "https://openlibrary.org/works/OL1339343W",
+  "verified_title": "Apology; De spectaculis",
+  "verified": true
+ },
+ "Athanasius": {
+  "isbn": "9780881414271",
+  "ol_title": "On the Incarnation",
+  "ol_authors": [
+   "Athanasius Saint, Patriarch of Alexandria"
+  ],
+  "first_publish_year": 1893,
+  "publisher": "St Vladimir's Seminary Press",
+  "url": "https://openlibrary.org/works/OL16319231W",
+  "verified_title": "On the Incarnation",
+  "verified": true
+ },
+ "Gregory of Nyssa": {
+  "isbn": null,
+  "note": "no ISBN-13 in Open Library"
+ },
+ "Jerome": {
+  "isbn": "9780809100873",
+  "ol_title": "The letters of St. Jerome",
+  "ol_authors": [
+   "Saint Jerome"
+  ],
+  "first_publish_year": 1963,
+  "publisher": "Newman Press",
+  "url": "https://openlibrary.org/works/OL912282W",
+  "verified_title": "33. Letters of St. Jerome, Vol. 1 (Ancient Christian Writers)",
+  "verified": true
+ },
+ "Gregory the Great": {
+  "isbn": "9780881413182",
+  "ol_title": "The Book of Pastoral Rule",
+  "ol_authors": [
+   "Pope Gregory I"
+  ],
+  "first_publish_year": 2007,
+  "publisher": "St Vladimirs Seminary Pr",
+  "url": "https://openlibrary.org/works/OL8497475W",
+  "verified_title": "The Book of Pastoral Rule",
+  "verified": true
+ },
+ "Anselm of Canterbury": {
+  "isbn": "9780343014469",
+  "ol_title": "Proslogium; Monologium; An Appendix, in Behalf of the Fool, by Gaunilon; And Cur Deus Homo",
+  "ol_authors": [
+   "Saint Archbishop of Canterbury Anselm"
+  ],
+  "first_publish_year": 2018,
+  "publisher": "Franklin Classics",
+  "url": "https://openlibrary.org/works/OL24184694W",
+  "verified_title": "Proslogium; Monologium; an Appendix, In Behalf of the Fool, by Gaunilon; and Cur Deus Homo",
+  "verified": true
+ },
+ "Bernard of Clairvaux": {
+  "isbn": "9780879071141",
+  "ol_title": "On loving God",
+  "ol_authors": [
+   "Saint Bernard of Clairvaux",
+   "Emero Stiegman"
+  ],
+  "first_publish_year": 1909,
+  "publisher": "SCM Press",
+  "url": "https://openlibrary.org/works/OL1087494W",
+  "verified_title": "On Loving God (Cistercian Fathers Series)",
+  "verified": true
+ },
+ "Hugh of St. Victor": {
+  "isbn": "9780231024440",
+  "ol_title": "The didascalicon of Hugh of St. Victor",
+  "ol_authors": [
+   "Hugh of Saint Victor"
+  ],
+  "first_publish_year": 1961,
+  "publisher": "Columbia University Press",
+  "url": "https://openlibrary.org/works/OL4129174W",
+  "verified_title": "The didascalicon of Hugh of St. Victor",
+  "verified": true
+ },
+ "Hildegard of Bingen": {
+  "isbn": "9780809104314",
+  "ol_title": "Scivias",
+  "ol_authors": [
+   "Hildegard Saint",
+   "Hildegard von Bingen",
+   "Walburga Storch",
+   "Mother Columba Hart",
+   "Jane Bishop",
+   "Barbara Newman"
+  ],
+  "first_publish_year": 1628,
+  "publisher": "Pattloch",
+  "url": "https://openlibrary.org/works/OL1348986W",
+  "verified_title": "Hildegard of Bingen",
+  "verified": false
+ },
+ "John Wycliffe": {
+  "isbn": "9780341953210",
+  "ol_title": "Select English Works of John Wyclif",
+  "ol_authors": [
+   "Thomas Arnold",
+   "John Wycliffe"
+  ],
+  "first_publish_year": 2015,
+  "publisher": "Franklin Classics Trade Press",
+  "url": "https://openlibrary.org/works/OL24371826W",
+  "verified_title": "Select English Works of John Wyclif",
+  "verified": true
+ },
+ "Nicolaus Copernicus": {
+  "isbn": "9781573920353",
+  "ol_title": "On the revolution of heavenly spheres",
+  "ol_authors": [
+   "Nicolaus Copernicus"
+  ],
+  "first_publish_year": 1995,
+  "publisher": "Prometheus Books",
+  "url": "https://openlibrary.org/works/OL1429593W",
+  "verified_title": "On the revolution of heavenly spheres",
+  "verified": true
+ },
+ "Charles Montesquieu": {
+  "isbn": null,
+  "note": "no ISBN-13 in Open Library"
+ },
+ "Ernest Hemingway": {
+  "isbn": "9780020519102",
+  "ol_title": "The Old Man and the Sea",
+  "ol_authors": [
+   "Ernest Hemingway"
+  ],
+  "first_publish_year": 1952,
+  "publisher": "Klett",
+  "url": "https://openlibrary.org/works/OL63073W",
+  "verified_title": "The Old Man and the Sea (A Scribner Classic)",
+  "verified": true
+ },
+ "Jorge Luis Borges": {
+  "isbn": "9780061565373",
+  "ol_title": "Ficciones",
+  "ol_authors": [
+   "Jorge Luis Borges"
+  ],
+  "first_publish_year": 1945,
+  "publisher": "Emecé Editores",
+  "url": "https://openlibrary.org/works/OL110971W",
+  "verified_title": "Ficciones",
+  "verified": true
+ },
+ "Friedrich Hayek": {
+  "isbn": "9780226320540",
+  "ol_title": "The Road to Serfdom",
+  "ol_authors": [
+   "Friedrich A. von Hayek"
+  ],
+  "first_publish_year": 1944,
+  "publisher": "Inst of Economic Affairs",
+  "url": "https://openlibrary.org/works/OL1165001W",
+  "verified_title": "The Road to Serfdom",
+  "verified": true
+ },
+ "Hannah Arendt": {
+  "isbn": "9780226025926",
+  "ol_title": "The Human Condition",
+  "ol_authors": [
+   "Hannah Arendt"
+  ],
+  "first_publish_year": 1958,
+  "publisher": "University of Chicago Press",
+  "url": "https://openlibrary.org/works/OL10460638W",
+  "verified_title": "The human condition.",
+  "verified": true
+ },
+ "Albert Camus": {
+  "isbn": null,
+  "note": "no ISBN-13 in Open Library"
+ },
+ "Aleksandr Solzhenitsyn": {
+  "isbn": "9780447330373",
+  "ol_title": "One Day in the Life of Ivan Denisovich",
+  "ol_authors": [
+   "Александр Исаевич Солженицын",
+   "Ronald Hingley",
+   "Max Hayward"
+  ],
+  "first_publish_year": 1963,
+  "publisher": "Praeger",
+  "url": "https://openlibrary.org/works/OL28966413W",
+  "verified_title": "One Day in the Life of Ivan Denisovich",
+  "verified": true
+ },
+ "James Baldwin": {
+  "isbn": "9780030554421",
+  "ol_title": "The fire next time",
+  "ol_authors": [
+   "James Baldwin"
+  ],
+  "first_publish_year": 1962,
+  "publisher": "Turtleback Books",
+  "url": "https://openlibrary.org/works/OL2683364W",
+  "verified_title": "The fire next time",
+  "verified": true
+ },
+ "Martin Luther King Jr.": {
+  "isbn": "9780062509550",
+  "ol_title": "Letter from the Birmingham jail",
+  "ol_authors": [
+   "Martin Luther King Jr.",
+   "Dion Graham"
+  ],
+  "first_publish_year": 1963,
+  "publisher": "Harpercollins",
+  "url": "https://openlibrary.org/works/OL1945913W",
+  "verified_title": "Letter from the Birmingham Jail",
+  "verified": true
+ },
+ "Toni Morrison": {
+  "isbn": "9780099273936",
+  "ol_title": "Beloved",
+  "ol_authors": [
+   "Toni Morrison"
+  ],
+  "first_publish_year": 1987,
+  "publisher": "Longman Publishing Group",
+  "url": "https://openlibrary.org/works/OL50548W",
+  "verified_title": "Beloved",
+  "verified": true
+ },
+ "Pearl": {
+  "isbn": "9780345234803",
+  "ol_title": "The Pearl",
+  "ol_authors": [
+   "Anonymous"
+  ],
+  "first_publish_year": 1967,
+  "publisher": "Pendulum Books",
+  "url": "https://openlibrary.org/works/OL264725W",
+  "verified_title": "The Pearl",
+  "verified": true
+ }
+}

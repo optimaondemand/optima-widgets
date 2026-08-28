@@ -113,6 +113,20 @@ CLT = {
         'Franz Kafka',
     ('12', 'Wise Blood'):
         "Flannery O'Connor",
+
+    # --- added 2026-08-28 with the CLT Author Bank layer.
+    # Author matching could not see these three: all three catalogue records
+    # carry an EMPTY author field, so there was no surname to match the bank
+    # against. Found by listing the author-less records rather than by matching.
+    # They are badged here, NOT duplicated into clt_additions.py.
+    ('12', 'Confucian Analects'):
+        'Confucius',
+    ('12', "Excerpts from Nietzsche's writings"):
+        'Friedrich Nietzsche',
+    # source_corrections.py rewrites "The Federalist's Papers" before anything
+    # derives from the title, so the key here is the corrected form.
+    ('11', 'The Federalist Papers'):
+        'James Madison',
 }
 
 

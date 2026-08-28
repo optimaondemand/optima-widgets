@@ -104,7 +104,7 @@ JS = """
     return a.sortTitle < b.sortTitle ? -1 : 1;
   }
   function headingFor(rec){
-    if (sortMode === 'grade') return 'Grade ' + rec.grade;
+    if (sortMode === 'grade') return rec.gradeLabel || ('Grade ' + rec.grade);
     if (sortMode === 'shelf') return rec.shelf;
     if (sortMode === 'author') return (rec.authorDisplay || 'Unattributed');
     var c = rec.sortTitle.charAt(0).toUpperCase();
@@ -215,6 +215,9 @@ JS = """
     var g = {};
     for (var i=0;i<rows.length;i++){
       var r = rows[i];
+      // The CLT bank layer is on no grade list and no course assigns it, so it
+      // cannot appear in a table of what a grade must purchase.
+      if (r.cltOnly) continue;
       if (!g[r.grade]) g[r.grade] = {free:0, sim:0, buy:0, n:0, num:r.gradeNum};
       g[r.grade].n++;
       if (r.state === 'identical') g[r.grade].free++;
@@ -239,7 +242,8 @@ JS = """
         + '</tr>';
     });
     return shell('What each grade costs',
-      'Counts respect the filters above. <b>Free</b> means the public-domain text is the '
+      'Counts respect the filters above and cover the approved book list only, '
+      + 'not the CLT Author Bank layer. <b>Free</b> means the public-domain text is the '
       + 'same text; <b>similar</b> means a free version exists in another edition; '
       + '<b>buy</b> means students need a licensed copy. The last column builds that '
       + "grade's purchase list in one click.",
@@ -679,7 +683,9 @@ JS = """
         + (tbPick[r.id] ? ' checked' : '') + ' />' + statePill(r.state)
         + '<span class="tbtmid"><span class="tbtt">' + esc(r.title) + '</span> '
         + '<span class="tbta">' + esc(r.authorDisplay || '') + '</span></span>'
-        + '<span class="tbtg">Grade ' + esc(r.grade) + '</span></label>';
+        + '<span class="tbtg">' + esc(r.cltOnly ? 'CLT bank'
+                                                 : 'Grade ' + r.grade)
+        + '</span></label>';
     }
     if (!rows.length) h = '<div class="tbblank">No titles match that search.</div>';
     list.innerHTML = h;

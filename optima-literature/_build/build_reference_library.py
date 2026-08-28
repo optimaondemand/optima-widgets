@@ -33,6 +33,7 @@ import sys
 from collections import Counter, defaultdict
 from pathlib import Path
 
+import clt_additions as CA
 import course_editions as CE
 import clt_titles as CT
 import first_pub as FP
@@ -104,6 +105,33 @@ def year_label(work):
     return ("c. " + s) if circa else s
 
 
+# Sentinel "grade" for the CLT Author Bank layer. These titles are on no grade
+# list at all, so anything that prints or sorts a grade has to special-case it
+# rather than render "Grade CLT".
+CLT_GRADE = "CLT"
+
+
+def grade_rank(g):
+    """K first, then 1-12, then the CLT bank layer, which is on no grade list."""
+    if g == "K":
+        return 0
+    if g == CLT_GRADE:
+        return 99
+    return int(g)
+
+
+def grade_label(g):
+    """The CLT layer has no grade, so it must not be printed as one."""
+    if g == CLT_GRADE:
+        return "CLT Author Bank"
+    return f"Grade {g}"
+
+
+def grade_chip(g):
+    """Short form for the corner of a card, where "Gr CLT" would read wrong."""
+    return "CLT bank" if g == CLT_GRADE else f"Gr {g}"
+
+
 def sort_key(rec):
     """Alphabetical by title, articles ignored, the way a library shelves."""
     t = re.sub(r'^(the|a|an)\s+', "", rec["title"].lower()).strip()
@@ -118,9 +146,65 @@ def author_sort(rec):
 
 # --------------------------------------------------------------- enrichment
 
+def enrich_clt(b):
+    """Enrich one CLT-layer record.
+
+    These do not come off the book list, so none of the three keyed tables
+    (first_pub, genres, course_editions) knows about them. Everything they need
+    is carried on the record and written down in clt_additions.py, which is
+    where a correction belongs.
+    """
+    y, circa = b.get("clt_year"), b.get("clt_circa")
+    b["_work"] = None
+    b["_year"] = year_label((y, circa, None, None, None)) if y is not None else None
+    b["_year_num"] = y
+    # Only an English-original work gets a language, because _lang is what the
+    # gate uses to refuse a translation flag on a work written in English.
+    b["_lang"] = "en" if b.get("clt_english_original") else None
+    b["_date_conf"] = "high"
+    b["_date_note"] = None
+
+    b["_shelf"], b["_shelf_src"] = b["clt_shelf"], "clt-additions"
+
+    fv = b.get("free_version") or {"state": "none", "reason": "unknown_rights"}
+    b["_state"] = fv["state"]
+    b["_reason"] = fv.get("reason")
+
+    ed = b.get("edition") or {}
+    b["_translator"] = b["_editor"] = b["_illustrator"] = b["_reteller"] = None
+    b["_publisher"] = (ed.get("publishers") or [None])[0]
+    b["_edition_year"] = ed.get("publish_date")
+    b["_pages"] = None
+    b["_isbn"] = ed.get("isbn")
+    b["_edition_title"] = ed.get("edition_title")
+
+    # No translator-year research was done for this layer, so no translation
+    # flag is asserted. A blank flag says nothing; a guessed one would lie.
+    b["_translation_year"] = None
+    b["_flag_source"] = None
+    b["_flag_translator"] = None
+    b["_flag"] = "none"
+
+    # No Optima course assigns a CLT-layer title. That is the whole point of
+    # the layer, and it is why Taught still means something.
+    b["_course"] = None
+    b["_taught"] = False
+    b["_clt"] = True
+    b["_clt_bank"] = b["clt_bank_entry"]
+    b["_course_verify"] = False
+    b["_verify"] = False
+    return b
+
+
 def enrich(book):
     """Attach everything the page needs; leave gaps visible, never guessed."""
     for b in book:
+        # CLT-layer records come from clt_additions.py, not from the book list,
+        # so the three lookups below (first_pub, genres, course_editions) have
+        # nothing keyed for them. Their facts travel on the record itself.
+        if b.get("clt_only"):
+            enrich_clt(b)
+            continue
         key = b["key"]
         work = FP.WORKS.get(key)
         b["_work"] = work
@@ -296,6 +380,10 @@ SOURCE_NAME = {
 VENDOR_NAME = {
     "amazon.com": "Amazon", "www.amazon.com": "Amazon", "a.co": "Amazon",
     "folger.edu": "Folger", "guides.loc.gov": "Library of Congress",
+    # CLT-layer purchase titles point at the Open Library edition record rather
+    # than a shop: it names the exact edition and ISBN, and leaves the school
+    # free to buy wherever it buys.
+    "openlibrary.org": "Find this edition",
 }
 
 
@@ -320,8 +408,14 @@ def action_links(b):
     ro = fv.get("read_online") or {}
     out = []
     if b.get("url"):
+        # A CLT-layer title is on no book list, so the book list names no
+        # edition for it and the tooltip must not say that it does.
+        tip = ("The edition Open Library records for this work. No Optima "
+               "course assigns it and it is not on the approved book list"
+               if b.get("clt_only")
+               else "Buy the edition the book list names")
         out.append(f'<a class="act buy" href="{attr(b["url"])}" target="_blank" '
-                   f'rel="noopener" title="Buy the edition the book list names">'
+                   f'rel="noopener" title="{attr(tip)}">'
                    f'{esc(vendor_label(b["url"]))}</a>')
     if free.get("url"):
         cls = "free" if b["_state"] == "identical" else "sim"
@@ -451,7 +545,7 @@ def book_card(b, idx):
         f'<div class="bt">{esc(b["title"])}</div>'
         f'<div class="ba">{esc(who) if not b.get("authors") else who}{yr}</div>'
         f'<div class="shelf">{art} {esc(b["_shelf"])}'
-        f'<span class="gr">Gr {esc(b["grade"])}</span></div>'
+        f'<span class="gr">{esc(grade_chip(b["grade"]))}</span></div>'
         f'</div></div>'
         + (f'<div class="pub">{pl}</div>' if pl else "")
         + course_line(b)
@@ -476,7 +570,9 @@ def client_record(b, idx):
         "authorDisplay": who,
         "authorKey": author_sort(b)[0],
         "grade": g,
-        "gradeNum": 0 if g == "K" else int(g),
+        "gradeLabel": grade_label(g),
+        "gradeNum": grade_rank(g),
+        "cltOnly": bool(b.get("clt_only")),
         "shelf": b["_shelf"],
         "shelfSlug": slug(b["_shelf"]),
         "state": b["_state"],
@@ -547,7 +643,13 @@ def key_block():
         f'An Optima course actually teaches this. The note on the card says '
         f'which edition, which is the only thing that settles rights</div>')
     return (
-        '<div class="key"><h2>What the words mean</h2><p class="fine" style="margin:0 0 10px 0;">Every title on this page is on the OAO 2026&ndash;27 approved book list. The badges below say what is different <em>between</em> them.</p>'
+        '<div class="key"><h2>What the words mean</h2>'
+        '<p class="fine" style="margin:0 0 10px 0;">This page holds two things. '
+        'Every title filed under a <b>grade</b> is on the OAO 2026&ndash;27 '
+        'approved book list. Every title filed under <b>CLT Author Bank</b> is '
+        'not: it is here because the Classic Learning Test draws passages from '
+        'its author, and no Optima course assigns it. The badges below say what '
+        'is different <em>between</em> them.</p>'
         f'<div class="keyrow">{"".join(items)}</div>'
         '<p class="fine">A free PDF on a school or personal website is not a '
         'licence. Free versions here come only from Project Gutenberg, Standard '
@@ -562,11 +664,10 @@ def key_block():
 
 
 def controls(book):
-    grades = sorted({b["grade"] for b in book},
-                    key=lambda g: 0 if g == "K" else int(g))
+    grades = sorted({b["grade"] for b in book}, key=grade_rank)
     shelves = sorted({b["_shelf"] for b in book})
 
-    gopt = "".join(f'<option value="{attr(g)}">Grade {esc(g)}</option>'
+    gopt = "".join(f'<option value="{attr(g)}">{esc(grade_label(g))}</option>'
                    for g in grades)
     sopt = "".join(f'<option value="{attr(slug(s))}">{esc(s)}</option>'
                    for s in shelves)
@@ -659,8 +760,14 @@ def build():
     for old, new in fixed:
         print("  source correction: %r -> %r" % (old, new))
 
-    book = enrich(recs["booklist"])
+    # The CLT Author Bank layer. Not on the book list, not taught by any
+    # course, and deliberately carried in its own module so a rebuild of the
+    # book-list records cannot disturb it and vice versa.
+    listed = list(recs["booklist"])
+    book = enrich(listed + [dict(r) for r in CA.ADDITIONS])
     book.sort(key=sort_key)
+    print("  book list: %d records + CLT bank layer: %d = %d"
+          % (len(listed), len(CA.ADDITIONS), len(book)))
 
     cards, client = [], []
     for i, b in enumerate(book):
@@ -864,6 +971,44 @@ def gate(page, book, client):
                 f"1850-1899 tier was removed 2026-08-27")
         if b["_flag"] == "archaic" and (b["_translation_year"] or 9999) >= 1850:
             problems.append(f"archaic flag on a post-1850 translation: {b['title']!r}")
+
+    # --- the CLT Author Bank layer
+    clt_recs = [b for b in book if b.get("clt_only")]
+    if len(clt_recs) != len(CA.ADDITIONS):
+        problems.append(f"{len(clt_recs)} CLT records rendered for "
+                        f"{len(CA.ADDITIONS)} in clt_additions")
+    for b in clt_recs:
+        # A CLT title is on no book list and no course teaches it. If either
+        # ever reads true, the badge has stopped meaning anything.
+        if b["_taught"]:
+            problems.append(f"CLT-layer title marked taught: {b['title']!r}")
+        if b.get("listed_as"):
+            problems.append(f"CLT-layer title claims a book-list line: "
+                            f"{b['title']!r}")
+        if not b["_clt"]:
+            problems.append(f"CLT-layer title not badged CLT: {b['title']!r}")
+        if b["_shelf"] == "Unclassified":
+            problems.append(f"CLT-layer title left unshelved: {b['title']!r}")
+        # Rights: a free link may only ever point at Gutenberg here, and a
+        # purchase-only title must carry a real ISBN rather than a blank card.
+        fv = b.get("free_version") or {}
+        fr = fv.get("free") or {}
+        if fr.get("url") and "gutenberg.org" not in fr["url"]:
+            problems.append(f"CLT free link is not Gutenberg: {b['title']!r}")
+        if b["_state"] == "none" and not b["_isbn"]:
+            problems.append(f"CLT purchase title with no ISBN: {b['title']!r}")
+    # every bank entry must be accounted for exactly once, by a new record or
+    # by a ruling on a record the catalogue already held
+    import clt_author_bank as CAB
+    bank = {e.lower() for e in list(CAB.AUTHORS) + list(CAB.WORKS)}
+    covered = {(b.get("_clt_bank") or "").replace(" (retold)", "").lower()
+               for b in book if b["_clt"]}
+    missing = sorted(e for e in bank if e not in covered)
+    if missing:
+        problems.append(f"{len(missing)} CLT bank entries with no title: "
+                        f"{missing[:6]}")
+    if CLT_GRADE in {b["grade"] for b in book if not b.get("clt_only")}:
+        problems.append("a book-list record is using the CLT sentinel grade")
 
     # warnings: real gaps, not defects
     unshelved = [b["title"] for b in book if b["_shelf"] == "Unclassified"]
