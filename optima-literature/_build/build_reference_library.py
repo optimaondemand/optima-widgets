@@ -493,37 +493,6 @@ def pub_line(b):
     return " &middot; ".join(bits)
 
 
-def course_line(b):
-    """
-    What the built coursework uses. Only rendered for taught titles, because
-    for everything else there is nothing true to say.
-    """
-    c = b.get("_course")
-    if not c:
-        return ""
-    if c["used"] == "student":
-        if b["_state"] == "identical":
-            # Saying "supply their own copy" on a public-domain text reads as
-            # "buy it", which is the opposite of what the free link means.
-            body = ("Taught in Optima Grade %s. Optima reproduces no text; the "
-                    "free public-domain text below is the same text."
-                    % esc(c["grade"]))
-        else:
-            body = ("Taught in Optima Grade %s. Students supply their own copy; "
-                    "no text is reproduced." % esc(c["grade"]))
-    elif c["used"] == "reference":
-        body = ("In the Grade %s folder as a reading copy only, not deployed."
-                % esc(c["grade"]))
-    else:
-        ed = c.get("edition")
-        body = "Optima Grade %s uses %s." % (
-            esc(c["grade"]), esc(ed) if ed else "an unattributed edition")
-    warn = ""
-    if c["used"] == "on-page" and c.get("stored_ok") is False:
-        warn = ' <b style="color:#B85F00;">File needs attention.</b>'
-    return f'<div class="course">{body}{warn}</div>'
-
-
 def book_card(b, idx):
     badges = [f'<span class="bdg st" style="--bc:{STATE_COLOR[b["_state"]]};" '
               f'title="{attr(STATE_BLURB[b["_state"]])}">'
@@ -596,10 +565,6 @@ def book_card(b, idx):
         f'<span class="gr">{esc(grade_chip(b["grade"]))}</span></div>'
         f'</div></div>'
         + (f'<div class="pub">{pl}</div>' if pl else "")
-        + (('<div class="course unlisted">Not on the OAO 2026&ndash;27 book '
-            'list. A course teaches it, so no family should be told to buy it '
-            'off that list.</div>') if b.get("not_on_book_list") else "")
-        + course_line(b)
         + f'<div class="bm">{"".join(badges)}</div>'
         f'<div class="acts">{action_links(b)}</div>'
         '</div>'

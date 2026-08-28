@@ -189,12 +189,6 @@ select,#q{font-family:inherit;font-size:13.5px;padding:8px 11px;
 .pub{font-size:11.5px;color:var(--ink-soft);line-height:1.55;border-top:1px dashed var(--line);
      padding-top:8px;}
 .pub.none{color:var(--ink-faint);font-style:italic;}
-.course{font-size:11.5px;color:var(--ink);background:var(--note-bg);
-     border-left:3px solid var(--accent);
-     border-radius:0 6px 6px 0;padding:6px 10px;line-height:1.5;}
-/* Same note shape, different edge: this one is a caution about where the title
-   came from, not a statement about what the course uses. */
-.course.unlisted{border-left-color:#B85F00;margin-bottom:6px;}
 .bm{display:flex;flex-wrap:wrap;gap:5px;}
 .bdg{font-size:10px;letter-spacing:.6px;text-transform:uppercase;
      font-weight:700;color:#fff;background:var(--bc);border-radius:5px;
