@@ -59,13 +59,14 @@ JS = """
   }
 
   function badgeFor(w){
-    if (w.disposition === "publish")
-      return '<span class="badge pub">Image available</span>';
-    if (w.disposition === "research")
-      return '<span class="badge res">Date unconfirmed</span>';
-    if (w.disposition === "re-source")
-      return '<span class="badge link">Public domain, no free copy yet</span>';
-    return '<span class="badge link">JSTOR only</span>';
+    // The label comes from the contract, not from a switch here, because "research"
+    // covers three different situations and one of them - a Mondrian recorded as 1921 -
+    // is not an unconfirmed date at all. Hardcoding "Date unconfirmed" told a teacher to
+    // go looking for something the record already had.
+    var cls = w.disposition === "publish" ? "pub"
+            : (w.disposition === "research" && w.hold_reason !== "modern-band") ? "res"
+            : "link";
+    return '<span class="badge ' + cls + '">' + esc(w.disposition_label) + '</span>';
   }
 
   function plateFor(w){

@@ -9,7 +9,7 @@ Cross-course interactive widgets for Optima Academy Online, hosted on GitHub Pag
 | `study-planner.html` | K–12 study planner: a questionnaire (grade, live vs On-Demand enrollment, courses/goals via paste or .txt upload, available days/times, parent coordination, metacognitive focus questions) that generates a personalized weekly schedule, daily routine, or project plan, downloadable as PDF via print. | Canvas homeroom page; embeddable in any course |
 | `course-home-builder.html` | **Teacher-facing.** A form that generates a branded Optima course home page. Teachers fill in course name, term/section/meeting time, their own name and email, weekly announcements, quick-access tiles, module cards, and a Commonplace Corner quote; the widget outputs paste-ready HTML with a live preview, a **Copy HTML** button, and a `.html` download. | Not embedded in a course — teachers open it directly and paste the output into a Canvas page |
 | `optima-literature/ela-reference-library.html` | **Teacher-facing.** The ELA Reference Library: 226 titles with edition, translator, rights, first-publication and genre data, cover art, search, sort, a taught filter, a printable "my list" checkout card, and data-quality checks behind the ⚙ button. Generated — never hand-edit the HTML. | Not embedded in a course — teachers open it directly |
-| `optima-art/art-reference-library.html` | **Teacher-facing.** The Art Reference Library: 529 artworks catalogued from seven art courses, with search across artist, title, period, course and unit; availability filters; 33 published free-to-use images with a copy-URL button; a JSTOR link on 400 records; and a rights-and-data panel behind the ⚙ button. Generated — never hand-edit the HTML. | Not embedded in a course — teachers open it directly |
+| `optima-art/art-reference-library.html` | **Teacher-facing.** The Art Reference Library: 529 artworks catalogued from seven art courses, with search across artist, title, period, course and unit; availability filters; 41 published free-to-use images with a copy-URL button; a JSTOR link on 400 records; and a rights-and-data panel behind the ⚙ button. Generated — never hand-edit the HTML. | Not embedded in a course — teachers open it directly |
 
 ### optima-literature notes
 
@@ -39,7 +39,7 @@ Cross-course interactive widgets for Optima Academy Online, hosted on GitHub Pag
   [`optima-art-assets`](https://github.com/optimaondemand/optima-art-assets) via GitHub Pages.
   The gate refuses to build if any image URL points anywhere else, including a museum host,
   because several museums 403 a `github.io` referer.
-- **Only 33 of 529 works carry an image, and that is correct.** The source files are Artstor
+- **Only 41 of 529 works carry an image, and that is correct.** The source files are Artstor
   (Images on JSTOR) exports carrying an embedded licence that forbids redistribution, so a work
   can be centuries out of copyright and still not ours to publish. Those records link to JSTOR
   instead, which needs an Optima login. The count rises as works are re-sourced from Wikimedia

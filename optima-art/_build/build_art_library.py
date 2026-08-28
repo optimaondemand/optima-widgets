@@ -157,9 +157,11 @@ def build():
         ("link-only", "JSTOR only",
          "Still in copyright, or the photograph carries its own copyright even though the "
          "subject does not. Link out; never reproduce."),
-        ("research", "Date unconfirmed",
-         "No reliable date established, so no rights call can be made. Held deliberately "
-         "rather than guessed.")):
+        ("research", "Held for a rights check",
+         "Three situations share this bucket and the card states which. 36 works are "
+         "dated 1900-1930, where the US term has expired but a 20th-century artist "
+         "needs a human ruling; 56 are public domain only via a movement guessed from a "
+         "folder name; 2 have no date at all.")):
         A("<tr><td>" + e(label) + '</td><td class="num">' + str(counts.get(key, 0))
           + "</td><td>" + e(meaning) + "</td></tr>")
     A("</tbody></table>")
