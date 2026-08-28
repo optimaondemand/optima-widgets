@@ -55,6 +55,18 @@ def build():
     movements = collections.Counter(
         t["label"] for w in works for t in w["tags"] if t["scheme"] == "art.movement")
 
+    # A work counts once per discipline, not once per concept, or a work carrying two
+    # maths concepts would inflate the Mathematics chip.
+    subjects = collections.Counter()
+    for w in works:
+        for disc in {t.get("discipline") for t in w["tags"]
+                     if t["scheme"] == "concept" and t.get("discipline")}:
+            subjects[disc] += 1
+    n_concept = sum(1 for w in works
+                    if any(t["scheme"] == "concept" for t in w["tags"]))
+    vocab = contract.get("concept_vocabulary", {})
+    used = {t["code"] for w in works for t in w["tags"] if t["scheme"] == "concept"}
+
     parts = []
     A = parts.append
     A("<!doctype html>")
@@ -107,6 +119,18 @@ def build():
     A('<button class="chip" type="button" data-avail="neither" aria-pressed="false">'
       'No image, no link<span class="n">' + str(n_neither) + "</span></button>")
     A("</div>")
+    if subjects:
+        A('<div class="subjects"><span class="lab">Subject</span>')
+        for disc, n in sorted(subjects.items(), key=lambda kv: (-kv[1], kv[0])):
+            A('<button class="subj" type="button" data-subject="' + e(disc)
+              + '" aria-pressed="false">' + e(disc)
+              + '<span class="n">' + str(n) + "</span></button>")
+        A("</div>")
+        A('<p class="conceptnote"><b>' + str(n_concept) + ' works are tagged by subject</b> '
+          'so far, across ' + str(len(used)) + ' concepts. A subject tag is only added when '
+          'the catalogue record for a work names the idea &mdash; a title reading '
+          '&ldquo;Linear Perspective&rdquo; or a material reading &ldquo;marble&rdquo;. '
+          'Hover a subject pill on any card to see the exact wording it came from.</p>')
     A('<p class="resultline" id="resultline"></p>')
     A("</div></section>")
 
@@ -153,6 +177,25 @@ def build():
       "the Safavid period. " + str(sum(1 for w in works if w["sourced"]))
       + " of " + str(len(works)) + " records now carry file-sourced identity.</p>")
 
+    A("<h3>Subjects, and what a subject tag means</h3>")
+    A("<table><thead><tr><th>Subject</th><th>Concept</th><th>Works</th>"
+      "<th>What it covers</th></tr></thead><tbody>")
+    percode = collections.Counter(t["code"] for w in works for t in w["tags"]
+                                 if t["scheme"] == "concept")
+    for code, meta in sorted(vocab.items(),
+                             key=lambda kv: (kv[1]["discipline"], kv[1]["label"])):
+        n = percode.get(code, 0)
+        A("<tr><td>" + e(meta["discipline"]) + "</td><td>" + e(meta["label"])
+          + '</td><td class="num">' + (str(n) if n else "&mdash;")
+          + "</td><td>" + e(meta["note"]) + "</td></tr>")
+    A("</tbody></table>")
+    A("<p>A concept is attached only when a <b>sourced</b> field &mdash; the title, "
+      "creator or material carried in the image file's own metadata &mdash; contains "
+      "wording that names the idea. Folder names are never enough. Every tag records the "
+      "exact substring that produced it, which is what the hover text on each pill shows. "
+      "That rule keeps coverage low on purpose: "
+      + str(n_concept) + " of " + str(len(works)) + " works are tagged, and a concept with "
+      "a dash above is defined but has not yet found a work it can honestly claim.</p>")
     A("<h3>Cross-subject tagging</h3>")
     A("<p>Tags are an open list rather than fixed columns, so a new subject is a new "
       "scheme value and never a rebuild. Present today: "
@@ -171,6 +214,12 @@ def build():
 
     # ---------------- grid ----------------
     A('<main class="wrap"><div class="grid" id="grid"></div></main>')
+    A('<div class="tray" id="tray" role="region" aria-label="Lesson selection"><div class="wrap">')
+    A('<div class="count" id="traycount"></div>')
+    A('<div class="names" id="traynames"></div>')
+    A('<button type="button" id="trayclear">Clear</button>')
+    A('<button type="button" class="primary" id="traycopy">Copy lesson block</button>')
+    A("</div></div>")
     A('<footer class="wrap">Optima Academy Online &middot; Art Reference Library &middot; '
       "teacher reference. Rights statuses are a documented screen, not legal advice; when "
       "a use matters, check the source record.</footer>")
@@ -222,6 +271,16 @@ def gate(doc, works, n_img):
         if w["disposition"] != "publish" and not w["why"]:
             fails.append("held work with no reason given: " + w["id"])
 
+    # every concept tag must carry its discipline and the evidence that produced it, or
+    # the hover text is empty and the claim becomes unverifiable
+    for w in works:
+        for t in w["tags"]:
+            if t["scheme"] != "concept":
+                continue
+            if not t.get("discipline"):
+                fails.append("concept tag with no discipline: " + w["id"])
+            if not t.get("asserted_by"):
+                fails.append("concept tag with no evidence: " + w["id"] + " / " + t["code"])
     check(n_img > 0, "no images at all: the contract was probably built without a manifest")
     check("jstor.org/stable/" in doc, "no JSTOR links in the page")
     # doi.org 404s on Artstor community ids; the resolving form is the stable path

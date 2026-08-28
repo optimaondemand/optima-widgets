@@ -49,6 +49,17 @@ Cross-course interactive widgets for Optima Academy Online, hosted on GitHub Pag
   the cards say "Filed under Renaissance" and "Filed as greek attic" rather than asserting them.
   A Seurat is filed under Neoclassicism and a 1501 illumination under Medieval; the phrasing is
   load-bearing, not hedging.
+- **Subject tags are evidence-gated, and that is why coverage is 12%.** A concept is
+  attached only when a *sourced* field — the title, creator or material carried in the
+  image file's own metadata — contains wording that names the idea. Folder names never
+  count, and neither does art-historical knowledge: the Nike of Samothrace is a lesson in
+  drapery, but nothing in its record says so, so it carries no such tag. Every tag records
+  the exact substring that fired it, shown as hover text on the pill. 61 of 529 works are
+  tagged across 11 concepts; `_build/../concepts.py` in the private repo holds the
+  vocabulary and `test_concepts.py` guards it, including cases that must find NOTHING.
+- **The lesson tray** collects picked works and emits plain text, not HTML, because a
+  teacher pastes it into a lesson plan, an email or a Canvas box and plain text survives
+  all three. Selections persist in `localStorage`.
 - Reuses the embedded wordmark from `optima-literature/_build/brand_assets.py` rather than
   carrying a second copy of the same base64.
 

@@ -130,11 +130,57 @@ select:focus{border-color:var(--cyan)}
 .panel code{background:#eef1f6;padding:1.5px 5px;border-radius:4px;font-size:13px}
 footer{padding:26px 0 40px;color:var(--mute);font-size:13px;border-top:1px solid var(--line)}
 
+/* ---------- subject chips ---------- */
+.subjects{display:flex;gap:8px;flex-wrap:wrap;margin-top:11px;
+  padding-top:11px;border-top:1px dashed var(--line)}
+.subjects .lab{font-size:12px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--mute);align-self:center;margin-right:2px}
+.subj{padding:5px 11px;font-size:13px;font-weight:550;color:var(--navy-2);background:#fff;
+  border:1px solid var(--line);border-radius:6px;cursor:pointer}
+.subj:hover{border-color:var(--cyan-dim)}
+.subj[aria-pressed="true"]{background:var(--cyan-dim);border-color:var(--cyan-dim);color:#fff}
+.subj .n{opacity:.62;font-weight:500;margin-left:5px}
+.conceptnote{margin:9px 0 0;font-size:13px;color:var(--mute);max-width:78ch}
+.conceptnote b{color:var(--ink)}
+
+/* ---------- concept pills on a card ---------- */
+.cpills{display:flex;gap:5px;flex-wrap:wrap}
+.cpill{font-size:11px;font-weight:600;letter-spacing:.02em;padding:2px 7px;border-radius:4px;
+  background:#e7f6f8;color:var(--cyan-dim);border:1px solid #c8e9ee;cursor:help}
+
+/* ---------- lesson bundle tray ---------- */
+.addbtn{font:inherit;font-size:12.5px;font-weight:600;color:var(--navy-2);cursor:pointer;
+  background:#fff;border:1px solid var(--line);border-radius:7px;padding:6px 10px}
+.addbtn:hover{border-color:var(--cyan)}
+.addbtn.in{background:var(--navy);border-color:var(--navy);color:#fff}
+.tray{position:fixed;left:0;right:0;bottom:0;z-index:40;background:var(--navy);
+  color:#fff;box-shadow:0 -3px 18px rgba(15,35,64,.28);transform:translateY(100%);
+  transition:transform .18s ease}
+.tray.open{transform:translateY(0)}
+.tray .wrap{display:flex;align-items:center;gap:16px;padding:13px 24px;flex-wrap:wrap}
+.tray .count{font-size:15px;font-weight:650}
+.tray .count span{color:var(--cyan)}
+.tray .names{flex:1;min-width:180px;font-size:13px;color:#b9cbe4;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tray button{font:inherit;font-size:13.5px;font-weight:600;cursor:pointer;
+  border-radius:7px;padding:8px 14px;border:1px solid rgba(255,255,255,.34);
+  background:transparent;color:#fff}
+.tray button.primary{background:var(--cyan);border-color:var(--cyan);color:#08222e}
+.tray button:hover{border-color:#fff}
+.tray button.primary:hover{background:#48d3e5}
+body.hastray{padding-bottom:74px}
+
+@media (prefers-reduced-motion:reduce){
+  .tray{transition:none}
+}
+
 @media (max-width:640px){
   .wrap{padding:0 16px}
   h1{font-size:22px}
   .grid{grid-template-columns:1fr;gap:16px}
   .statline{gap:18px}
   select{max-width:100%;flex:1 1 140px}
+  .tray .wrap{padding:11px 16px;gap:10px}
+  .tray .names{display:none}
 }
 """
