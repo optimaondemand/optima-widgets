@@ -101,6 +101,8 @@ WORKS = {
     "once and future king|white":          (1958, False, "en", "high", None),
     "things fall apart|achebe":            (1958, False, "en", "high", None),
     "julius caesar|shakespeare":           (1599, False, "en", "high", None),
+    "macbeth|shakespeare":                 (1606, True,  "en", "high",
+                                           "written c.1606; first printed in the 1623 First Folio"),
     "oedipus the king oedipus at colonus antigone|sophocles":
                                            (-429, True,  "grc", "high",
                                             "Oedipus Tyrannus c.429 BC; the three plays are not a trilogy"),

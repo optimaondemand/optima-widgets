@@ -69,6 +69,8 @@ CLT = {
         'George Orwell',
     ('10', 'Julius Caesar'):
         'William Shakespeare',
+    ('10', 'Macbeth'):
+        'William Shakespeare',
     ('10', 'Night'):
         'Elie Wiesel',
     ('10', 'Oedipus the King, Oedipus at Colonus, Antigone'):

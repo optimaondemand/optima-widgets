@@ -2,6 +2,7 @@
 """Emit _build/clt_additions.py -- the CLT layer as stage3-shaped records."""
 import json, io, sys, re, unicodedata, datetime
 import dates as D
+import selection as sel
 import shelves as S
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8",
@@ -43,9 +44,13 @@ def norm_key(title, author):
     return "%s|%s" % (n(title), a[-1] if a else "")
 
 
-records, existing = [], []
+records, existing, omitted = [], [], []
+OMIT = getattr(sel, "OMIT", {})
 for o in res:
     bank = o["bank"]
+    if bank in OMIT:
+        omitted.append({"bank": bank, "reason": OMIT[bank]})
+        continue
     if o["outcome"] == "existing":
         existing.append(o)
         continue
@@ -191,6 +196,11 @@ ADDITIONS = %s
 
 # Bank entries satisfied by a record the catalogue already holds.
 ALREADY_IN_CATALOGUE = %s
+
+# Bank entries deliberately given no title. The gate counts an omission here as
+# accounted for, so a bank entry can never disappear by accident -- only on the
+# record, with a reason.
+OMITTED = %s
 '''
 
 body = json.dumps(records, ensure_ascii=False, indent=1)
@@ -203,13 +213,15 @@ exist = exist.replace(": null", ": None")
 
 open(OUT, "w", encoding="utf-8").write(
     hdr % (sum(1 for r in records if r["free_version"]["state"] == "none"),
-           datetime.date.today().isoformat(), body, exist))
+           datetime.date.today().isoformat(), body, exist,
+           json.dumps(omitted, ensure_ascii=False, indent=1)))
 
 print("records: %d  (free %d / purchase %d)"
       % (len(records),
          sum(1 for r in records if r["free_version"]["state"] != "none"),
          sum(1 for r in records if r["free_version"]["state"] == "none")))
 print("already in catalogue:", [e["bank"] for e in existing])
+print("omitted:", [o["bank"] for o in omitted] or "none")
 print("duplicate keys:", dupes or "none")
 print("records with no year:",
       [r["title"] for r in records if r["clt_year"] is None] or "none")

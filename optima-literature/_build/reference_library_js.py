@@ -346,6 +346,44 @@ JS = """
     }
   } catch(e){}
 
+  // A shelf entry is {id, quarter, access}. It used to be a bare id string,
+  // and files written that way must keep working, so everything reads through
+  // tbEntry() rather than assuming a shape.
+  var QUARTERS = ['Q1', 'Q2', 'Q3', 'Q4'];
+  var ACCESS_LABEL = {purchase: 'Student buys', provided: 'Provided in class',
+                      '': 'Not specified'};
+
+  function tbEntry(t){
+    if (typeof t === 'string') return {id: t, quarter: '', access: ''};
+    if (!t || !t.id) return null;
+    return {id: t.id, quarter: t.quarter || '', access: t.access || ''};
+  }
+  function tbEntries(s){
+    var raw = (s && s.titles) || [], out = [];
+    for (var i=0;i<raw.length;i++){
+      var e = tbEntry(raw[i]);
+      if (e) out.push(e);
+    }
+    return out;
+  }
+  // Q1..Q4 first in order, then anything unplaced. An unplaced title is not an
+  // error -- a teacher may not have decided yet -- so it gets its own group
+  // rather than being silently dropped into Q1.
+  function tbByQuarter(entries){
+    var groups = [], seen = {};
+    for (var q=0;q<QUARTERS.length;q++){
+      var inq = [];
+      for (var i=0;i<entries.length;i++){
+        if (entries[i].quarter === QUARTERS[q]){ inq.push(entries[i]); seen[i] = 1; }
+      }
+      if (inq.length) groups.push({label: QUARTERS[q], items: inq});
+    }
+    var rest = [];
+    for (var j=0;j<entries.length;j++) if (!seen[j]) rest.push(entries[j]);
+    if (rest.length) groups.push({label: '', items: rest});
+    return groups;
+  }
+
   var tbPick = {};
   var tbScope = true;
   var tbEdit = -1;
@@ -399,11 +437,18 @@ JS = """
     return bits.join(' ' + DASH + ' ');
   }
 
-  function tbBook(r){
+  function tbBook(r, entry){
     if (!r) return '';
+    var acc = (entry && entry.access) || '';
     var h = '<div class="tbbk"><div class="tbbktop">' + statePill(r.state)
           + '<span><span class="tbbkt">' + esc(r.title) + '</span> '
           + '<span class="tbbka">' + esc(r.authorDisplay || '') + '</span>';
+    if (acc){
+      // Distinct from the rights pill on purpose: that says what the text IS,
+      // this says what this teacher does about it.
+      h += ' <span class="tbacc ' + esc(acc) + '">'
+         + esc(ACCESS_LABEL[acc]) + '</span>';
+    }
     var ed = tbEditionLine(r);
     if (ed) h += '<div class="tbbked">' + ed + '</div>';
     h += '</span></div>';
@@ -432,9 +477,23 @@ JS = """
   }
 
   function tbShelfCard(s, draft, idx){
-    var ids = s.titles || [];
+    var ids = tbEntries(s);
+    var groups = tbByQuarter(ids);
     var books = '';
-    for (var i=0;i<ids.length;i++) books += tbBook(recFor(ids[i]));
+    for (var g=0;g<groups.length;g++){
+      var grp = groups[g];
+      // Only label the groups when the shelf actually uses quarters. A shelf
+      // with no placements should look exactly as it did before.
+      if (groups.length > 1 || grp.label){
+        books += '<div class="tbqhead">'
+          + (grp.label ? 'Quarter ' + grp.label.charAt(1)
+                       : 'Not yet placed in a quarter')
+          + '<span>' + grp.items.length + '</span></div>';
+      }
+      for (var i=0;i<grp.items.length;i++){
+        books += tbBook(recFor(grp.items[i].id), grp.items[i]);
+      }
+    }
     return '<div class="tbshelf"' + (draft ? ' style="border-top-color:#8DA0B6"' : '') + '>'
       + '<div class="tbsh"><div class="tbsteach">' + esc(s.teacher)
       + (draft ? ' <span class="bdg" style="--bc:#8F347F">Draft</span>' : '')
@@ -531,13 +590,23 @@ JS = """
     out.push('Optima Academy Online' + (YEAR ? ' - ' + YEAR : ''));
     out.push('Titles chosen from the approved ELA book list.');
     out.push('');
-    var ids = s.titles || [];
+    var groups = tbByQuarter(tbEntries(s));
     var n = 0;
-    for (var i=0;i<ids.length;i++){
-      var r = recFor(ids[i]);
+    for (var g=0;g<groups.length;g++){
+      var grp = groups[g];
+      if (groups.length > 1 || grp.label){
+        out.push(grp.label ? 'Quarter ' + grp.label.charAt(1)
+                           : 'Not yet placed in a quarter');
+        out.push('');
+      }
+    for (var i=0;i<grp.items.length;i++){
+      var r = recFor(grp.items[i].id);
       if (!r) continue;
       n++;
       out.push(n + '. ' + r.title + (r.authorDisplay ? ' - ' + r.authorDisplay : ''));
+      if (grp.items[i].access){
+        out.push('   ' + ACCESS_LABEL[grp.items[i].access] + '.');
+      }
       var ed = tbEditionText(r);
       if (ed) out.push('   ' + ed);
       if (r.state === 'identical') out.push('   Free: this exact text is public domain.');
@@ -548,6 +617,7 @@ JS = """
                               + tbPlainUrl(r.freeUrl));
       if (r.readOnlineUrl) out.push('   Read online: ' + tbPlainUrl(r.readOnlineUrl));
       out.push('');
+    }
     }
     if (!n) out.push('No titles chosen yet.');
     return out.join(NL);
@@ -679,13 +749,35 @@ JS = """
     var h = '';
     for (var i=0;i<rows.length;i++){
       var r = rows[i];
-      h += '<label class="tbtrow"><input type="checkbox" data-tbid="' + esc(r.id) + '"'
-        + (tbPick[r.id] ? ' checked' : '') + ' />' + statePill(r.state)
+      var pick = tbPick[r.id];
+      h += '<div class="tbtwrap' + (pick ? ' on' : '') + '">'
+        + '<label class="tbtrow"><input type="checkbox" data-tbid="' + esc(r.id) + '"'
+        + (pick ? ' checked' : '') + ' />' + statePill(r.state)
         + '<span class="tbtmid"><span class="tbtt">' + esc(r.title) + '</span> '
         + '<span class="tbta">' + esc(r.authorDisplay || '') + '</span></span>'
         + '<span class="tbtg">' + esc(r.cltOnly ? 'CLT bank'
                                                  : 'Grade ' + r.grade)
         + '</span></label>';
+      if (pick){
+        h += '<div class="tbplace">'
+          + '<span class="tbplab">Taught in</span><span class="tbqs">';
+        for (var q=0;q<QUARTERS.length;q++){
+          h += '<button type="button" class="tbq'
+            + (pick.quarter === QUARTERS[q] ? ' on' : '') + '" data-tbq="'
+            + esc(r.id) + '" data-q="' + QUARTERS[q] + '">' + QUARTERS[q]
+            + '</button>';
+        }
+        h += '</span>'
+          + '<span class="tbplab">Text</span><span class="tbqs">'
+          + '<button type="button" class="tbq'
+          + (pick.access === 'purchase' ? ' on' : '') + '" data-tba="'
+          + esc(r.id) + '" data-a="purchase">Student buys</button>'
+          + '<button type="button" class="tbq'
+          + (pick.access === 'provided' ? ' on' : '') + '" data-tba="'
+          + esc(r.id) + '" data-a="provided">Provided in class</button>'
+          + '</span></div>';
+      }
+      h += '</div>';
     }
     if (!rows.length) h = '<div class="tbblank">No titles match that search.</div>';
     list.innerHTML = h;
@@ -695,12 +787,38 @@ JS = """
         ? rows.length + ' titles listed for Grade ' + me.grade
         : rows.length + ' of ' + DATA.length + ' titles';
     }
+    var qb = list.querySelectorAll('[data-tbq]');
+    for (var x=0;x<qb.length;x++){
+      qb[x].addEventListener('click', (function(btn){
+        return function(){
+          var id = btn.getAttribute('data-tbq'), v = btn.getAttribute('data-q');
+          if (!tbPick[id]) return;
+          // Clicking the quarter already set clears it, so a teacher can undo
+          // a placement without deselecting the whole title.
+          tbPick[id].quarter = (tbPick[id].quarter === v) ? '' : v;
+          tbDrawList();
+        };
+      })(qb[x]));
+    }
+    var ab = list.querySelectorAll('[data-tba]');
+    for (var y=0;y<ab.length;y++){
+      ab[y].addEventListener('click', (function(btn){
+        return function(){
+          var id = btn.getAttribute('data-tba'), v = btn.getAttribute('data-a');
+          if (!tbPick[id]) return;
+          tbPick[id].access = (tbPick[id].access === v) ? '' : v;
+          tbDrawList();
+        };
+      })(ab[y]));
+    }
     var boxes = list.querySelectorAll('input[data-tbid]');
     for (var b=0;b<boxes.length;b++){
       boxes[b].addEventListener('change', (function(box){
         return function(){
           var id = box.getAttribute('data-tbid');
-          if (box.checked) tbPick[id] = true; else delete tbPick[id];
+          if (box.checked) tbPick[id] = tbPick[id] || {quarter:'', access:''};
+          else delete tbPick[id];
+          tbDrawList();
           tbSync();
         };
       })(boxes[b]));
@@ -750,7 +868,7 @@ JS = """
       h += '<div class="tbmrow' + (tbEdit === i ? ' on' : '') + '">'
         + '<span class="tbmc">' + esc(s.course) + '</span>'
         + '<span class="tbmm">' + tbBadges(s) + '</span>'
-        + '<span class="tbmn">' + (s.titles || []).length + ' titles</span>'
+        + '<span class="tbmn">' + tbEntries(s).length + ' titles</span>'
         + '<span class="tbma">'
         + '<button class="tick" data-tbedit="' + i + '">Edit</button>'
         + '<button class="tick" data-tbdel="' + i + '">Remove</button>'
@@ -780,7 +898,10 @@ JS = """
           }
           tbSyncDelivery();
           tbPick = {};
-          for (var q=0;q<s.titles.length;q++) tbPick[s.titles[q]] = true;
+          var ents = tbEntries(s);
+          for (var q=0;q<ents.length;q++){
+            tbPick[ents[q].id] = {quarter: ents[q].quarter, access: ents[q].access};
+          }
           tbDrawList(); tbDrawMine();
           window.scrollTo({top: 0, behavior: 'smooth'});
         };
@@ -892,8 +1013,16 @@ JS = """
     var save = document.getElementById('tbSave');
     if (save) save.addEventListener('click', function(){
       var ids = [];
-      for (var k in tbPick){ if (tbPick[k]) ids.push(k); }
-      ids.sort();
+      for (var k in tbPick){
+        if (tbPick[k]) ids.push({id: k, quarter: tbPick[k].quarter || '',
+                                 access: tbPick[k].access || ''});
+      }
+      ids.sort(function(a, b){
+        // Unplaced titles sort last, so the saved block reads in teaching order.
+        var qa = a.quarter || 'Z', qb2 = b.quarter || 'Z';
+        if (qa !== qb2) return qa < qb2 ? -1 : 1;
+        return a.id < b.id ? -1 : 1;
+      });
       var rec = {teacher: me.teacher, course: me.course, subject: me.subject,
                  grade: me.grade, level: me.level,
                  delivery: me.delivery,

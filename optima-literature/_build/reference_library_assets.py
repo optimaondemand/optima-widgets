@@ -192,6 +192,9 @@ select,#q{font-family:inherit;font-size:13.5px;padding:8px 11px;
 .course{font-size:11.5px;color:var(--ink);background:var(--note-bg);
      border-left:3px solid var(--accent);
      border-radius:0 6px 6px 0;padding:6px 10px;line-height:1.5;}
+/* Same note shape, different edge: this one is a caution about where the title
+   came from, not a statement about what the course uses. */
+.course.unlisted{border-left-color:#B85F00;margin-bottom:6px;}
 .bm{display:flex;flex-wrap:wrap;gap:5px;}
 .bdg{font-size:10px;letter-spacing:.6px;text-transform:uppercase;
      font-weight:700;color:#fff;background:var(--bc);border-radius:5px;
@@ -367,6 +370,37 @@ select,#q{font-family:inherit;font-size:13.5px;padding:8px 11px;
      border-bottom:1px solid var(--line-soft);font-size:13px;line-height:1.45;cursor:pointer;}
 .tbtrow:last-child{border-bottom:none;}
 .tbtrow:hover{background:#F7FAFC;}
+/* A chosen title opens a second row for quarter and access. The wrapper, not
+   the label, carries the selected state, so the controls sit outside the
+   <label> and clicking them cannot toggle the checkbox. */
+.tbtwrap{border-bottom:1px solid var(--line-soft);}
+.tbtwrap:last-child{border-bottom:none;}
+.tbtwrap.on{background:#F4F9FC;box-shadow:inset 3px 0 0 #0E5568;}
+.tbtwrap.on > .tbtrow{border-bottom:none;}
+.tbtwrap > .tbtrow{border-bottom:none;}
+.tbplace{display:flex;flex-wrap:wrap;align-items:center;gap:7px;
+     padding:0 20px 10px 48px;}
+.tbplab{font-size:10.5px;letter-spacing:.5px;text-transform:uppercase;
+     color:var(--muted);font-weight:700;}
+.tbqs{display:inline-flex;gap:4px;margin-right:12px;}
+.tbq{font:inherit;font-size:11.5px;line-height:1;padding:5px 9px;cursor:pointer;
+     border:1px solid var(--line);border-radius:999px;background:#fff;
+     color:var(--muted);}
+.tbq:hover{border-color:#0E5568;color:#0E5568;}
+.tbq.on{background:#0E5568;border-color:#0E5568;color:#fff;font-weight:600;}
+/* Quarter heading inside a published shelf. */
+.tbqhead{display:flex;align-items:baseline;justify-content:space-between;
+     font-size:10.5px;letter-spacing:.7px;text-transform:uppercase;
+     font-weight:700;color:var(--navy);padding:12px 0 6px 0;
+     border-bottom:1px solid var(--line-soft);margin:6px 0 8px 0;}
+.tbqhead span{font-size:11px;color:var(--muted);letter-spacing:0;}
+/* How a student gets the text. Grey and green so it never competes with the
+   green/teal/orange rights pill, which is a different question. */
+.tbacc{display:inline-block;font-size:10px;letter-spacing:.5px;
+     text-transform:uppercase;font-weight:700;padding:2px 7px;border-radius:4px;
+     border:1px solid var(--line);color:var(--muted);white-space:nowrap;}
+.tbacc.provided{border-color:#4B7F20;color:#3C6619;background:#F2F8ED;}
+.tbacc.purchase{border-color:#B85F00;color:#8F4A00;background:#FDF5EC;}
 .tbtrow input{width:17px;height:17px;accent-color:#0E5568;flex-shrink:0;
      cursor:pointer;margin-top:2px;}
 .tbtmid{flex:1;min-width:0;}

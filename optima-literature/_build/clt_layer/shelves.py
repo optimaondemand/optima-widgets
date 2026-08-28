@@ -16,7 +16,7 @@ BY_SHELF = {
         "Thomas Aquinas", "John Wycliffe", "Julian of Norwich",
         "Catherine of Siena", "Christine de Pizan", "Thomas a Kempis",
         "Desiderius Erasmus", "Niccolo Machiavelli", "Thomas More",
-        "Martin Luther", "Bartolome de Las Casas", "John Calvin",
+        "Martin Luther", "John Calvin",
         "Teresa of Avila", "Michel de Montaigne", "Francis Bacon",
         "Thomas Hobbes", "Rene Descartes", "Blaise Pascal", "John Locke",
         "Gottfried Leibniz", "Charles Montesquieu", "Jonathan Edwards",

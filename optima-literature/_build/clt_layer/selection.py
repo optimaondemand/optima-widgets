@@ -62,7 +62,6 @@ SEL = [
  ("Nicolaus Copernicus", "On the Revolutions of the Heavenly Spheres", "Nicolaus Copernicus", "copernicus"),
  ("Thomas More", "Utopia", "Thomas More", "more"),
  ("Martin Luther", "The Ninety-Five Theses", "Martin Luther", "luther"),
- ("Bartolome de Las Casas", "A Brief Account of the Destruction of the Indies", "Bartolome de Las Casas", "casas"),
  ("John Calvin", "Institutes of the Christian Religion", "John Calvin", "calvin"),
  ("Teresa of Avila", "The Interior Castle", "Teresa of Avila", "teresa"),
  ("Michel de Montaigne", "Essays", "Michel de Montaigne", "montaigne"),
@@ -141,3 +140,13 @@ SEL = [
  ("The Saga of Erik the Red", "The Saga of Erik the Red", "Anonymous", None),
  ("Pearl", "Pearl", "Anonymous", None),
 ]
+
+# Bank entries deliberately given no title in the Optima library. The entry is
+# still "accounted for" -- the gate treats an omission recorded here the same as
+# a title, so a bank entry can never fall out silently -- but no card is built.
+#
+# bank entry -> who decided, and why
+OMIT = {
+    "Bartolome de Las Casas":
+        "Jessica, 2026-08-28: omit from the ELA library.",
+}

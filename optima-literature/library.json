@@ -37,16 +37,17 @@
  ],
  "counts": {
   "titles": 355,
-  "free_same_text": 80,
-  "free_similar_version": 108,
+  "free_same_text": 81,
+  "free_similar_version": 107,
   "must_purchase": 167,
   "taught_in_a_course": 51,
   "translators_named": 7,
   "isbns_resolved": 156,
   "needing_verification": 14,
   "on_oao_book_list": 226,
-  "clt_author_bank_layer": 129,
-  "clt_badged_total": 174
+  "clt_author_bank_layer": 128,
+  "clt_badged_total": 174,
+  "taught_but_unlisted": 1
  },
  "signposting": {
   "identical": "Public domain. The free text is the same text.",
@@ -12593,6 +12594,75 @@
    }
   },
   {
+   "id": "10-macbeth",
+   "title": "Macbeth",
+   "author": "William Shakespeare",
+   "authors": null,
+   "grade": "10",
+   "form": "play",
+   "shelf": "Drama & Poetry",
+   "shelf_source": "student-library",
+   "listed_as": null,
+   "listed_twice_in_source": false,
+   "first_published": {
+    "year": 1606,
+    "circa": true,
+    "language": "en",
+    "confidence": "high",
+    "note": "written c.1606; first printed in the 1623 First Folio"
+   },
+   "buy": {
+    "isbn": null,
+    "isbn_is_real": false,
+    "edition_title": null,
+    "translator": null,
+    "editor": null,
+    "illustrator": null,
+    "reteller": null,
+    "publisher": null,
+    "edition_year": null,
+    "pages": null,
+    "url": null,
+    "url_kind": null,
+    "edition_hint_from_booklist": null
+   },
+   "free": {
+    "state": "identical",
+    "reason": null,
+    "url": "https://www.gutenberg.org/ebooks/1533",
+    "source": "gutenberg.org",
+    "gutenberg_id": 1533,
+    "matched_title": "Macbeth",
+    "via": "course-additions",
+    "note": null
+   },
+   "read_online": {
+    "url": "https://www.folger.edu/explore/shakespeares-works/macbeth/",
+    "source": "folger.edu",
+    "download": false
+   },
+   "flags": {
+    "translation": "none",
+    "translation_year": null,
+    "verify": false
+   },
+   "taught": {
+    "grade": "10",
+    "used": "student",
+    "edition": "Project Gutenberg #1533",
+    "stored_file_ok": null,
+    "note": "Added as a Grade 10 course text 2026-08-28 (Jessica). No coursework is built for it yet, so nothing is reproduced on an Optima page; the public-domain text is linked instead. Grade 10 follows Optima's own placement: the reading bank files it in the 9-10 band beside Julius Caesar and A Midsummer Night's Dream, both Grade 10 here.",
+    "verify": false
+   },
+   "prior_review": null,
+   "on_oao_book_list": false,
+   "clt": {
+    "bank_entry": "William Shakespeare",
+    "on_oao_book_list": false,
+    "note": "Badged because CLT draws passages from this author."
+   }
+  },
+  {
    "id": "clt-hesiod-the-homeric-hymns-and-homerica",
    "title": "Hesiod, the Homeric Hymns, and Homerica",
    "author": "Hesiod",
@@ -15609,63 +15679,6 @@
    "prior_review": null,
    "clt": {
     "bank_entry": "Martin Luther",
-    "on_oao_book_list": false,
-    "note": "Present because CLT draws passages from this author. CLT does not publish which works appear."
-   }
-  },
-  {
-   "id": "clt-a-brief-account-of-the-destruction-of-the-in",
-   "title": "A Brief Account of the Destruction of the Indies Or, a faithful NARRATIVE OF THE Horrid and Unexampled Massacres, Butcheries, and all manner of Cruelties, that Hell and Malice could invent, committed by the Popish Spanish Party on the inhabitants of West-India, TOGETHER With the Devastations of several Kingdoms in America by Fire and Sword, for the space of Forty and Two Years, from the time of its first Discovery by them.",
-   "author": "Bartolome de Las Casas",
-   "authors": null,
-   "grade": null,
-   "form": null,
-   "shelf": "Philosophy, Politics & Theology",
-   "shelf_source": "clt-additions",
-   "listed_as": null,
-   "listed_twice_in_source": false,
-   "first_published": {
-    "year": 1552,
-    "circa": false,
-    "language": null,
-    "confidence": "high",
-    "note": null
-   },
-   "buy": {
-    "isbn": null,
-    "isbn_is_real": false,
-    "edition_title": null,
-    "translator": null,
-    "editor": null,
-    "illustrator": null,
-    "reteller": null,
-    "publisher": null,
-    "edition_year": null,
-    "pages": null,
-    "url": null,
-    "url_kind": "gutenberg",
-    "edition_hint_from_booklist": null
-   },
-   "free": {
-    "state": "similar",
-    "reason": null,
-    "url": "https://www.gutenberg.org/ebooks/20321",
-    "source": "gutenberg.org",
-    "gutenberg_id": 20321,
-    "matched_title": "A Brief Account of the Destruction of the Indies Or, a faithful NARRATIVE OF THE Horrid and Unexampled Massacres, Butcheries, and all manner of Cruelties, that Hell and Malice could invent, committed by the Popish Spanish Party on the inhabitants of West-India, TOGETHER With the Devastations of several Kingdoms in America by Fire and Sword, for the space of Forty and Two Years, from the time of its first Discovery by them.",
-    "via": "clt-additions",
-    "note": "Public-domain translation. A modern translation will differ in wording."
-   },
-   "read_online": null,
-   "flags": {
-    "translation": "none",
-    "translation_year": null,
-    "verify": false
-   },
-   "taught": null,
-   "prior_review": null,
-   "clt": {
-    "bank_entry": "Bartolome de Las Casas",
     "on_oao_book_list": false,
     "note": "Present because CLT draws passages from this author. CLT does not publish which works appear."
    }

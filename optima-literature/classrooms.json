@@ -1,7 +1,7 @@
 {
   "school_year": "2026-27",
 
-  "_what_this_is": "The shelves teachers have published: which titles from the approved catalogue each course is actually teaching. Maintained by hand, once a year. The ELA Reference Library reads this file at build time and renders the Teacher Bookshelves view from it.",
+  "_what_this_is": "The shelves teachers have published: which titles from the approved catalogue each course is actually teaching, when in the year, and how students get the text. Maintained by hand, once a year. The ELA Reference Library reads this file at build time and renders the Teacher Bookshelves view from it.",
 
   "_how_a_new_year_works": "Start a new file. Change school_year, empty the classrooms list, and keep last year's file so the previous year stays readable. Nothing here expires on its own.",
 
@@ -15,7 +15,18 @@
     "level": "blank, Honors or AP. Blank means Standard.",
     "delivery": "Live or On-Demand. Defaults to Live.",
     "period": "class period for a Live course, or null. Ignored for On-Demand.",
-    "titles": "list of catalogue ids, e.g. 11-the-adventures-of-huckleberry-finn. Ids come from library.json. An id that does not exist FAILS THE BUILD rather than rendering a blank line."
+    "titles": "list of titles taught. Each entry is either a bare catalogue id or an object, see _title_entries. Ids come from library.json. An id that does not exist FAILS THE BUILD rather than rendering a blank line."
+  },
+
+  "_title_entries": {
+    "_two_forms": "A bare id string still works and always will: the first year of shelves was written that way. It means 'taught, quarter and access not stated'. Use the object form to say more.",
+    "_bare": "11-the-adventures-of-huckleberry-finn",
+    "_object": {
+      "id": "required, the catalogue id",
+      "quarter": "Q1, Q2, Q3, Q4, or blank. Blank is not an error: it means the teacher has not placed it yet, and the shelf groups those under 'Not yet placed in a quarter' rather than guessing Q1.",
+      "access": "purchase = the student buys a copy. provided = Optima provides the text or an excerpt in class. Blank means nobody has said, which is deliberately different from either answer."
+    },
+    "_note_on_access": "This is separate from the Free/Similar/Buy pill. That pill says what the TEXT is under copyright. access says what THIS teacher does about it: a public-domain text can still be handed out in class, and an in-copyright one can still be a student purchase."
   },
 
   "_example_do_not_publish": {
@@ -26,7 +37,11 @@
     "level": "Honors",
     "delivery": "Live",
     "period": "2",
-    "titles": ["11-the-adventures-of-huckleberry-finn"]
+    "titles": [
+      { "id": "11-the-adventures-of-huckleberry-finn", "quarter": "Q1", "access": "purchase" },
+      { "id": "11-narrative-of-the-life-of-frederick-douglass", "quarter": "Q2", "access": "provided" },
+      "11-hamlet"
+    ]
   },
 
   "classrooms": []

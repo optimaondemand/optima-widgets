@@ -174,6 +174,31 @@ body.hastray{padding-bottom:74px}
   .tray{transition:none}
 }
 
+/* ---------- keyboard focus ----------
+   Every button and chip was reachable by Tab and invisible while focused: only the search
+   input and the selects had a focus style. One rule covers them all, using :focus-visible
+   so a mouse click does not leave a ring behind. The offset keeps the ring clear of the
+   navy chip fill in its pressed state. */
+.chip:focus-visible,
+.subj:focus-visible,
+.gearbtn:focus-visible,
+.copybtn:focus-visible,
+.addbtn:focus-visible,
+.jstor:focus-visible,
+.tray button:focus-visible{
+  outline:3px solid var(--cyan);
+  outline-offset:2px;
+  border-radius:7px;
+}
+.searchbox input:focus-visible,
+select:focus-visible{outline:3px solid var(--cyan);outline-offset:1px}
+/* the tray sits on navy, where the cyan ring needs a light halo to stay visible */
+.tray button:focus-visible{box-shadow:0 0 0 5px rgba(15,35,64,.85)}
+
+@media (prefers-reduced-motion:reduce){
+  *{scroll-behavior:auto}
+}
+
 @media (max-width:640px){
   .wrap{padding:0 16px}
   h1{font-size:22px}

@@ -34,6 +34,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 import clt_additions as CA
+import course_additions as CADD
 import course_editions as CE
 import clt_titles as CT
 import first_pub as FP
@@ -306,6 +307,44 @@ def enrich(book):
 CLASSROOMS = ROOT / "classrooms.json"
 
 
+QUARTERS = ("Q1", "Q2", "Q3", "Q4")
+
+# How a student gets the text. Deliberately three states, not two: "" means
+# nobody has said yet, and that is different from having decided the school
+# provides it. A blank must never render as either answer.
+ACCESS = ("purchase", "provided")
+ACCESS_LABEL = {
+    "purchase": "Student buys",
+    "provided": "Provided in class",
+    "": "Not specified",
+}
+
+
+def normalise_title(t, where):
+    """One shelf entry, as either a bare id or an object with placement.
+
+    A bare string stays valid forever: the first year of shelves was written
+    that way, and a schema change must not invalidate a file somebody already
+    hand-maintained. It simply means "taught, quarter and access not stated".
+    """
+    if isinstance(t, str):
+        return {"id": t, "quarter": "", "access": ""}
+    if not isinstance(t, dict):
+        raise SystemExit(f"{where}: must be an id string or an object")
+    tid = t.get("id")
+    if not tid or not isinstance(tid, str):
+        raise SystemExit(f"{where}: object form needs a string \"id\"")
+    q = t.get("quarter") or ""
+    if q and q not in QUARTERS:
+        raise SystemExit(f"{where}: quarter must be one of {list(QUARTERS)} "
+                         f"or blank, got {q!r}")
+    a = t.get("access") or ""
+    if a and a not in ACCESS:
+        raise SystemExit(f"{where}: access must be one of {list(ACCESS)} "
+                         f"or blank, got {a!r}")
+    return {"id": tid, "quarter": q, "access": a}
+
+
 def load_classrooms():
     """The shelves teachers have published, from the file the team maintains.
 
@@ -333,6 +372,8 @@ def load_classrooms():
                 raise SystemExit(f"{where}: missing required field {req!r}")
         if not isinstance(c["titles"], list):
             raise SystemExit(f"{where}: titles must be a list")
+        titles = [normalise_title(t, f"{where}.titles[{n}]")
+                  for n, t in enumerate(c["titles"])]
         delivery = c.get("delivery") or "Live"
         if delivery not in ("Live", "On-Demand"):
             raise SystemExit(f"{where}: delivery must be Live or On-Demand, "
@@ -346,7 +387,7 @@ def load_classrooms():
             "subject": c.get("subject") or "ELA", "grade": str(c["grade"]),
             "level": level, "delivery": delivery,
             "period": c.get("period") or None,
-            "titles": list(c["titles"]),
+            "titles": titles,
         })
     return year, out
 
@@ -461,8 +502,15 @@ def course_line(b):
     if not c:
         return ""
     if c["used"] == "student":
-        body = ("Taught in Optima Grade %s. Students supply their own copy; "
-                "no text is reproduced." % esc(c["grade"]))
+        if b["_state"] == "identical":
+            # Saying "supply their own copy" on a public-domain text reads as
+            # "buy it", which is the opposite of what the free link means.
+            body = ("Taught in Optima Grade %s. Optima reproduces no text; the "
+                    "free public-domain text below is the same text."
+                    % esc(c["grade"]))
+        else:
+            body = ("Taught in Optima Grade %s. Students supply their own copy; "
+                    "no text is reproduced." % esc(c["grade"]))
     elif c["used"] == "reference":
         body = ("In the Grade %s folder as a reading copy only, not deployed."
                 % esc(c["grade"]))
@@ -548,6 +596,9 @@ def book_card(b, idx):
         f'<span class="gr">{esc(grade_chip(b["grade"]))}</span></div>'
         f'</div></div>'
         + (f'<div class="pub">{pl}</div>' if pl else "")
+        + (('<div class="course unlisted">Not on the OAO 2026&ndash;27 book '
+            'list. A course teaches it, so no family should be told to buy it '
+            'off that list.</div>') if b.get("not_on_book_list") else "")
         + course_line(b)
         + f'<div class="bm">{"".join(badges)}</div>'
         f'<div class="acts">{action_links(b)}</div>'
@@ -645,8 +696,10 @@ def key_block():
     return (
         '<div class="key"><h2>What the words mean</h2>'
         '<p class="fine" style="margin:0 0 10px 0;">This page holds two things. '
-        'Every title filed under a <b>grade</b> is on the OAO 2026&ndash;27 '
-        'approved book list. Every title filed under <b>CLT Author Bank</b> is '
+        'Almost every title filed under a <b>grade</b> is on the OAO '
+        '2026&ndash;27 approved book list; the few a course teaches that the '
+        'list does not name say so on the card. Every title filed under '
+        '<b>CLT Author Bank</b> is '
         'not: it is here because the Classic Learning Test draws passages from '
         'its author, and no Optima course assigns it. The badges below say what '
         'is different <em>between</em> them.</p>'
@@ -739,7 +792,7 @@ def controls(book):
         f'<select id="fClt" aria-label="Filter by CLT Author Bank membership">{copt}</select>'
         '</div>'
         '<div class="crow">'
-        '<span class="lbl">Shelve</span>'
+        '<span class="lbl">Shelf</span>'
         f'{sbtn}'
         '<span class="count" id="count"></span>'
         '</div>'
@@ -764,10 +817,13 @@ def build():
     # course, and deliberately carried in its own module so a rebuild of the
     # book-list records cannot disturb it and vice versa.
     listed = list(recs["booklist"])
-    book = enrich(listed + [dict(r) for r in CA.ADDITIONS])
+    # Titles a course teaches that the book list never names. Real grade, real
+    # Taught badge, but no book-list line -- see course_additions.py.
+    unlisted = [dict(r) for r in CADD.ADDITIONS]
+    book = enrich(listed + unlisted + [dict(r) for r in CA.ADDITIONS])
     book.sort(key=sort_key)
-    print("  book list: %d records + CLT bank layer: %d = %d"
-          % (len(listed), len(CA.ADDITIONS), len(book)))
+    print("  book list: %d + taught-but-unlisted: %d + CLT bank layer: %d = %d"
+          % (len(listed), len(unlisted), len(CA.ADDITIONS), len(book)))
 
     cards, client = [], []
     for i, b in enumerate(book):
@@ -779,7 +835,8 @@ def build():
     year, shelves = load_classrooms()
     known = {c["id"] for c in client}
     for room in shelves:
-        for tid in room["titles"]:
+        for t in room["titles"]:
+            tid = t["id"]
             if tid not in known:
                 raise SystemExit(
                     f'classrooms.json: {room["teacher"]} / {room["course"]} '
@@ -972,6 +1029,22 @@ def gate(page, book, client):
         if b["_flag"] == "archaic" and (b["_translation_year"] or 9999) >= 1850:
             problems.append(f"archaic flag on a post-1850 translation: {b['title']!r}")
 
+    # --- titles a course teaches that the book list does not name
+    for b in book:
+        if b.get("clt_only"):
+            continue
+        unlisted = not b.get("listed_as")
+        if unlisted != bool(b.get("not_on_book_list")):
+            problems.append(
+                f"{b['title']!r}: book-list line and not_on_book_list "
+                f"disagree, so the card either claims a listing it has not got "
+                f"or hides one it has")
+        if b.get("not_on_book_list") and not b["_taught"]:
+            # The only reason to carry an unlisted title is that a course uses
+            # it. One that nothing teaches belongs in the CLT layer or nowhere.
+            problems.append(f"unlisted title that no course teaches: "
+                            f"{b['title']!r}")
+
     # --- the CLT Author Bank layer
     clt_recs = [b for b in book if b.get("clt_only")]
     if len(clt_recs) != len(CA.ADDITIONS):
@@ -1003,6 +1076,9 @@ def gate(page, book, client):
     bank = {e.lower() for e in list(CAB.AUTHORS) + list(CAB.WORKS)}
     covered = {(b.get("_clt_bank") or "").replace(" (retold)", "").lower()
                for b in book if b["_clt"]}
+    # A deliberate omission counts as accounted for. The point of the check is
+    # that no bank entry falls out silently, not that every one must have a card.
+    covered |= {o["bank"].lower() for o in getattr(CA, "OMITTED", [])}
     missing = sorted(e for e in bank if e not in covered)
     if missing:
         problems.append(f"{len(missing)} CLT bank entries with no title: "

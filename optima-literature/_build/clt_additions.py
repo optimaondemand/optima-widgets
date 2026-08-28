@@ -45,10 +45,7 @@ TRAPS FOUND WHILE BUILDING THIS, worth not rediscovering:
     Analects, the Nietzsche excerpts, and the Federalist Papers. Those are
     badged in clt_titles.py, NOT duplicated here.
 
-Generated 2026-08-28 by _build/clt_layer/gen_additions.py. That folder holds
-the whole pipeline plus a README separating what is editorial judgement (which
-work represents an author) from what is verified bibliography (every Gutenberg
-id, every ISBN).
+Generated 2026-08-28 by _build/clt_layer/gen_additions.py; see that folder's README.
 """
 
 # Records in stage3 shape, merged into the book list at build time.
@@ -2096,44 +2093,6 @@ ADDITIONS = [
   "clt_shelf": "Philosophy, Politics & Theology",
   "clt_only": True,
   "clt_year": 1517,
-  "clt_circa": False,
-  "clt_english_original": False,
-  "clt_selection_note": None
- },
- {
-  "grade": "CLT",
-  "listed_as": None,
-  "title": "A Brief Account of the Destruction of the Indies Or, a faithful NARRATIVE OF THE Horrid and Unexampled Massacres, Butcheries, and all manner of Cruelties, that Hell and Malice could invent, committed by the Popish Spanish Party on the inhabitants of West-India, TOGETHER With the Devastations of several Kingdoms in America by Fire and Sword, for the space of Forty and Two Years, from the time of its first Discovery by them.",
-  "author": "Bartolome de Las Casas",
-  "authors": None,
-  "kind": None,
-  "edition_hint": None,
-  "notes": [],
-  "url": None,
-  "url_kind": "gutenberg",
-  "asin": None,
-  "extra_urls": [],
-  "listed_count": 0,
-  "key": "a brief account of the destruction of the indies or a faithful narrative of the horrid and unexampled massacres butcheries and all manner of cruelties that hell and malice could invent committed by the popish spanish party on the inhabitants of west india together with the devastations of several kingdoms in america by fire and sword for the space of forty and two years from the time of its first discovery by them|casas",
-  "review": None,
-  "edition": {},
-  "free_version": {
-   "state": "similar",
-   "reason": None,
-   "free": {
-    "url": "https://www.gutenberg.org/ebooks/20321",
-    "source": "gutenberg.org",
-    "gutenberg_id": 20321,
-    "matched_title": "A Brief Account of the Destruction of the Indies Or, a faithful NARRATIVE OF THE Horrid and Unexampled Massacres, Butcheries, and all manner of Cruelties, that Hell and Malice could invent, committed by the Popish Spanish Party on the inhabitants of West-India, TOGETHER With the Devastations of several Kingdoms in America by Fire and Sword, for the space of Forty and Two Years, from the time of its first Discovery by them.",
-    "via": "clt-additions"
-   },
-   "read_online": None,
-   "note": "Public-domain translation. A modern translation will differ in wording."
-  },
-  "clt_bank_entry": "Bartolome de Las Casas",
-  "clt_shelf": "Philosophy, Politics & Theology",
-  "clt_only": True,
-  "clt_year": 1552,
   "clt_circa": False,
   "clt_english_original": False,
   "clt_selection_note": None
@@ -5039,5 +4998,15 @@ ALREADY_IN_CATALOGUE = [
   "bank": "Friedrich Nietzsche",
   "grade": "12",
   "title": "Excerpts from Nietzsche's writings"
+ }
+]
+
+# Bank entries deliberately given no title. The gate counts an omission here as
+# accounted for, so a bank entry can never disappear by accident -- only on the
+# record, with a reason.
+OMITTED = [
+ {
+  "bank": "Bartolome de Las Casas",
+  "reason": "Jessica, 2026-08-28: omit from the ELA library."
  }
 ]

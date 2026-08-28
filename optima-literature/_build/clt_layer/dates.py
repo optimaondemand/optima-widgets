@@ -35,7 +35,7 @@ YEARS = {
     "Pearl": (1380, True),
     "Desiderius Erasmus": (1511, False), "Niccolo Machiavelli": (1532, False),
     "Nicolaus Copernicus": (1543, False), "Thomas More": (1516, False),
-    "Martin Luther": (1517, False), "Bartolome de Las Casas": (1552, False),
+    "Martin Luther": (1517, False),
     "John Calvin": (1536, False), "Teresa of Avila": (1588, False),
     "Michel de Montaigne": (1580, False), "Francis Bacon": (1597, False),
     "Galileo Galilei": (1610, False), "John Donne": (1624, False),

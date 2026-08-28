@@ -71,6 +71,15 @@ COURSE = {
         note="9 scene .txt files, 17,058 words, with a _PROVENANCE.md recording "
              "why #1514 was chosen over #2242/#1113/#27761. NOTE: built in "
              "grade 7 but the official book list places it in grade 10."),
+    "macbeth|shakespeare": dict(
+        grade="10", used="student", edition="Project Gutenberg #1533",
+        stored_ok=None, verify=False,
+        note="Added as a Grade 10 course text 2026-08-28 (Jessica). No "
+             "coursework is built for it yet, so nothing is reproduced on "
+             "an Optima page; the public-domain text is linked instead. "
+             "Grade 10 follows Optima's own placement: the reading bank "
+             "files it in the 9-10 band beside Julius Caesar and A "
+             "Midsummer Night's Dream, both Grade 10 here."),
     "call of the wild|london": dict(
         grade="7", used="on-page", edition="Project Gutenberg #215",
         stored_ok=True, verify=False, note="Gutenberg boundary markers intact."),
