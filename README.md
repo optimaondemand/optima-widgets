@@ -9,6 +9,7 @@ Cross-course interactive widgets for Optima Academy Online, hosted on GitHub Pag
 | `study-planner.html` | K–12 study planner: a questionnaire (grade, live vs On-Demand enrollment, courses/goals via paste or .txt upload, available days/times, parent coordination, metacognitive focus questions) that generates a personalized weekly schedule, daily routine, or project plan, downloadable as PDF via print. | Canvas homeroom page; embeddable in any course |
 | `course-home-builder.html` | **Teacher-facing.** A form that generates a branded Optima course home page. Teachers fill in course name, term/section/meeting time, their own name and email, weekly announcements, quick-access tiles, module cards, and a Commonplace Corner quote; the widget outputs paste-ready HTML with a live preview, a **Copy HTML** button, and a `.html` download. | Not embedded in a course — teachers open it directly and paste the output into a Canvas page |
 | `optima-literature/ela-reference-library.html` | **Teacher-facing.** The ELA Reference Library: 226 titles with edition, translator, rights, first-publication and genre data, cover art, search, sort, a taught filter, a printable "my list" checkout card, and data-quality checks behind the ⚙ button. Generated — never hand-edit the HTML. | Not embedded in a course — teachers open it directly |
+| `optima-art/art-reference-library.html` | **Teacher-facing.** The Art Reference Library: 529 artworks catalogued from seven art courses, with search across artist, title, period, course and unit; availability filters; 17 published CC0 images with a copy-URL button; a JSTOR link on 400 records; and a rights-and-data panel behind the ⚙ button. Generated — never hand-edit the HTML. | Not embedded in a course — teachers open it directly |
 
 ### optima-literature notes
 
@@ -23,6 +24,32 @@ Cross-course interactive widgets for Optima Academy Online, hosted on GitHub Pag
 - `.gitattributes` exempts the generated HTML and JSON from line-ending conversion so a Windows build
   byte-matches a Linux one. Verify with `git check-attr`, never by reading the file.
 - See `optima-literature/HANDOFF.md` for the 2026-08-24 brand redesign notes.
+
+### optima-art notes
+
+- The widget is **generated**: run `python _build/build_art_library.py` from `optima-art/`.
+  It rewrites `art-reference-library.html` and runs a gate that fails the build on a rights
+  misstatement. Never hand-edit the HTML.
+- `art.json` is the contract, and it is **not written here**. It is emitted by
+  `_build/build_contract.py` in the private
+  [`optima-art-library`](https://github.com/optimaondemand/optima-art-library) repo, which holds
+  the catalogue, the XMP-based rights adjudication and the publish gate. To change what the
+  widget shows, change the catalogue and re-emit the contract.
+- Images are **not in this repo**. They are served from
+  [`optima-art-assets`](https://github.com/optimaondemand/optima-art-assets) via GitHub Pages.
+  The gate refuses to build if any image URL points anywhere else, including a museum host,
+  because several museums 403 a `github.io` referer.
+- **Only 17 of 529 works carry an image, and that is correct.** The source files are Artstor
+  (Images on JSTOR) exports carrying an embedded licence that forbids redistribution, so a work
+  can be centuries out of copyright and still not ours to publish. Those records link to JSTOR
+  instead, which needs an Optima login. The count rises as works are re-sourced from Wikimedia
+  Commons and museum open-access programmes.
+- Periods and some artist names come from folder and file names rather than from a source, so
+  the cards say "Filed under Renaissance" and "Filed as greek attic" rather than asserting them.
+  A Seurat is filed under Neoclassicism and a 1501 illumination under Medieval; the phrasing is
+  load-bearing, not hedging.
+- Reuses the embedded wordmark from `optima-literature/_build/brand_assets.py` rather than
+  carrying a second copy of the same base64.
 
 ### course-home-builder notes
 
