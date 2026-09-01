@@ -58,7 +58,7 @@ def main():
     # the generator itself rather than restating it here, so the two cannot drift.
     sys.path.insert(0, HERE)
     # importing is safe: the generator only builds under __main__
-    from build_music_library import WITHDRAWN
+    from build_music_library import WITHDRAWN, SCHEME_GROUPS
     videos = [v for v in contract["videos"] if v["id"] not in WITHDRAWN]
     withheld = [v for v in contract["videos"] if v["id"] in WITHDRAWN]
     doc = dump()
@@ -109,7 +109,7 @@ def main():
     # -- a title opening with a curly quote sorts under G in the browser and after Z in
     # Python. Chasing that would test the collation, not the page. What matters is that
     # the rank sequence never goes backwards.
-    rank = {"in-use": 1, "live-canvas": 2, "dropped-in-renovation": 3, "unknown": 4,
+    rank = {"in-use": 1, "live-canvas": 2, "previous-version": 3, "unknown": 4,
             "dead-link": 5}
     by_id = {v["id"]: v for v in videos}
     got = re.findall(r'<article class="card" data-id="([^"]+)"', grid)
@@ -130,7 +130,10 @@ def main():
     # ---- citations, topics, cross-refs
     eq(n(r'<details class="uses">'), sum(1 for v in videos if v["lessons"]),
        "lesson citation blocks")
-    eq(n(r'<span class="pill'), sum(len(v["tags"]) for v in videos), "topic pills")
+    # lesson.topic tags are deliberately not pills: the labels are whole lesson titles
+    eq(n(r'<span class="pill'),
+       sum(1 for v in videos for t in v["tags"] if t["scheme"] != "lesson.topic"),
+       "topic pills")
     eq(n(r'Also in the art library'), sum(1 for v in videos if v["cross_refs"].get("art")),
        "art cross-reference blocks")
     eq(n(r'Also in the ELA library'), sum(1 for v in videos if v["cross_refs"].get("ela")),
@@ -147,7 +150,11 @@ def main():
                         if any(c["id"] in v["courses"] for v in videos))
     eq(n(r'<option', sel("course")), 0,
        "leftover course dropdown (it was replaced by browse chips)")
-    topics = {(t["scheme"], t["code"]) for v in videos for t in v["tags"]}
+    # only the schemes the dropdown is built from: kind has a browse row of its own and
+    # lesson.topic labels are entire lesson titles
+    in_menu = {s for s, _ in SCHEME_GROUPS}
+    topics = {(t["scheme"], t["code"]) for v in videos for t in v["tags"]
+              if t["scheme"] in in_menu}
     eq(n(r'<option', sel("topic")), len(topics) + 1, "topic options (plus All)")
     eq(n(r'<optgroup', sel("topic")),
        len({s for s, c in topics}), "topic groups")
@@ -166,10 +173,25 @@ def main():
     # ---- the two browse axes
     genres = {t["code"] for v in videos for t in v["tags"]
               if t["scheme"] == "music.genre"}
+    kinds = {t["code"] for v in videos for t in v["tags"]
+             if t["scheme"] == "video.kind"}
     eq(n(r'data-course="', painted), courses_drawn, "course browse chips")
     eq(n(r'data-genre="', painted), len(genres), "genre browse chips")
+    eq(n(r'data-kind="', painted), len(kinds), "kind browse chips")
     has("Browse by course", "the course browse label")
     has("Browse by genre", "the genre browse label")
+    has("Browse by kind", "the kind browse label")
+
+    # ---- dates and piece notes actually reach the cards
+    eq(n(r'<p class="dates">'), sum(1 for v in videos
+                                    if v.get("work_year") or v.get("recording_year")),
+       "date lines")
+    if dead:
+        has("No link on YouTube", "the no-link wording on a removed video")
+    # a removed video's entry must still say what the piece was
+    for v in dead:
+        if not v.get("piece_note"):
+            fails.append("removed video with no piece note: " + v["id"])
 
     # ---- a withdrawn video must be gone from the page entirely: not as a card, not in
     # the inlined data, not in a hover title. This is what makes the withdrawal real

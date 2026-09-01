@@ -20,12 +20,14 @@ JS = """
   "use strict";
   var STORE = "optima-music-library-filters";
 
-  var state = {q:"", status:"", course:"", genre:"", topic:"", xref:"", sort:"default"};
+  var state = {q:"", status:"", course:"", genre:"", kind:"", topic:"", xref:"",
+               sort:"default"};
   var playlist = [];   // video ids the teacher has picked, in pick order
 
   var CMAP = {};
   MUSIC.courses.forEach(function(c){ CMAP[c.id] = c; });
   var GENRE_LABEL = (MUSIC.labels || {})["music.genre"] || {};
+  var KIND_LABEL = (MUSIC.labels || {})["video.kind"] || {};
 
   function norm(s){
     return (s||"").toString().toLowerCase()
@@ -53,12 +55,15 @@ JS = """
     v._topics = (v.tags||[]).map(function(t){ return t.scheme + ":" + t.code; });
     v._genres = (v.tags||[]).filter(function(t){ return t.scheme === "music.genre"; })
                             .map(function(t){ return t.code; });
+    v._kinds = (v.tags||[]).filter(function(t){ return t.scheme === "video.kind"; })
+                           .map(function(t){ return t.code; });
     v._uses = (v.lessons||[]).length;
     v._art = ((v.cross_refs||{}).art||[]).length;
     v._ela = ((v.cross_refs||{}).ela||[]).length;
   });
 
-  var DEFAULTS = {q:"", status:"", course:"", genre:"", topic:"", xref:"", sort:"default"};
+  var DEFAULTS = {q:"", status:"", course:"", genre:"", kind:"", topic:"", xref:"",
+                  sort:"default"};
 
   function activeCount(){
     return Object.keys(DEFAULTS).filter(function(k){
@@ -88,6 +93,7 @@ JS = """
     if (state.status && v.disposition !== state.status) return false;
     if (state.course && (v.courses||[]).indexOf(state.course) === -1) return false;
     if (state.genre && v._genres.indexOf(state.genre) === -1) return false;
+    if (state.kind && v._kinds.indexOf(state.kind) === -1) return false;
     if (state.topic && v._topics.indexOf(state.topic) === -1) return false;
     if (state.xref === "art" && !v._art) return false;
     if (state.xref === "ela" && !v._ela) return false;
@@ -96,9 +102,7 @@ JS = """
 
   function frameFor(v){
     if (v.state !== "ok"){
-      var why = v.state === "deleted" ? "Deleted from YouTube"
-              : v.state === "private" ? "Made private on YouTube"
-              : "Unavailable (" + v.state + ")";
+      var why = "No link on YouTube";
       return '<div class="noframe">' + esc(why) + '</div>';
     }
     var thumb = v.thumb || ("https://i.ytimg.com/vi/" + v.id + "/hqdefault.jpg");
@@ -108,6 +112,26 @@ JS = """
       '<button class="playbtn" type="button" data-play="' + esc(v.id) + '" ' +
         'aria-label="Play ' + esc(v.title || v.id) + ' here">' +
         '<span class="tri">&#9654;</span></button></div>';
+  }
+
+  function datesFor(v){
+    // The upload date is not the interesting number: Beethoven's Ninth is 1824 whoever
+    // posted it in 2019. work_year is the piece; recording_year only appears where this
+    // performance is itself a separate datable event.
+    if (!v.work_year && !v.recording_year) return "";
+    var bits = [];
+    if (v.work_year) bits.push("Work <b>" + esc(v.work_year) + "</b>");
+    if (v.recording_year) bits.push("this recording <b>" + esc(v.recording_year) + "</b>");
+    return '<p class="dates">' + bits.join(" &middot; ") + '</p>';
+  }
+
+  function noteFor(v){
+    // Say what the piece is, but not when the note only repeats the title back.
+    var note = v.piece_note;
+    if (!note) return "";
+    var worth = v.state !== "ok" || v.work_year || v.recording_year || note.length > 34;
+    if (!worth) return "";
+    return '<p class="pnote">' + esc(note) + '</p>';
   }
 
   function courseBadges(v){
@@ -125,6 +149,22 @@ JS = """
         esc(c ? c.short : id) + (n ? " &middot; " + n + (n === 1 ? " module" : " modules") : "") +
         '</span>';
     }).join("") + '</div>';
+  }
+
+  function prevFor(v){
+    var ps = v.previous_lessons || [];
+    if (!ps.length) return "";
+    // Only worth showing where no rebuilt lesson cites the video: for anything currently
+    // taught, where it USED to sit is history nobody needs on the card.
+    if ((v.lessons || []).length) return "";
+    return '<details class="uses prev"><summary>Previously in ' + ps.length +
+      (ps.length === 1 ? " lesson" : " lessons") + '</summary><ul>' +
+      ps.map(function(p){
+        var c = CMAP[p.course];
+        return '<li>' + esc(c ? c.short : p.course) +
+          (p.module == null ? "" : " &middot; Module " + esc(p.module)) +
+          (p.lesson_title ? ' &middot; ' + esc(p.lesson_title) : "") + '</li>';
+      }).join("") + '</ul></details>';
   }
 
   function usesFor(v){
@@ -147,8 +187,12 @@ JS = """
   }
 
   function pillsFor(v){
-    if (!(v.tags||[]).length) return "";
-    return '<div class="pills">' + v.tags.map(function(t){
+    // lesson.topic labels are entire lesson titles ("Instruments of the Orchestra, The
+    // Strings III-The Violoncello and The Double Bass") and wreck the pill row. They are
+    // in the citation list instead, where the length belongs.
+    var shown = (v.tags||[]).filter(function(t){ return t.scheme !== "lesson.topic"; });
+    if (!shown.length) return "";
+    return '<div class="pills">' + shown.map(function(t){
       var cls = "pill" + (t.scheme === "concept" ? " concept" : "") +
                 (t.scope === "lesson" ? " lessonscope" : "");
       // The hover carries the evidence AND the scope, because "Harmony" on a video that
@@ -196,9 +240,12 @@ JS = """
       h += '<p class="ch"><em>Channel not resolved</em></p>';
     }
     if (v.state !== "ok")
-      h += '<p class="warn">This link no longer plays' +
+      h += '<p class="warn">No link on YouTube' +
            (v.state === "deleted" ? " — the channel deleted it"
-            : v.state === "private" ? " — it was made private" : "") + '.</p>';
+            : v.state === "private" ? " — it was made private" : "") +
+           '. The entry is kept for the record.</p>';
+    h += datesFor(v);
+    h += noteFor(v);
     h += courseBadges(v);
     if (v.attribution === "legacy-pool")
       h += '<p class="ch"><em>In the old exports of ' +
@@ -206,6 +253,7 @@ JS = """
              return CMAP[id] ? CMAP[id].short : id; }).join(", ")) +
            ', but in no rebuilt module</em></p>';
     h += usesFor(v);
+    h += prevFor(v);
     h += pillsFor(v);
     h += xrefFor(v);
     h += '<div class="foot">';
@@ -256,7 +304,7 @@ JS = """
     // Ranks start at 1, not 0: with a 0 the fallback `rank[x] || 4` fired on the most
     // common case in the catalogue and sank all 141 in-use videos below the 6 dropped
     // ones. Every value here must stay truthy.
-    var rank = {"in-use":1, "live-canvas":2, "dropped-in-renovation":3, "unknown":4,
+    var rank = {"in-use":1, "live-canvas":2, "previous-version":3, "unknown":4,
                 "dead-link":5};
     return rows.sort(function(a,b){
       return (rank[a.disposition]||4) - (rank[b.disposition]||4) ||
@@ -284,8 +332,12 @@ JS = """
       if ((v.courses||[]).length)
         lines.push("   Used in: " + v.courses.map(function(c){
           return CMAP[c] ? CMAP[c].name : c; }).join("; "));
+      if (v.work_year) lines.push("   Work:    " + v.work_year +
+        (v.recording_year ? "  (this recording " + v.recording_year + ")" : ""));
+      if (v.piece_note) lines.push("   About:   " + v.piece_note);
       if ((v.tags||[]).length)
-        lines.push("   Topics:  " + v.tags.map(function(t){return t.label;}).join(", "));
+        lines.push("   Topics:  " + v.tags.filter(function(t){
+          return t.scheme !== "lesson.topic"; }).map(function(t){return t.label;}).join(", "));
       if (v.state !== "ok")
         lines.push("   WARNING: this link no longer works (" + v.state + ")");
       lines.push("");
@@ -354,6 +406,7 @@ JS = """
     var shelf = [];
     if (state.course && CMAP[state.course]) shelf.push(CMAP[state.course].name);
     if (state.genre) shelf.push(GENRE_LABEL[state.genre] || state.genre);
+    if (state.kind) shelf.push(KIND_LABEL[state.kind] || state.kind);
     var active = activeCount();
     var rb = document.getElementById("reset");
     if (rb) rb.hidden = active === 0;
@@ -365,7 +418,7 @@ JS = """
       (active ? ' <button type="button" class="clear" id="clearinline">Show all ' +
                 MUSIC.videos.length + ' videos</button>' : "");
     [["data-status","status"],["data-course","course"],["data-genre","genre"],
-     ["data-xref","xref"]].forEach(function(pair){
+     ["data-kind","kind"],["data-xref","xref"]].forEach(function(pair){
       document.querySelectorAll("[" + pair[0] + "]").forEach(function(c){
         c.setAttribute("aria-pressed",
           String(c.dataset[pair[1]] === state[pair[1]] && state[pair[1]] !== ""));
@@ -401,6 +454,13 @@ JS = """
     document.querySelectorAll("[data-genre]").forEach(function(c){
       c.addEventListener("click", function(){
         state.genre = (state.genre === c.dataset.genre) ? "" : c.dataset.genre;
+        render();
+      });
+    });
+
+    document.querySelectorAll("[data-kind]").forEach(function(c){
+      c.addEventListener("click", function(){
+        state.kind = (state.kind === c.dataset.kind) ? "" : c.dataset.kind;
         render();
       });
     });
@@ -506,7 +566,8 @@ JS = """
     });
     // same for the chip axes: a restored course or genre that no longer has a chip
     // would filter the shelf to nothing with no visible control to clear
-    [["course","[data-course]"],["genre","[data-genre]"]].forEach(function(pair){
+    [["course","[data-course]"],["genre","[data-genre]"],
+     ["kind","[data-kind]"]].forEach(function(pair){
       if (!state[pair[0]]) return;
       var found = false;
       document.querySelectorAll(pair[1]).forEach(function(c){

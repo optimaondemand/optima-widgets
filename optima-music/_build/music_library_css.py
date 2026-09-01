@@ -167,6 +167,12 @@ details.uses li b{color:var(--body);font-weight:600}
 .warn{margin:0;padding:7px 10px;background:#fbe9e9;border-left:3px solid var(--dead);
   border-radius:5px;font-size:12.5px;font-weight:600;color:var(--dead)}
 
+/* dates and the piece note */
+.dates{margin:0;font-size:13px;color:var(--body)}
+.dates b{color:var(--ink);font-variant-numeric:tabular-nums}
+.pnote{margin:0;font-size:12.5px;color:var(--mute);line-height:1.45}
+details.uses.prev summary{color:var(--mute)}
+
 .pills{display:flex;gap:5px;flex-wrap:wrap}
 .pill{font-size:11px;font-weight:600;letter-spacing:.02em;padding:2px 7px;border-radius:4px;
   background:#eef1f6;color:var(--navy-2);border:1px solid var(--line);cursor:help}

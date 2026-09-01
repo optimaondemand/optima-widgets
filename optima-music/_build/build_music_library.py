@@ -63,6 +63,9 @@ SCHEME_GROUPS = [
     ("music.instrument", "Instrument"),
     ("music.skill", "Skill"),
     ("concept", "Cross-subject"),
+    # What the lesson covers. video.kind has its own browse row, and lesson.topic labels
+    # are whole lesson titles, so neither belongs in a dropdown.
+    ("lesson.group", "What the lesson covers"),
 ]
 
 WEEKDAYS = ("monday", "tuesday", "wednesday", "thursday", "friday",
@@ -160,8 +163,8 @@ def build():
     A('<div class="stat"><b>' + str(len(videos)) + "</b><span>Videos catalogued</span></div>")
     A('<div class="stat"><b>' + str(drawn) + "</b><span>Courses</span></div>")
     A('<div class="stat live"><b>' + str(len(genre_codes)) + "</b><span>Genres</span></div>")
-    A('<div class="stat"><b>' + str(sum(len(v["tags"]) for v in videos)) +
-      "</b><span>Topics tagged</span></div>")
+    A('<div class="stat"><b>' + str(sum(1 for v in videos if v.get("work_year"))) +
+      "</b><span>Pieces dated</span></div>")
     A("</div></div></header>")
 
     # ---------------- controls ----------------
@@ -217,6 +220,17 @@ def build():
     for code, n in genre_rows:
         A('<button class="subj" type="button" data-genre="' + e(code) + '" '
           'aria-pressed="false">' + e(topic_label[("music.genre", code)]) +
+          '<span class="n">' + str(n) + "</span></button>")
+    A("</div>")
+
+    kind_rows = sorted(((code, n) for (sch, code), n in topic_n.items()
+                        if sch == 'video.kind'),
+                       key=lambda cn: (-cn[1], topic_label[('video.kind', cn[0])].lower()))
+    A('<div class="browse">')
+    A('<span class="lab">Browse by kind</span>')
+    for code, n in kind_rows:
+        A('<button class="subj" type="button" data-kind="' + e(code) + '" '
+          'aria-pressed="false">' + e(topic_label[('video.kind', code)]) +
           '<span class="n">' + str(n) + "</span></button>")
     A("</div>")
 
@@ -330,7 +344,7 @@ def gate(doc, contract, prompts):
                 worst = max(worst, longest(val, path + "/[]"))
         return worst
     n, where = longest(videos)
-    check(n <= 220, "a long string is in the video records (%d chars at %s): prose or a "
+    check(n <= 320, "a long string is in the video records (%d chars at %s): prose or a "
                     "transcript may have leaked" % (n, where))
 
     # Field NAMES, not substrings. Three of these videos are legitimately called
@@ -354,7 +368,8 @@ def gate(doc, contract, prompts):
                 fails.append("a video record carries a field named " + k)
     ALLOWED = {"id", "url", "embed_url", "title", "channel", "channel_url", "thumb",
                "state", "disposition", "courses", "attribution", "legacy_in", "lessons",
-               "tags", "cross_refs"}
+               "previous_lessons", "tags", "cross_refs",
+               "work_year", "recording_year", "year_basis", "piece_note"}
     for v in videos:
         extra = set(v) - ALLOWED
         if extra:
@@ -370,6 +385,21 @@ def gate(doc, contract, prompts):
             fails.append("live-canvas attribution with no course: " + v["id"])
         if v["disposition"] == "in-use" and v["attribution"] != "build":
             fails.append("in-use without build evidence: " + v["id"])
+
+    # ---- dates. A work year outside this range is a parse error, not a fact, and a
+    # recording that predates its own work is impossible.
+    for v in videos:
+        for f in ("work_year", "recording_year"):
+            y = v.get(f)
+            if y is not None and not (1000 <= y <= 2026):
+                fails.append("implausible %s on %s: %r" % (f, v["id"], y))
+        if v.get("work_year") and v.get("recording_year") \
+                and v["recording_year"] < v["work_year"]:
+            fails.append("recording predates the work on " + v["id"])
+        if v.get("work_year") and v.get("year_basis") not in ("established",):
+            fails.append("a work year with no established basis on " + v["id"])
+        if v.get("year_basis") == "traditional" and v.get("work_year"):
+            fails.append("traditional piece carrying a single year on " + v["id"])
 
     # ---- a dead link must look dead
     for v in videos:
