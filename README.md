@@ -10,6 +10,7 @@ Cross-course interactive widgets for Optima Academy Online, hosted on GitHub Pag
 | `course-home-builder.html` | **Teacher-facing.** A form that generates a branded Optima course home page. Teachers fill in course name, term/section/meeting time, their own name and email, weekly announcements, quick-access tiles, module cards, and a Commonplace Corner quote; the widget outputs paste-ready HTML with a live preview, a **Copy HTML** button, and a `.html` download. | Not embedded in a course — teachers open it directly and paste the output into a Canvas page |
 | `optima-literature/ela-reference-library.html` | **Teacher-facing.** The ELA Reference Library: 226 titles with edition, translator, rights, first-publication and genre data, cover art, search, sort, a taught filter, a printable "my list" checkout card, and data-quality checks behind the ⚙ button. Generated — never hand-edit the HTML. | Not embedded in a course — teachers open it directly |
 | `optima-art/art-reference-library.html` | **Teacher-facing.** The Art Reference Library: 529 artworks catalogued from seven art courses, with search across artist, title, period, course and unit; availability filters; 41 published free-to-use images with a copy-URL button; a JSTOR link on 400 records; and a rights-and-data panel behind the ⚙ button. Generated — never hand-edit the HTML. | Not embedded in a course — teachers open it directly |
+| `optima-music/music-reference-library.html` | **Students and teachers.** The Music Reference Library: the 154 published videos used across the nine K–12 music courses. Browse rows for **course** and **genre**, plus search and an evidence-gated topic filter across era, composer, culture, element, instrument, skill and cross-subject; the module that uses each video; joins into the art and ELA libraries; a click-to-play `youtube-nocookie` frame; a copyable listening list and Canvas embed; and the 76 pieces a lesson names but never links. Generated — never hand-edit the HTML. | Not embedded in a course — open it directly |
 
 ### optima-literature notes
 
@@ -62,6 +63,64 @@ Cross-course interactive widgets for Optima Academy Online, hosted on GitHub Pag
   all three. Selections persist in `localStorage`.
 - Reuses the embedded wordmark from `optima-literature/_build/brand_assets.py` rather than
   carrying a second copy of the same base64.
+
+### optima-music notes
+
+- The widget is **generated**: run `python _build/build_music_library.py` from `optima-music/`.
+  It rewrites `music-reference-library.html` and runs a gate that fails the build on an
+  attribution or tagging misstatement. Then run `python _build/probe_render.py`, which loads the
+  built file in headless Chrome and asserts the painted DOM. Never hand-edit the HTML.
+- `music.json` is the contract, and it is **not written here**. It is emitted by
+  `_build/build_contract.py` in `OneDrive - OptimaEd\Claude's Workshop\Music Library`, which holds
+  the harvest of the nine course build folders, the oEmbed liveness pass and the tagging
+  vocabulary. To change what the widget shows, change the harvest and re-emit the contract, then
+  copy `music.json` here and rebuild.
+- **Browse first, filter second.** Course and genre are chip rows you can see, not dropdowns
+  you have to open, because those are the two questions anyone brings to this page. Picking a
+  course also switches the default order to that course's module order, so browsing MI-1 walks it
+  in teaching order rather than alphabetically. The genre shelves cover 59 of 154 videos across 14
+  genres; the rest carry no genre because nothing in their record names one, and they stay
+  reachable by course, search and the other topic filters.
+- **The cards carry no status badge.** "In use", "Live in Canvas only" and "Dropped in the
+  rebuild" are build bookkeeping — true of the catalogue, meaningless to someone looking for
+  something to listen to, and this page is open to students. The full disposition breakdown stays
+  in the "How this was built" panel. A dead link is the exception and stays on the card, styled as
+  a warning rather than a status, because it asks the reader to do something.
+- **Withdrawing a video** is a line in `WITHDRAWN` at the top of `build_music_library.py`, keyed by
+  video id with the reason. It lives in the generator and NOT in the workshop's contract builder on
+  purpose: the contract is a truthful record of what the courses actually link, and a harvest that
+  denied a video the course still embeds would be a lie. Filtering here also means re-emitting the
+  contract cannot quietly bring a withdrawal back, and a withdrawal id that matches nothing in the
+  contract fails the build rather than passing silently. **Withdrawing from the catalogue does not
+  remove the video from the course** — the panel records which build folder still carries it.
+  `probe_render.py` keeps a second, independent `NEVER_PUBLISH` list, because a probe that read only
+  the generator's list would pass happily if someone deleted a withdrawal.
+- **Course attribution comes only from the rebuilt build folders, and that is the point.** MI-1,
+  MI-2, MI-3 and one M/J Music Theory 1 section export an *identical* 116-video pool, so a Canvas
+  export cannot say which course teaches a video. A solid navy chip on a card is evidence from a
+  renovated module; an outlined chip is a course's own live Canvas content where no rebuilt folder
+  exists yet. Six videos sit in the old exports and no rebuilt module, and are filed as dropped
+  rather than attributed to four courses at once.
+- **Two links no longer play** — one deleted, one made private — and both are still embedded in
+  live MI-1/MI-2/MI-3 modules. That is the one thing on the page in gold, and the only thing:
+  dead records get no play button at all, because offering one that does nothing hides exactly
+  what the page exists to surface.
+- **Topic tags are evidence-gated.** A tag is attached only when a harvested string — the video
+  title, the channel, or the title of the lesson page using it — contains wording that names the
+  idea. Musical knowledge never counts. Every tag records the substring that fired it and whether
+  it describes the *video* or the *lesson around it*; both are in the pill's hover text, and a
+  dashed pill means lesson scope. 152 of 155 videos carry at least one topic.
+- **Nothing loads from YouTube until a teacher presses play**, and then only as a
+  `youtube-nocookie` embed, so browsing the shelf builds no watch history. Thumbnails are lazy and
+  carry explicit width and height so a late arrival cannot reflow the grid mid-scroll.
+- **No lyrics and no transcripts** are stored in the catalogue or its build kit; the gate checks
+  for both by field name. Optima links out to music rather than reproducing it.
+- The listening list emits plain text, because a teacher pastes it into a lesson plan, an email or
+  a Canvas box and plain text survives all three. The separate **Copy Canvas embed** button emits
+  paste-ready `nocookie` iframes and silently leaves out any dead link. Selections persist in
+  `localStorage`.
+- Reuses the embedded wordmark from `optima-literature/_build/brand_assets.py` rather than
+  carrying a third copy of the same base64.
 
 ### course-home-builder notes
 

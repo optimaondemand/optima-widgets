@@ -11,3 +11,5 @@ optima-literature/library.json               -text
 optima-literature/data/*.json                -text
 optima-art/art-reference-library.html       -text
 optima-art/art.json                         -text
+optima-music/music-reference-library.html -text
+optima-music/music.json                    -text
