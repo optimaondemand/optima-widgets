@@ -185,17 +185,21 @@ def main():
                                    re.sub(r"<script.*?</script>", "", doc, flags=re.S)
                                    .split('id="panel"')[0]):
             fails.append("a withheld video's title is still on the shelf: " + v["id"])
-    if withheld and "Withheld from this catalogue" not in painted:
-        fails.append("videos were withheld but the panel does not record it")
+    # The page no longer carries an audit trail -- the builder panel went with the rest
+    # of the build bookkeeping -- so the id check above is the whole assertion here. The
+    # reason a video was withheld lives in WITHDRAWN and the README.
 
-    # ---- the things a teacher must not miss
-    has("links no longer play", "the dead-link notice")
-    for v in dead:
-        has(v["id"], "dead video " + v["id"] + " named in the panel")
-    has('id="named-not-linked"', "the named-but-not-linked section")
-    prompts = {(p["course"], p.get("module"), p["query"])
-               for p in contract["search_prompts"]}
-    eq(n(r'youtube\.com/results\?', painted), len(prompts), "search links for named pieces")
+    # ---- the things nobody must miss
+    if dead:
+        has("no longer on YouTube", "the removed-video notice")
+
+    # ---- getting back out of a filter. Filters persist in localStorage, so without a
+    # reset the first chip click changed the view for good -- which is what happened.
+    has('id="reset"', "the reset control")
+    if 'id="reset"' in painted and 'id="reset" type="button" hidden' not in painted             and "hidden" not in re.search(r'<button[^>]*id="reset"[^>]*>', painted).group(0):
+        fails.append("the reset control is visible with no filter active")
+    if "×" not in doc and "\00D7" not in doc:
+        fails.append("active chips carry no dismiss mark, so nothing says they toggle off")
 
     # ---- tray
     for bid in ("traycopy", "trayembed", "trayclear", "traycount"):

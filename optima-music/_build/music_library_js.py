@@ -58,6 +58,31 @@ JS = """
     v._ela = ((v.cross_refs||{}).ela||[]).length;
   });
 
+  var DEFAULTS = {q:"", status:"", course:"", genre:"", topic:"", xref:"", sort:"default"};
+
+  function activeCount(){
+    return Object.keys(DEFAULTS).filter(function(k){
+      return state[k] !== DEFAULTS[k]; }).length;
+  }
+
+  function clearAll(){
+    // Back to everything: state, the search box, the selects and the stored copy. The
+    // stored copy matters most -- filters persist across reloads, which is what made a
+    // chosen filter feel permanent rather than merely sticky.
+    Object.keys(DEFAULTS).forEach(function(k){ state[k] = DEFAULTS[k]; });
+    var q = document.getElementById("q");
+    if (q) q.value = "";
+    ["topic","sort"].forEach(function(k){
+      var el = document.getElementById(k);
+      if (el) el.value = DEFAULTS[k];
+    });
+    // No removeItem here: render() ends in save(), which would write the key straight
+    // back. Persisting the CLEARED state is the behaviour we want anyway -- it is what
+    // makes "show everything" survive a reload, which is the half of this that was
+    // broken. The picked listening list is deliberately untouched; it is not a filter.
+    render();
+  }
+
   function matches(v){
     if (state.q && v._hay.indexOf(norm(state.q)) === -1) return false;
     if (state.status && v.disposition !== state.status) return false;
@@ -329,11 +354,16 @@ JS = """
     var shelf = [];
     if (state.course && CMAP[state.course]) shelf.push(CMAP[state.course].name);
     if (state.genre) shelf.push(GENRE_LABEL[state.genre] || state.genre);
+    var active = activeCount();
+    var rb = document.getElementById("reset");
+    if (rb) rb.hidden = active === 0;
     document.getElementById("resultline").innerHTML =
       (shelf.length ? "<b>" + shelf.map(esc).join(" &middot; ") + "</b> &mdash; " : "") +
       "showing <b>" + rows.length + "</b> of " + MUSIC.videos.length + " videos" +
       (state.course && state.sort === "default" ? ", in module order" : "") +
-      (dead ? " &middot; <b>" + dead + "</b> with a link that no longer works" : "");
+      (dead ? " &middot; <b>" + dead + "</b> with a link that no longer works" : "") +
+      (active ? ' <button type="button" class="clear" id="clearinline">Show all ' +
+                MUSIC.videos.length + ' videos</button>' : "");
     [["data-status","status"],["data-course","course"],["data-genre","genre"],
      ["data-xref","xref"]].forEach(function(pair){
       document.querySelectorAll("[" + pair[0] + "]").forEach(function(c){
@@ -387,14 +417,18 @@ JS = """
       if (el) el.addEventListener("change", function(){ state[k] = el.value; render(); });
     });
 
-    document.getElementById("gear").addEventListener("click", function(){
-      document.getElementById("panel").classList.toggle("open");
+    var rb = document.getElementById("reset");
+    if (rb) rb.addEventListener("click", clearAll);
+
+    // the inline link is inside the result line, which is rewritten on every render
+    document.getElementById("resultline").addEventListener("click", function(ev){
+      if (ev.target.closest("#clearinline")) clearAll();
     });
 
-    var gap = document.getElementById("gapjump");
-    if (gap) gap.addEventListener("click", function(){
-      document.getElementById("panel").classList.add("open");
-      document.getElementById("named-not-linked").scrollIntoView({block:"start"});
+    // Escape clears, from anywhere including the search box
+    document.addEventListener("keydown", function(ev){
+      if (ev.key !== "Escape") return;
+      if (activeCount()) { clearAll(); ev.preventDefault(); }
     });
 
     document.getElementById("traycopy").addEventListener("click", function(){
@@ -422,6 +456,15 @@ JS = """
           '?rel=0&autoplay=1" title="' + esc(v.title || "") +
           '" allow="autoplay; encrypted-media; picture-in-picture" ' +
           'allowfullscreen></iframe>';
+        // Whether an embed plays is YouTube's call, not ours: a channel can disallow
+        // embedding, and some origins are refused outright. When that happens the frame
+        // says "Video unavailable" and the reader needs somewhere to go that is not the
+        // back button.
+        var out = document.createElement("p");
+        out.className = "fallback";
+        out.innerHTML = 'Not playing? <a href="' + esc(v.url) +
+          '" target="_blank" rel="noopener">Watch it on YouTube</a>';
+        if (frame.parentNode) frame.parentNode.insertBefore(out, frame.nextSibling);
         return;
       }
       var add = ev.target.closest(".addbtn");

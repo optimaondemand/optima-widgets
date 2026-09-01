@@ -160,8 +160,8 @@ def build():
     A('<div class="stat"><b>' + str(len(videos)) + "</b><span>Videos catalogued</span></div>")
     A('<div class="stat"><b>' + str(drawn) + "</b><span>Courses</span></div>")
     A('<div class="stat live"><b>' + str(len(genre_codes)) + "</b><span>Genres</span></div>")
-    A('<div class="stat gap"><b>' + str(len(prompts)) + '</b>'
-      '<button type="button" id="gapjump">Named but not linked</button></div>')
+    A('<div class="stat"><b>' + str(sum(len(v["tags"]) for v in videos)) +
+      "</b><span>Topics tagged</span></div>")
     A("</div></div></header>")
 
     # ---------------- controls ----------------
@@ -190,8 +190,8 @@ def build():
       '<option value="uses">Most used</option>'
       '<option value="title">Title A&ndash;Z</option>'
       '<option value="channel">Channel A&ndash;Z</option></select>')
-    A('<button class="gearbtn" id="gear" type="button" '
-      'aria-label="How this catalogue was built">&#9881; How this was built</button>')
+    A('<button class="resetbtn" id="reset" type="button" hidden>'
+      'Show everything</button>')
     A("</div>")
 
     # ---- browse by course. Chips rather than a dropdown: the nine courses are the first
@@ -237,153 +237,13 @@ def build():
     if n_dead:
         still = sorted({cmap[c]["short"] for v in videos if v["state"] != "ok"
                         for c in v["courses"] if c in cmap})
-        A('<div class="notice"><b>' + str(n_dead) + ' of these links no longer play.</b> '
-          'They are still embedded in ' + e(", ".join(still)) + ', so a student meets a '
-          'blank frame where a lesson expects a video. Filter to '
-          '<code>Link no longer works</code> to see which, and where.</div>')
-
-    # ---------------- panel ----------------
-    A('<section class="panel" id="panel">')
-    A("<h2>How this catalogue was built</h2>")
-    A("<p>" + e(contract["purpose"]) + "</p>")
-
-    A("<h3>Which course teaches a video</h3>")
-    A("<p>" + e(contract["legacy_note"]) + " A chip on a card is therefore evidence from "
-      "a rebuilt module, not from an export. Where a video is that course's own live "
-      "Canvas content and the course has no rebuilt folder yet, the chip is outlined "
-      "rather than solid.</p>")
-
-    A("<h3>What a topic tag claims</h3>")
-    A("<p>" + e(contract["scope_note"]) + " Hover any tag to read the exact string that "
-      "justified it. A dashed outline marks a tag that describes the lesson rather than "
-      "the video.</p>")
-
-    A("<h3>Where each video stands</h3>")
-    A("<table><tr><th>Status</th><th>Videos</th><th>What it means</th></tr>")
-    MEANING = {
-        "in-use": "Cited by a lesson page in a rebuilt build folder.",
-        "live-canvas": "That course's own live Canvas content; the course has no rebuilt "
-                       "folder yet.",
-        "dropped-in-renovation": "In the old export, in no rebuilt module. Available to "
-                                 "reuse, not currently taught.",
-        "dead-link": "Deleted or made private on YouTube since it was linked.",
-        "unknown": "Not traced to a course.",
-    }
-    for code, n in sorted(contract["counts"]["dispositions"].items(),
-                          key=lambda kv: -kv[1]):
-        A("<tr><td>" + e(code) + '</td><td class="num">' + str(n) + "</td><td>" +
-          e(MEANING.get(code, "")) + "</td></tr>")
-    A("</table>")
-
-    A("<h3>Per course</h3>")
-    A("<table><tr><th>Course</th><th>Code</th><th>Grade</th><th>Videos</th>"
-      "<th>Evidence</th></tr>")
-    for c in courses:
-        n = per_course[c["id"]]
-        if c["has_build"] and n:
-            ev = "Rebuilt build folder harvested."
-        elif c["has_build"]:
-            # Theory 2 is the case: the folder exists and was read, and its lessons link
-            # no video at all. "Harvested" beside a zero reads as a harvest failure.
-            ev = "Rebuilt folder harvested; its lessons link no video."
-        elif n:
-            ev = "No rebuilt folder yet; videos come from the live Canvas export."
-        else:
-            ev = "No rebuilt folder yet, and its export shares the cloned pool, so "\
-                 "nothing can be attributed to it."
-        A("<tr><td>" + e(c["name"]) + "</td><td><code>" + e(c["code"]) + "</code></td><td>" +
-          e(c["grade"]) + '</td><td class="num">' + str(n) + "</td><td>" + e(ev) +
-          "</td></tr>")
-    A("</table>")
-
-    A("<h3>Links that no longer play</h3>")
-    A("<table><tr><th>Video</th><th>State</th><th>Still linked from</th></tr>")
-    for v in sorted(videos, key=lambda v: v["state"]):
-        if v["state"] == "ok":
-            continue
-        where = ", ".join(cmap[c]["short"] for c in v["courses"] if c in cmap) or \
-                "no rebuilt module"
-        A("<tr><td><code>" + e(v["id"]) + "</code></td><td>" + e(v["state"]) +
-          "</td><td>" + e(where) + "</td></tr>")
-    A("</table>")
-
-    A("<h3>Browsing by genre</h3>")
-    n_genre = sum(1 for v in videos
-                  if any(t["scheme"] == "music.genre" for t in v["tags"]))
-    A("<p>The genre shelves cover <b>" + str(n_genre) + " of " + str(len(videos)) +
-      "</b> videos across " + str(len(genre_codes)) + " genres. The rest carry no genre "
-      "because nothing in their record names one &mdash; a lesson page called "
-      "&ldquo;Rhythm in Detail&rdquo; says what the video teaches, not what kind of "
-      "music it is. Those videos are still reachable by course, by search, and by the "
-      "other topic filters.</p>")
-
-    A("<h3>Topic coverage</h3>")
-    scheme_n = collections.Counter()
-    for v in videos:
-        for scheme in {t["scheme"] for t in v["tags"]}:
-            scheme_n[scheme] += 1
-    A("<table><tr><th>Scheme</th><th>Values used</th><th>Videos carrying one</th></tr>")
-    for scheme, heading in SCHEME_GROUPS:
-        vals = len({k for k in topic_n if k[0] == scheme})
-        if not vals:
-            continue
-        A("<tr><td>" + e(heading) + ' <code>' + e(scheme) + '</code></td><td class="num">' +
-          str(vals) + '</td><td class="num">' + str(scheme_n[scheme]) + "</td></tr>")
-    A("</table>")
-    untagged = sum(1 for v in videos if not v["tags"])
-    A("<p>" + str(len(videos) - untagged) + " of " + str(len(videos)) +
-      " videos carry at least one topic. A tag is attached only when a harvested string "
-      "&mdash; the video title, the channel, or the title of the lesson page using it "
-      "&mdash; contains wording that names the idea. Musical knowledge never counts: a "
-      "Brandenburg concerto is a lesson in counterpoint, but if nothing in the record "
-      "says so, it carries no such tag.</p>")
-
-    A('<h3 id="named-not-linked">Named in a lesson, never linked (' +
-      str(len(prompts)) + ")</h3>")
-    A("<p>These are pieces an Optima music lesson tells a student to find, with no video "
-      "linked for them. Each row is a real gap: the lesson names the work, the "
-      "catalogue has nothing to hand a teacher. The search link opens YouTube with the "
-      "wording the lesson itself uses.</p>")
-    A('<div class="scroll"><table><tr><th>Course</th><th>Module</th><th>Piece the '
-      "lesson names</th><th></th></tr>")
-    for p in prompts:
-        c = cmap.get(p["course"])
-        q = urllib.parse.urlencode({"search_query": p["query"]})
-        A("<tr><td>" + e(c["short"] if c else p["course"]) + '</td><td class="num">' +
-          (e(p["module"]) if p.get("module") is not None else "&mdash;") + "</td><td>" +
-          e(p["query"]) + '</td><td><a href="https://www.youtube.com/results?' + e(q) +
-          '" target="_blank" rel="noopener">Search</a></td></tr>')
-    A("</table></div>")
-
-    if held:
-        A("<h3>Withheld from this catalogue</h3>")
-        A("<p>" + str(len(held)) + (" video is" if len(held) == 1 else " videos are") +
-          " withheld from this page by editorial decision. Withholding a video here does "
-          "not remove it from a course: where it is still in a build folder, that is "
-          "recorded below and needs pulling separately.</p>")
-        A("<table><tr><th>Video</th><th>Why</th></tr>")
-        for v in held:
-            A("<tr><td>" + e(v["title"] or v["id"]) + "</td><td>" +
-              e(WITHDRAWN[v["id"]]) + "</td></tr>")
-        A("</table>")
-
-    A("<h3>What is not stored here</h3>")
-    A("<p>Titles, channels, thumbnails and links only. No lyrics and no transcripts are "
-      "held anywhere in this catalogue or its build kit &mdash; Optima links out to "
-      "music rather than reproducing it. Nothing loads from YouTube until you press "
-      "play, and the player is the <code>youtube-nocookie</code> embed, so browsing "
-      "this shelf does not build a watch history.</p>")
-
-    A("<h3>Provenance</h3>")
-    A("<p>Generated " + e(contract["generated"]) + " from <code>music.json</code>, which "
-      "is emitted by <code>_build/build_contract.py</code> in Claude&rsquo;s Workshop "
-      "&rarr; Music Library. This page is built by "
-      "<code>_build/build_music_library.py</code> and is overwritten on every run; edit "
-      "the generator, never the HTML.</p>")
-    A("</section>")
-    A("</div></section>")
+        A('<div class="notice"><b>' + str(n_dead) + ' of these videos are no longer '
+          'on YouTube.</b> The channels removed them, so the entries are kept for the '
+          'record with everything known about the piece. Use '
+          '<code>Link no longer works</code> to see them.</div>')
 
     # ---------------- grid + tray ----------------
+    A("</div></section>")
     A('<main class="wrap"><div class="grid" id="grid"></div></main>')
     A('<div class="tray" id="tray" role="region" aria-label="Listening list">'
       '<div class="wrap">')
@@ -552,8 +412,12 @@ def gate(doc, contract, prompts):
     # ---- the page must actually say the numbers it claims
     check(">" + str(len(videos)) + "</b><span>Videos catalogued" in doc,
           "hero video count does not match the contract")
-    check(">" + str(len(prompts)) + "</b>" in doc,
-          "hero named-not-linked count does not match the deduped list")
+    # markup only: a leftover CSS rule is untidy, not a panel, and matching the
+    # stylesheet made this check fail on the class name it had just orphaned
+    body_only = re.sub(r"<style>.*?</style>", "", chrome, flags=re.S)
+    check("How this was built" not in body_only and 'class="panel' not in body_only,
+          "the builder panel is back on the page")
+    check('id="reset"' in doc, "no reset control: a chosen filter would be a one-way door")
     n_courses = sum(1 for c in contract["courses"]
                     if any(c["id"] in v["courses"] for v in videos))
     check(chrome.count('<option value="') >= n_courses,

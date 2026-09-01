@@ -41,11 +41,6 @@ h1{margin:0;font-size:26px;font-weight:650;letter-spacing:-.2px;color:#fff}
 .stat b{font-size:23px;font-weight:680;color:#fff;line-height:1.15}
 .stat span{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:#9fb6d4}
 .stat.live b{color:var(--cyan)}
-.stat.gap b{color:var(--gold)}
-.stat.gap button{background:none;border:none;padding:0;font:inherit;font-size:12px;
-  text-transform:uppercase;letter-spacing:.09em;color:#9fb6d4;cursor:pointer;
-  text-align:left;text-decoration:underline;text-decoration-color:rgba(224,170,62,.6)}
-.stat.gap button:hover{color:#fff}
 
 /* ---------- controls ---------- */
 .controls{position:sticky;top:0;z-index:20;background:rgba(244,246,249,.96);
@@ -68,11 +63,28 @@ select:focus{border-color:var(--cyan)}
 .chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
 .chip[aria-pressed="true"].gold{background:var(--gold-dim);border-color:var(--gold-dim)}
 .chip .n{opacity:.62;font-weight:500;margin-left:5px}
+
+/* An active chip carries its own dismiss mark. Without it, nothing on the page said a
+   chip could be clicked a second time to turn it off, so choosing a filter read as a
+   one-way door. */
+.chip[aria-pressed="true"]::after,
+.subj[aria-pressed="true"]::after{content:"×";margin-left:7px;font-weight:700;
+  opacity:.85}
+
+/* Reset. Hidden until something is actually filtered, so the default view stays quiet
+   and the button only exists when it has work to do. */
+.resetbtn{background:var(--navy);border:1px solid var(--navy);color:#fff;border-radius:8px;
+  padding:10px 14px;cursor:pointer;font:inherit;font-weight:600;white-space:nowrap}
+.resetbtn:hover{background:var(--navy-3);border-color:var(--navy-3)}
+.resetbtn[hidden]{display:none}
 .resultline{margin:13px 0 0;font-size:14px;color:var(--mute)}
 .resultline b{color:var(--ink)}
-.gearbtn{margin-left:auto;background:none;border:1px solid var(--line);border-radius:8px;
-  padding:9px 12px;cursor:pointer;color:var(--body);font:inherit}
-.gearbtn:hover{border-color:var(--cyan-dim);color:var(--navy)}
+.resultline .clear{background:none;border:none;padding:0;margin-left:8px;font:inherit;
+  font-size:13.5px;color:var(--navy-2);text-decoration:underline;cursor:pointer}
+.resultline .clear:hover{color:var(--navy)}
+.resultline .clear:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.resultline .clear[hidden]{display:none}
+.resetbtn:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 
 /* ---------- browse rows ----------
    Two axes, two accents: a course chip fills navy when it is open, a genre chip fills
@@ -188,24 +200,6 @@ details.uses li b{color:var(--body);font-weight:600}
   font-size:14px;color:#5c4718}
 .notice b{color:#3f3010}
 .notice code{background:#f4e9cd;padding:1.5px 5px;border-radius:4px;font-size:13px}
-.panel{display:none;margin:18px 0 0;padding:20px 22px;background:#fff;
-  border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
-.panel.open{display:block}
-.panel h2{margin:0 0 12px;font-size:17px;color:var(--ink)}
-.panel h3{margin:22px 0 8px;font-size:14px;text-transform:uppercase;
-  letter-spacing:.07em;color:var(--mute)}
-.panel table{border-collapse:collapse;width:100%;font-size:14px}
-.panel th,.panel td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
-.panel th{color:var(--mute);font-weight:600;font-size:12.5px;text-transform:uppercase;
-  letter-spacing:.05em}
-.panel td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;
-  color:var(--ink)}
-.panel p{font-size:14px}
-.panel code{background:#eef1f6;padding:1.5px 5px;border-radius:4px;font-size:13px}
-.panel .scroll{max-height:420px;overflow-y:auto;border:1px solid var(--line);
-  border-radius:8px}
-.panel .scroll table{font-size:13px}
-.panel .scroll th{position:sticky;top:0;background:#f7f9fc}
 footer{padding:26px 0 40px;color:var(--mute);font-size:13px;border-top:1px solid var(--line)}
 
 /* ---------- playlist tray ---------- */
@@ -232,12 +226,10 @@ body.hastray{padding-bottom:74px}
    cyan on navy is not enough contrast on its own. */
 .chip:focus-visible,
 .subj:focus-visible,
-.gearbtn:focus-visible,
 .copybtn:focus-visible,
 .addbtn:focus-visible,
 .watch:focus-visible,
 .playbtn:focus-visible,
-.stat.gap button:focus-visible,
 details.uses summary:focus-visible,
 .tray button:focus-visible{
   outline:3px solid var(--cyan);
@@ -255,7 +247,7 @@ select:focus-visible{outline:3px solid var(--cyan);outline-offset:1px}
 }
 
 @media print{
-  .controls,.tray,.playbtn,.gearbtn{display:none}
+  .controls,.tray,.playbtn{display:none}
   .hero{background:none;color:#000;border-bottom:2px solid #000}
   .hero h1,.stat b{color:#000}
   .sub,.stat span{color:#333}

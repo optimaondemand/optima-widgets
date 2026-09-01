@@ -33,11 +33,6 @@ h1{margin:0;font-size:26px;font-weight:650;letter-spacing:-.2px;color:#fff}
 .stat b{font-size:23px;font-weight:680;color:#fff;line-height:1.15}
 .stat span{font-size:12px;text-transform:uppercase;letter-spacing:.09em;color:#9fb6d4}
 .stat.live b{color:var(--cyan)}
-.stat.gap b{color:var(--gold)}
-.stat.gap button{background:none;border:none;padding:0;font:inherit;font-size:12px;
-  text-transform:uppercase;letter-spacing:.09em;color:#9fb6d4;cursor:pointer;
-  text-align:left;text-decoration:underline;text-decoration-color:rgba(224,170,62,.6)}
-.stat.gap button:hover{color:#fff}
 
 /* ---------- controls ---------- */
 .controls{position:sticky;top:0;z-index:20;background:rgba(244,246,249,.96);
@@ -60,11 +55,28 @@ select:focus{border-color:var(--cyan)}
 .chip[aria-pressed="true"]{background:var(--navy);border-color:var(--navy);color:#fff}
 .chip[aria-pressed="true"].gold{background:var(--gold-dim);border-color:var(--gold-dim)}
 .chip .n{opacity:.62;font-weight:500;margin-left:5px}
+
+/* An active chip carries its own dismiss mark. Without it, nothing on the page said a
+   chip could be clicked a second time to turn it off, so choosing a filter read as a
+   one-way door. */
+.chip[aria-pressed="true"]::after,
+.subj[aria-pressed="true"]::after{content:"×";margin-left:7px;font-weight:700;
+  opacity:.85}
+
+/* Reset. Hidden until something is actually filtered, so the default view stays quiet
+   and the button only exists when it has work to do. */
+.resetbtn{background:var(--navy);border:1px solid var(--navy);color:#fff;border-radius:8px;
+  padding:10px 14px;cursor:pointer;font:inherit;font-weight:600;white-space:nowrap}
+.resetbtn:hover{background:var(--navy-3);border-color:var(--navy-3)}
+.resetbtn[hidden]{display:none}
 .resultline{margin:13px 0 0;font-size:14px;color:var(--mute)}
 .resultline b{color:var(--ink)}
-.gearbtn{margin-left:auto;background:none;border:1px solid var(--line);border-radius:8px;
-  padding:9px 12px;cursor:pointer;color:var(--body);font:inherit}
-.gearbtn:hover{border-color:var(--cyan-dim);color:var(--navy)}
+.resultline .clear{background:none;border:none;padding:0;margin-left:8px;font:inherit;
+  font-size:13.5px;color:var(--navy-2);text-decoration:underline;cursor:pointer}
+.resultline .clear:hover{color:var(--navy)}
+.resultline .clear:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.resultline .clear[hidden]{display:none}
+.resetbtn:focus-visible{outline:3px solid var(--cyan);outline-offset:2px}
 
 /* ---------- browse rows ----------
    Two axes, two accents: a course chip fills navy when it is open, a genre chip fills
@@ -180,24 +192,6 @@ details.uses li b{color:var(--body);font-weight:600}
   font-size:14px;color:#5c4718}
 .notice b{color:#3f3010}
 .notice code{background:#f4e9cd;padding:1.5px 5px;border-radius:4px;font-size:13px}
-.panel{display:none;margin:18px 0 0;padding:20px 22px;background:#fff;
-  border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow)}
-.panel.open{display:block}
-.panel h2{margin:0 0 12px;font-size:17px;color:var(--ink)}
-.panel h3{margin:22px 0 8px;font-size:14px;text-transform:uppercase;
-  letter-spacing:.07em;color:var(--mute)}
-.panel table{border-collapse:collapse;width:100%;font-size:14px}
-.panel th,.panel td{text-align:left;padding:7px 10px;border-bottom:1px solid var(--line)}
-.panel th{color:var(--mute);font-weight:600;font-size:12.5px;text-transform:uppercase;
-  letter-spacing:.05em}
-.panel td.num{text-align:right;font-variant-numeric:tabular-nums;font-weight:600;
-  color:var(--ink)}
-.panel p{font-size:14px}
-.panel code{background:#eef1f6;padding:1.5px 5px;border-radius:4px;font-size:13px}
-.panel .scroll{max-height:420px;overflow-y:auto;border:1px solid var(--line);
-  border-radius:8px}
-.panel .scroll table{font-size:13px}
-.panel .scroll th{position:sticky;top:0;background:#f7f9fc}
 footer{padding:26px 0 40px;color:var(--mute);font-size:13px;border-top:1px solid var(--line)}
 
 /* ---------- playlist tray ---------- */
@@ -224,12 +218,10 @@ body.hastray{padding-bottom:74px}
    cyan on navy is not enough contrast on its own. */
 .chip:focus-visible,
 .subj:focus-visible,
-.gearbtn:focus-visible,
 .copybtn:focus-visible,
 .addbtn:focus-visible,
 .watch:focus-visible,
 .playbtn:focus-visible,
-.stat.gap button:focus-visible,
 details.uses summary:focus-visible,
 .tray button:focus-visible{
   outline:3px solid var(--cyan);
@@ -247,7 +239,7 @@ select:focus-visible{outline:3px solid var(--cyan);outline-offset:1px}
 }
 
 @media print{
-  .controls,.tray,.playbtn,.gearbtn{display:none}
+  .controls,.tray,.playbtn{display:none}
   .hero{background:none;color:#000;border-bottom:2px solid #000}
   .hero h1,.stat b{color:#000}
   .sub,.stat span{color:#333}
@@ -274,7 +266,7 @@ select:focus-visible{outline:3px solid var(--cyan);outline-offset:1px}
 <div class="stat"><b>154</b><span>Videos catalogued</span></div>
 <div class="stat"><b>7</b><span>Courses</span></div>
 <div class="stat live"><b>14</b><span>Genres</span></div>
-<div class="stat gap"><b>76</b><button type="button" id="gapjump">Named but not linked</button></div>
+<div class="stat"><b>318</b><span>Topics tagged</span></div>
 </div></div></header>
 <section class="controls"><div class="wrap">
 <div class="searchrow">
@@ -390,7 +382,7 @@ select:focus-visible{outline:3px solid var(--cyan);outline-offset:1px}
 </optgroup>
 </select>
 <select id="sort" aria-label="Sort"><option value="default">Suggested</option><option value="uses">Most used</option><option value="title">Title A&ndash;Z</option><option value="channel">Channel A&ndash;Z</option></select>
-<button class="gearbtn" id="gear" type="button" aria-label="How this catalogue was built">&#9881; How this was built</button>
+<button class="resetbtn" id="reset" type="button" hidden>Show everything</button>
 </div>
 <div class="browse">
 <span class="lab">Browse by course</span>
@@ -426,142 +418,7 @@ select:focus-visible{outline:3px solid var(--cyan);outline-offset:1px}
 <button class="subj" type="button" data-xref="ela" aria-pressed="false">In the ELA library<span class="n">8</span></button>
 </div>
 <p class="resultline" id="resultline"></p>
-<div class="notice"><b>2 of these links no longer play.</b> They are still embedded in MI-1, MI-2, MI-3, so a student meets a blank frame where a lesson expects a video. Filter to <code>Link no longer works</code> to see which, and where.</div>
-<section class="panel" id="panel">
-<h2>How this catalogue was built</h2>
-<p>Every YouTube video used across the K-12 Optima music courses, with what it is, which course and module uses it, and where it meets the art and ELA libraries.</p>
-<h3>Which course teaches a video</h3>
-<p>MI-1, MI-2, MI-3 and one M/J Music Theory 1 section export an IDENTICAL 116-video pool, so a Canvas export cannot say which course teaches a video. Course attribution therefore comes only from the renovated build folders. A chip on a card is therefore evidence from a rebuilt module, not from an export. Where a video is that course's own live Canvas content and the course has no rebuilt folder yet, the chip is outlined rather than solid.</p>
-<h3>What a topic tag claims</h3>
-<p>scope=&quot;video&quot; means the video itself is that thing. scope=&quot;lesson&quot; means the Optima lesson using it is about that thing. Every tag names the string that justified it. Hover any tag to read the exact string that justified it. A dashed outline marks a tag that describes the lesson rather than the video.</p>
-<h3>Where each video stands</h3>
-<table><tr><th>Status</th><th>Videos</th><th>What it means</th></tr>
-<tr><td>in-use</td><td class="num">141</td><td>Cited by a lesson page in a rebuilt build folder.</td></tr>
-<tr><td>dropped-in-renovation</td><td class="num">6</td><td>In the old export, in no rebuilt module. Available to reuse, not currently taught.</td></tr>
-<tr><td>live-canvas</td><td class="num">6</td><td>That course&#x27;s own live Canvas content; the course has no rebuilt folder yet.</td></tr>
-<tr><td>dead-link</td><td class="num">2</td><td>Deleted or made private on YouTube since it was linked.</td></tr>
-</table>
-<h3>Per course</h3>
-<table><tr><th>Course</th><th>Code</th><th>Grade</th><th>Videos</th><th>Evidence</th></tr>
-<tr><td>Music Grade K</td><td><code>5013060</code></td><td>K</td><td class="num">4</td><td>No rebuilt folder yet; videos come from the live Canvas export.</td></tr>
-<tr><td>Music Grade 1</td><td><code>5013070</code></td><td>1</td><td class="num">0</td><td>No rebuilt folder yet, and its export shares the cloned pool, so nothing can be attributed to it.</td></tr>
-<tr><td>Music Grade 2</td><td><code>5013080</code></td><td>2</td><td class="num">2</td><td>No rebuilt folder yet; videos come from the live Canvas export.</td></tr>
-<tr><td>Music Intermediate I</td><td><code>5013090</code></td><td>3</td><td class="num">109</td><td>Rebuilt build folder harvested.</td></tr>
-<tr><td>Music Intermediate II</td><td><code>5013100</code></td><td>4</td><td class="num">91</td><td>Rebuilt build folder harvested.</td></tr>
-<tr><td>Music Intermediate III</td><td><code>5013110</code></td><td>5</td><td class="num">64</td><td>Rebuilt build folder harvested.</td></tr>
-<tr><td>M/J Music Theory 1</td><td><code>1300000</code></td><td>6-8</td><td class="num">6</td><td>Rebuilt build folder harvested.</td></tr>
-<tr><td>M/J Music Theory 2</td><td><code>1300010</code></td><td>6-8</td><td class="num">0</td><td>Rebuilt folder harvested; its lessons link no video.</td></tr>
-<tr><td>Music of the World</td><td><code>1300340</code></td><td>9-12</td><td class="num">27</td><td>Rebuilt build folder harvested.</td></tr>
-</table>
-<h3>Links that no longer play</h3>
-<table><tr><th>Video</th><th>State</th><th>Still linked from</th></tr>
-<tr><td><code>JNA07yyFtZQ</code></td><td>deleted</td><td>MI-1, MI-2, MI-3</td></tr>
-<tr><td><code>Uft6cHgMewY</code></td><td>private</td><td>MI-1, MI-2</td></tr>
-</table>
-<h3>Browsing by genre</h3>
-<p>The genre shelves cover <b>58 of 154</b> videos across 14 genres. The rest carry no genre because nothing in their record names one &mdash; a lesson page called &ldquo;Rhythm in Detail&rdquo; says what the video teaches, not what kind of music it is. Those videos are still reachable by course, by search, and by the other topic filters.</p>
-<h3>Topic coverage</h3>
-<table><tr><th>Scheme</th><th>Values used</th><th>Videos carrying one</th></tr>
-<tr><td>Genre <code>music.genre</code></td><td class="num">14</td><td class="num">58</td></tr>
-<tr><td>Era <code>music.era</code></td><td class="num">6</td><td class="num">19</td></tr>
-<tr><td>Composer <code>music.composer</code></td><td class="num">12</td><td class="num">34</td></tr>
-<tr><td>Culture or tradition <code>music.culture</code></td><td class="num">11</td><td class="num">30</td></tr>
-<tr><td>Element of music <code>music.element</code></td><td class="num">13</td><td class="num">55</td></tr>
-<tr><td>Instrument <code>music.instrument</code></td><td class="num">20</td><td class="num">43</td></tr>
-<tr><td>Skill <code>music.skill</code></td><td class="num">6</td><td class="num">20</td></tr>
-<tr><td>Cross-subject <code>concept</code></td><td class="num">8</td><td class="num">30</td></tr>
-</table>
-<p>151 of 154 videos carry at least one topic. A tag is attached only when a harvested string &mdash; the video title, the channel, or the title of the lesson page using it &mdash; contains wording that names the idea. Musical knowledge never counts: a Brandenburg concerto is a lesson in counterpoint, but if nothing in the record says so, it carries no such tag.</p>
-<h3 id="named-not-linked">Named in a lesson, never linked (76)</h3>
-<p>These are pieces an Optima music lesson tells a student to find, with no video linked for them. Each row is a real gap: the lesson names the work, the catalogue has nothing to hand a teacher. The search link opens YouTube with the wording the lesson itself uses.</p>
-<div class="scroll"><table><tr><th>Course</th><th>Module</th><th>Piece the lesson names</th><th></th></tr>
-<tr><td>MI-1</td><td class="num">6</td><td>Beethoven Moonlight Sonata 3rd movement</td><td><a href="https://www.youtube.com/results?search_query=Beethoven+Moonlight+Sonata+3rd+movement" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">6</td><td>Sousa Stars and Stripes Forever</td><td><a href="https://www.youtube.com/results?search_query=Sousa+Stars+and+Stripes+Forever" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">7</td><td>Elvis Presley All Shook Up official</td><td><a href="https://www.youtube.com/results?search_query=Elvis+Presley+All+Shook+Up+official" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">7</td><td>Elvis Presley Cant Help Falling in Love official</td><td><a href="https://www.youtube.com/results?search_query=Elvis+Presley+Cant+Help+Falling+in+Love+official" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">7</td><td>Elvis Presley Hound Dog official</td><td><a href="https://www.youtube.com/results?search_query=Elvis+Presley+Hound+Dog+official" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">7</td><td>Elvis Presley Suspicious Minds official</td><td><a href="https://www.youtube.com/results?search_query=Elvis+Presley+Suspicious+Minds+official" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">11</td><td>Mozart Eine Kleine Nachtmusik</td><td><a href="https://www.youtube.com/results?search_query=Mozart+Eine+Kleine+Nachtmusik" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">11</td><td>Mozart Sonata Facile first movement</td><td><a href="https://www.youtube.com/results?search_query=Mozart+Sonata+Facile+first+movement" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">11</td><td>Mozart Symphony No. 40</td><td><a href="https://www.youtube.com/results?search_query=Mozart+Symphony+No.+40" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">11</td><td>Mozart The Magic Flute Queen of the Night</td><td><a href="https://www.youtube.com/results?search_query=Mozart+The+Magic+Flute+Queen+of+the+Night" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">11</td><td>Mozart Variations Twinkle Twinkle Little Star</td><td><a href="https://www.youtube.com/results?search_query=Mozart+Variations+Twinkle+Twinkle+Little+Star" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-1</td><td class="num">13</td><td>louis armstrong what a wonderful world</td><td><a href="https://www.youtube.com/results?search_query=louis+armstrong+what+a+wonderful+world" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-2</td><td class="num">6</td><td>Beethoven Moonlight Sonata first movement</td><td><a href="https://www.youtube.com/results?search_query=Beethoven+Moonlight+Sonata+first+movement" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-2</td><td class="num">6</td><td>Birds of a Feather official audio</td><td><a href="https://www.youtube.com/results?search_query=Birds+of+a+Feather+official+audio" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-2</td><td class="num">6</td><td>K-Pop Demon Hunters soundtrack</td><td><a href="https://www.youtube.com/results?search_query=K-Pop+Demon+Hunters+soundtrack" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-2</td><td class="num">6</td><td>Mozart Requiem Lacrymosa</td><td><a href="https://www.youtube.com/results?search_query=Mozart+Requiem+Lacrymosa" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-2</td><td class="num">6</td><td>Sousa The Stars and Stripes Forever</td><td><a href="https://www.youtube.com/results?search_query=Sousa+The+Stars+and+Stripes+Forever" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-2</td><td class="num">13</td><td>louis armstrong west end blues</td><td><a href="https://www.youtube.com/results?search_query=louis+armstrong+west+end+blues" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-2</td><td class="num">13</td><td>louis armstrong what a wonderful world</td><td><a href="https://www.youtube.com/results?search_query=louis+armstrong+what+a+wonderful+world" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>MI-2</td><td class="num">13</td><td>wynton marsalis trumpet improvisation</td><td><a href="https://www.youtube.com/results?search_query=wynton+marsalis+trumpet+improvisation" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">2</td><td>Babatunde Olatunji Drums of Passion</td><td><a href="https://www.youtube.com/results?search_query=Babatunde+Olatunji+Drums+of+Passion" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">2</td><td>Ewe drumming ensemble Smithsonian Folkways</td><td><a href="https://www.youtube.com/results?search_query=Ewe+drumming+ensemble+Smithsonian+Folkways" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">2</td><td>Mamady Keita djembe solo</td><td><a href="https://www.youtube.com/results?search_query=Mamady+Keita+djembe+solo" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">3</td><td>balafon solo demonstration</td><td><a href="https://www.youtube.com/results?search_query=balafon+solo+demonstration" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">3</td><td>Salif Keita Mali live performance</td><td><a href="https://www.youtube.com/results?search_query=Salif+Keita+Mali+live+performance" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">3</td><td>Toumani Diabate kora solo</td><td><a href="https://www.youtube.com/results?search_query=Toumani+Diabate+kora+solo" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">4</td><td>Congo Square New Orleans documentary</td><td><a href="https://www.youtube.com/results?search_query=Congo+Square+New+Orleans+documentary" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">4</td><td>Louis Armstrong Heebie Jeebies 1926</td><td><a href="https://www.youtube.com/results?search_query=Louis+Armstrong+Heebie+Jeebies+1926" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">4</td><td>Louis Armstrong West End Blues 1928</td><td><a href="https://www.youtube.com/results?search_query=Louis+Armstrong+West+End+Blues+1928" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">5</td><td>Bessie Smith St Louis Blues 1925</td><td><a href="https://www.youtube.com/results?search_query=Bessie+Smith+St+Louis+Blues+1925" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">5</td><td>Muddy Waters live Chicago blues performance</td><td><a href="https://www.youtube.com/results?search_query=Muddy+Waters+live+Chicago+blues+performance" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">5</td><td>Robert Johnson Cross Road Blues 1936</td><td><a href="https://www.youtube.com/results?search_query=Robert+Johnson+Cross+Road+Blues+1936" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">6</td><td>charlie parker dizzy gillespie bebop</td><td><a href="https://www.youtube.com/results?search_query=charlie+parker+dizzy+gillespie+bebop" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">6</td><td>duke ellington take the a train</td><td><a href="https://www.youtube.com/results?search_query=duke+ellington+take+the+a+train" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">6</td><td>miles davis kind of blue</td><td><a href="https://www.youtube.com/results?search_query=miles+davis+kind+of+blue" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">7</td><td>Aretha Franklin Respect 1967</td><td><a href="https://www.youtube.com/results?search_query=Aretha+Franklin+Respect+1967" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">7</td><td>James Brown live funk 1960s</td><td><a href="https://www.youtube.com/results?search_query=James+Brown+live+funk+1960s" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">7</td><td>Mahalia Jackson Take My Hand Precious Lord</td><td><a href="https://www.youtube.com/results?search_query=Mahalia+Jackson+Take+My+Hand+Precious+Lord" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">8</td><td>Bob Marley and the Wailers Get Up Stand Up</td><td><a href="https://www.youtube.com/results?search_query=Bob+Marley+and+the+Wailers+Get+Up+Stand+Up" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">8</td><td>Mighty Sparrow calypso</td><td><a href="https://www.youtube.com/results?search_query=Mighty+Sparrow+calypso" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">8</td><td>Trinidad Panorama steel band performance</td><td><a href="https://www.youtube.com/results?search_query=Trinidad+Panorama+steel+band+performance" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">11</td><td>kecak dance bali ramayana</td><td><a href="https://www.youtube.com/results?search_query=kecak+dance+bali+ramayana" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">14</td><td>Antonio Carlos Jobim Wave Corcovado</td><td><a href="https://www.youtube.com/results?search_query=Antonio+Carlos+Jobim+Wave+Corcovado" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">16</td><td>erhu solo traditional chinese music</td><td><a href="https://www.youtube.com/results?search_query=erhu+solo+traditional+chinese+music" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">16</td><td>samulnori performance korean percussion</td><td><a href="https://www.youtube.com/results?search_query=samulnori+performance+korean+percussion" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Music of the World</td><td class="num">16</td><td>shakuhachi honkyoku zen meditation</td><td><a href="https://www.youtube.com/results?search_query=shakuhachi+honkyoku+zen+meditation" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">14</td><td>count basie swing</td><td><a href="https://www.youtube.com/results?search_query=count+basie+swing" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">14</td><td>dave brubeck take five</td><td><a href="https://www.youtube.com/results?search_query=dave+brubeck+take+five" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">18</td><td>I IV V chord progression piano</td><td><a href="https://www.youtube.com/results?search_query=I+IV+V+chord+progression+piano" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">19</td><td>curwen kodaly hand signs solfege</td><td><a href="https://www.youtube.com/results?search_query=curwen+kodaly+hand+signs+solfege" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">19</td><td>sight singing solfege tutorial</td><td><a href="https://www.youtube.com/results?search_query=sight+singing+solfege+tutorial" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">20</td><td>handel hallelujah chorus hemiola</td><td><a href="https://www.youtube.com/results?search_query=handel+hallelujah+chorus+hemiola" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">20</td><td>rhythm ear training dictation</td><td><a href="https://www.youtube.com/results?search_query=rhythm+ear+training+dictation" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">21</td><td>seventh chord ear training</td><td><a href="https://www.youtube.com/results?search_query=seventh+chord+ear+training" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">21</td><td>seventh chords music theory</td><td><a href="https://www.youtube.com/results?search_query=seventh+chords+music+theory" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">23</td><td>bach cello suite 1</td><td><a href="https://www.youtube.com/results?search_query=bach+cello+suite+1" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">23</td><td>bach toccata fugue d minor</td><td><a href="https://www.youtube.com/results?search_query=bach+toccata+fugue+d+minor" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">24</td><td>haydn symphony 94 surprise</td><td><a href="https://www.youtube.com/results?search_query=haydn+symphony+94+surprise" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">24</td><td>mozart piano sonata k 331</td><td><a href="https://www.youtube.com/results?search_query=mozart+piano+sonata+k+331" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">24</td><td>mozart piano sonata k 545</td><td><a href="https://www.youtube.com/results?search_query=mozart+piano+sonata+k+545" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">24</td><td>mozart symphony 40 first movement</td><td><a href="https://www.youtube.com/results?search_query=mozart+symphony+40+first+movement" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">25</td><td>beethoven symphony 5</td><td><a href="https://www.youtube.com/results?search_query=beethoven+symphony+5" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">25</td><td>chopin nocturne eb major</td><td><a href="https://www.youtube.com/results?search_query=chopin+nocturne+eb+major" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">27</td><td>arabic maqam music demonstration</td><td><a href="https://www.youtube.com/results?search_query=arabic+maqam+music+demonstration" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">27</td><td>indian classical raga explained</td><td><a href="https://www.youtube.com/results?search_query=indian+classical+raga+explained" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">27</td><td>west african drumming polyrhythm</td><td><a href="https://www.youtube.com/results?search_query=west+african+drumming+polyrhythm" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">28</td><td>pentatonic improvisation tutorial</td><td><a href="https://www.youtube.com/results?search_query=pentatonic+improvisation+tutorial" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">28</td><td>pentatonic scale melodies examples</td><td><a href="https://www.youtube.com/results?search_query=pentatonic+scale+melodies+examples" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">29</td><td>12 bar blues backing track G</td><td><a href="https://www.youtube.com/results?search_query=12+bar+blues+backing+track+G" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">29</td><td>delta blues original recordings</td><td><a href="https://www.youtube.com/results?search_query=delta+blues+original+recordings" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">30</td><td>jazz ii V I progression examples</td><td><a href="https://www.youtube.com/results?search_query=jazz+ii+V+I+progression+examples" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">30</td><td>jazz standard lead sheet tutorial ii V I</td><td><a href="https://www.youtube.com/results?search_query=jazz+standard+lead+sheet+tutorial+ii+V+I" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 1</td><td class="num">30</td><td>swing vs straight eighth notes jazz</td><td><a href="https://www.youtube.com/results?search_query=swing+vs+straight+eighth+notes+jazz" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 2</td><td class="num">17</td><td>Charlie Parker bebop %22Ko-Ko%22</td><td><a href="https://www.youtube.com/results?search_query=Charlie+Parker+bebop+%2522Ko-Ko%2522" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 2</td><td class="num">17</td><td>Louis Armstrong %22What a Wonderful World%22</td><td><a href="https://www.youtube.com/results?search_query=Louis+Armstrong+%2522What+a+Wonderful+World%2522" target="_blank" rel="noopener">Search</a></td></tr>
-<tr><td>Theory 2</td><td class="num">17</td><td>Miles Davis Kind of Blue %22So What%22</td><td><a href="https://www.youtube.com/results?search_query=Miles+Davis+Kind+of+Blue+%2522So+What%2522" target="_blank" rel="noopener">Search</a></td></tr>
-</table></div>
-<h3>Withheld from this catalogue</h3>
-<p>1 video is withheld from this page by editorial decision. Withholding a video here does not remove it from a course: where it is still in a build folder, that is recorded below and needs pulling separately.</p>
-<table><tr><th>Video</th><th>Why</th></tr>
-<tr><td>“Gabriela” Dance Break Version (Live from THE BEAUTIFUL CHAOS TOUR) | KATSEYE</td><td>Withdrawn on request, 2026-09-01. Still present in the Music Intermediate I build folder.</td></tr>
-</table>
-<h3>What is not stored here</h3>
-<p>Titles, channels, thumbnails and links only. No lyrics and no transcripts are held anywhere in this catalogue or its build kit &mdash; Optima links out to music rather than reproducing it. Nothing loads from YouTube until you press play, and the player is the <code>youtube-nocookie</code> embed, so browsing this shelf does not build a watch history.</p>
-<h3>Provenance</h3>
-<p>Generated 2026-09-01 from <code>music.json</code>, which is emitted by <code>_build/build_contract.py</code> in Claude&rsquo;s Workshop &rarr; Music Library. This page is built by <code>_build/build_music_library.py</code> and is overwritten on every run; edit the generator, never the HTML.</p>
-</section>
+<div class="notice"><b>2 of these videos are no longer on YouTube.</b> The channels removed them, so the entries are kept for the record with everything known about the piece. Use <code>Link no longer works</code> to see them.</div>
 </div></section>
 <main class="wrap"><div class="grid" id="grid"></div></main>
 <div class="tray" id="tray" role="region" aria-label="Listening list"><div class="wrap">
@@ -615,6 +472,31 @@ select:focus-visible{outline:3px solid var(--cyan);outline-offset:1px}
     v._art = ((v.cross_refs||{}).art||[]).length;
     v._ela = ((v.cross_refs||{}).ela||[]).length;
   });
+
+  var DEFAULTS = {q:"", status:"", course:"", genre:"", topic:"", xref:"", sort:"default"};
+
+  function activeCount(){
+    return Object.keys(DEFAULTS).filter(function(k){
+      return state[k] !== DEFAULTS[k]; }).length;
+  }
+
+  function clearAll(){
+    // Back to everything: state, the search box, the selects and the stored copy. The
+    // stored copy matters most -- filters persist across reloads, which is what made a
+    // chosen filter feel permanent rather than merely sticky.
+    Object.keys(DEFAULTS).forEach(function(k){ state[k] = DEFAULTS[k]; });
+    var q = document.getElementById("q");
+    if (q) q.value = "";
+    ["topic","sort"].forEach(function(k){
+      var el = document.getElementById(k);
+      if (el) el.value = DEFAULTS[k];
+    });
+    // No removeItem here: render() ends in save(), which would write the key straight
+    // back. Persisting the CLEARED state is the behaviour we want anyway -- it is what
+    // makes "show everything" survive a reload, which is the half of this that was
+    // broken. The picked listening list is deliberately untouched; it is not a filter.
+    render();
+  }
 
   function matches(v){
     if (state.q && v._hay.indexOf(norm(state.q)) === -1) return false;
@@ -887,11 +769,16 @@ select:focus-visible{outline:3px solid var(--cyan);outline-offset:1px}
     var shelf = [];
     if (state.course && CMAP[state.course]) shelf.push(CMAP[state.course].name);
     if (state.genre) shelf.push(GENRE_LABEL[state.genre] || state.genre);
+    var active = activeCount();
+    var rb = document.getElementById("reset");
+    if (rb) rb.hidden = active === 0;
     document.getElementById("resultline").innerHTML =
       (shelf.length ? "<b>" + shelf.map(esc).join(" &middot; ") + "</b> &mdash; " : "") +
       "showing <b>" + rows.length + "</b> of " + MUSIC.videos.length + " videos" +
       (state.course && state.sort === "default" ? ", in module order" : "") +
-      (dead ? " &middot; <b>" + dead + "</b> with a link that no longer works" : "");
+      (dead ? " &middot; <b>" + dead + "</b> with a link that no longer works" : "") +
+      (active ? ' <button type="button" class="clear" id="clearinline">Show all ' +
+                MUSIC.videos.length + ' videos</button>' : "");
     [["data-status","status"],["data-course","course"],["data-genre","genre"],
      ["data-xref","xref"]].forEach(function(pair){
       document.querySelectorAll("[" + pair[0] + "]").forEach(function(c){
@@ -945,14 +832,18 @@ select:focus-visible{outline:3px solid var(--cyan);outline-offset:1px}
       if (el) el.addEventListener("change", function(){ state[k] = el.value; render(); });
     });
 
-    document.getElementById("gear").addEventListener("click", function(){
-      document.getElementById("panel").classList.toggle("open");
+    var rb = document.getElementById("reset");
+    if (rb) rb.addEventListener("click", clearAll);
+
+    // the inline link is inside the result line, which is rewritten on every render
+    document.getElementById("resultline").addEventListener("click", function(ev){
+      if (ev.target.closest("#clearinline")) clearAll();
     });
 
-    var gap = document.getElementById("gapjump");
-    if (gap) gap.addEventListener("click", function(){
-      document.getElementById("panel").classList.add("open");
-      document.getElementById("named-not-linked").scrollIntoView({block:"start"});
+    // Escape clears, from anywhere including the search box
+    document.addEventListener("keydown", function(ev){
+      if (ev.key !== "Escape") return;
+      if (activeCount()) { clearAll(); ev.preventDefault(); }
     });
 
     document.getElementById("traycopy").addEventListener("click", function(){
@@ -980,6 +871,15 @@ select:focus-visible{outline:3px solid var(--cyan);outline-offset:1px}
           '?rel=0&autoplay=1" title="' + esc(v.title || "") +
           '" allow="autoplay; encrypted-media; picture-in-picture" ' +
           'allowfullscreen></iframe>';
+        // Whether an embed plays is YouTube's call, not ours: a channel can disallow
+        // embedding, and some origins are refused outright. When that happens the frame
+        // says "Video unavailable" and the reader needs somewhere to go that is not the
+        // back button.
+        var out = document.createElement("p");
+        out.className = "fallback";
+        out.innerHTML = 'Not playing? <a href="' + esc(v.url) +
+          '" target="_blank" rel="noopener">Watch it on YouTube</a>';
+        if (frame.parentNode) frame.parentNode.insertBefore(out, frame.nextSibling);
         return;
       }
       var add = ev.target.closest(".addbtn");
