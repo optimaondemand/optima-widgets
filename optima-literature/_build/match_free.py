@@ -58,7 +58,7 @@ TRUSTED = (
 # View-online-only: legitimate to LINK, never to present as a download, and
 # never as evidence a work is public domain (Poetry Foundation licenses
 # in-copyright poems).
-VIEW_ONLY = ("poetryfoundation.org", "poets.org", "poetryverse.com")
+VIEW_ONLY = ("poetryfoundation.org", "poets.org", "poetryverse.com", "poetry.com")
 
 
 def host_of(url):

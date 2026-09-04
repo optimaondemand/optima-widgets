@@ -54,10 +54,11 @@ COURSE = {
         note="Full 152pp calibre ebook. Self-published: permission means "
              "emailing the author."),
     "tale of custard the dragon|nash": dict(
-        grade="6", used="reference", edition="via PoetryVerse",
+        grade="6", used="reference", edition="via poetry.com",
         stored_ok=False, verify=False,
-        note="In US copyright to ~2031. PoetryVerse is an aggregator with no "
-             "rights to grant."),
+        note="In US copyright to ~2031. Lessons and libraries link the poem "
+             "on poetry.com (Jessica, 2026-09-04); poetry.com is an "
+             "aggregator, not the rights holder."),
     "do not go gentle into that good night|thomas": dict(
         grade="6", used="reference", edition="Poetry Foundation reprint",
         stored_ok=False, verify=False,

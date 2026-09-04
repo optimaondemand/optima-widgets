@@ -258,7 +258,7 @@ def classify_url(url: str) -> str:
         return "wikisource"
     if "standardebooks" in u:
         return "standard_ebooks"
-    if "poetryfoundation" in u or "poetryverse" in u:
+    if "poetryfoundation" in u or "poetryverse" in u or "poetry.com/" in u:
         return "poetry_site"
     if "folger" in u:
         return "folger"

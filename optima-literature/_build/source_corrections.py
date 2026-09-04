@@ -19,6 +19,7 @@ Rules:
   - corrections of FACT only -- spelling of a title, a misattributed author.
     Never a change of which titles are on the list.
 """
+import re
 
 TITLE_FIX = {
     # Jessica, 2026-08-27: "There is no apostrophe in Federalist Paper."
@@ -59,4 +60,40 @@ def apply_to_records(records):
         if who and not r.get("author"):
             r["author"] = who
             changed.append((r["title"], "author -> " + who))
+    return changed
+
+
+URL_FIX = {
+    # Jessica, 2026-09-04: the book list's Custard link goes to PoetryVerse;
+    # the 6th-grade lesson pages now send students to poetry.com for the poem
+    # and the libraries must agree with the lessons. Keyed on the exact source
+    # URL, so an upstream fix simply stops matching.
+    "https://www.poetryverse.com/ogden-nash-poems/tale-custard-dragon":
+        "https://www.poetry.com/poem/177210/the-tale-of-custard-the-dragon",
+}
+
+
+def _host(url):
+    m = re.match(r"https?://([^/]+)", url or "")
+    return (m.group(1).lower().replace("www.", "") if m else "")
+
+
+def apply_url_fixes(records):
+    """Rewrite known-wrong source links in place, on the buy side and on the
+    view-only read_online link derived from it. Returns what changed."""
+    changed = []
+    for r in records:
+        old = r.get("url")
+        new = URL_FIX.get(old)
+        if new:
+            r["url"] = new
+            changed.append((old, new))
+        fv = r.get("free_version") or {}
+        ro = fv.get("read_online") or {}
+        old_ro = ro.get("url")
+        new_ro = URL_FIX.get(old_ro)
+        if new_ro:
+            ro["url"] = new_ro
+            ro["source"] = _host(new_ro)
+            changed.append((old_ro, new_ro))
     return changed

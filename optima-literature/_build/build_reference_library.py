@@ -199,6 +199,11 @@ def enrich_clt(b):
 
 def enrich(book):
     """Attach everything the page needs; leave gaps visible, never guessed."""
+    # Known-wrong links in the source list, corrected before any consumer
+    # (this page, library.json) derives a buy or read-online link from them.
+    import source_corrections as SC
+    for old, new in SC.apply_url_fixes(book):
+        print("  source link correction: %s -> %s" % (old, new))
     for b in book:
         # CLT-layer records come from clt_additions.py, not from the book list,
         # so the three lookups below (first_pub, genres, course_editions) have
@@ -415,6 +420,7 @@ SOURCE_NAME = {
     "archive.org": "Internet Archive",
     "poetryfoundation.org": "Poetry Foundation",
     "poetryverse.com": "PoetryVerse",
+    "poetry.com": "Poetry.com",
     "poets.org": "Poets.org",
 }
 

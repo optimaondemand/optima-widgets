@@ -226,8 +226,10 @@ def main():
             "identical": BRL.STATE_BLURB["identical"],
             "similar": BRL.STATE_BLURB["similar"],
             "none": BRL.STATE_BLURB["none"],
-            "archaic": BRL.FLAG_TITLE["archaic"],
-            "older": BRL.FLAG_TITLE["older"],
+            # The page builder owns the flag vocabulary; a flag it has retired
+            # ("older", removed 2026-08) is emitted as null rather than crashing.
+            "archaic": BRL.FLAG_TITLE.get("archaic"),
+            "older": BRL.FLAG_TITLE.get("older"),
             "rule": "A translation flag is NEVER applied to a work written in "
                     "English, however old; there the old English is the text.",
         },

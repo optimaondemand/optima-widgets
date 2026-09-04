@@ -10818,7 +10818,7 @@
     "publisher": null,
     "edition_year": null,
     "pages": null,
-    "url": "https://www.poetryverse.com/ogden-nash-poems/tale-custard-dragon",
+    "url": "https://www.poetry.com/poem/177210/the-tale-of-custard-the-dragon",
     "url_kind": "poetry_site",
     "edition_hint_from_booklist": null
    },
@@ -10833,8 +10833,8 @@
     "note": null
    },
    "read_online": {
-    "url": "https://www.poetryverse.com/ogden-nash-poems/tale-custard-dragon",
-    "source": "poetryverse.com",
+    "url": "https://www.poetry.com/poem/177210/the-tale-of-custard-the-dragon",
+    "source": "poetry.com",
     "download": false
    },
    "flags": {
@@ -10845,9 +10845,9 @@
    "taught": {
     "grade": "6",
     "used": "reference",
-    "edition": "via PoetryVerse",
+    "edition": "via poetry.com",
     "stored_file_ok": false,
-    "note": "In US copyright to ~2031. PoetryVerse is an aggregator with no rights to grant.",
+    "note": "In US copyright to ~2031. Lessons and libraries link the poem on poetry.com (Jessica, 2026-09-04); poetry.com is an aggregator, not the rights holder.",
     "verify": false
    },
    "prior_review": {
