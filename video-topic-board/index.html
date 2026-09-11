@@ -216,7 +216,7 @@ textarea#paste{width:100%;min-height:160px;padding:10px;border:1px solid var(--l
       <span><span class="tier p-high">High priority</span> build first (source Tier 1, Phase 1, Core, Universal)</span>
       <span><span class="tier p-mid">Middle priority</span> second wave (Tier 2, Phase 2)</span>
       <span><span class="tier p-low">Lowest priority</span> later (Tier 3, Phase 3, appendix, declined)</span>
-      <span>Hover a badge for the source's own label; use the dropdown under it to reassign (recorded under your name).</span>
+      <span id="prioHint">Hover a badge for the source's own label; use the dropdown under it to reassign (recorded under your name).</span>
       <span><span class="pill claimed">Name</span> claimed · <span class="pill progress">In progress</span> · <span class="pill delivered">Delivered</span></span>
       <span>Rows tinted blue are yours.</span>
     </div>
@@ -792,7 +792,8 @@ saveMe(false);
 async function staticInit(){
   const hint=$("meHint");
   $("tab-import").hidden=true; $("tab-owners").hidden=true;
-  hint.innerHTML=`Public copy. Claiming, releasing and adding happen on the <a href="${BOARD_URL}" target="_blank" rel="noopener" style="color:#fff">team board</a>; enter your name here to see your topics.`;
+  $("prioHint").innerHTML=`Hover a badge for the source's own label. Priorities are reassigned on the <a href="${BOARD_URL}" target="_blank" rel="noopener">team board</a>.`;
+  hint.innerHTML=`Public copy, read-only. Claiming, releasing, adding, removing and priority changes happen on the <a href="${BOARD_URL}" target="_blank" rel="noopener" style="color:#fff">team board</a> and appear here after the team publishes a snapshot. Enter your name to see your topics.`;
   a11yLinks();
   try{
     const r=await fetch("./data/snapshot.json?t="+Date.now(),{cache:"no-store"});
