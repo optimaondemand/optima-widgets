@@ -1,0 +1,12 @@
+{
+ "generatedAt": "2026-09-11T10:40:00.000Z",
+ "by": "initial publish (Claude, from the team board store)",
+ "board": "https://claude.ai/code/artifact/4803a704-1b12-4c3c-b06e-5faa5b339068",
+ "counts": {"topics": 2059, "claims": 1, "removed": 0, "added": 0, "reprioritized": 0},
+ "claims": {
+  "PHON-001": {"topicId": "PHON-001", "title": "Holding the Card, Saying the Sounds", "subject": "ELA", "owner": "jd", "status": "claimed", "claimedAt": "2026-09-11T10:05:36.121Z", "mediaLink": ""}
+ },
+ "topics_extra": [],
+ "removed": {},
+ "priority": {}
+}
