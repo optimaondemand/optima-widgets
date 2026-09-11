@@ -2,7 +2,7 @@
  "schema": "optima-music-library/1",
  "name": "Optima Music Reference Library",
  "purpose": "Every YouTube video used across the K-12 Optima music courses, with what it is, which course and module uses it, and where it meets the art and ELA libraries.",
- "generated": "2026-09-01",
+ "generated": "2026-09-11",
  "counts": {
   "videos": 155,
   "dispositions": {
@@ -1098,7 +1098,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Music in ancient Greece",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 286
   },
   {
    "id": "-1yA4ak0SqY",
@@ -1231,17 +1233,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "Ut queant laxis, the hymn Guido of Arezzo used to name the notes, eleventh century",
-   "cross_refs": {
-    "ela": [
-     {
-      "id": "clt-faust-part-1",
-      "title": "Faust — Part 1",
-      "author": "Johann Wolfgang von Goethe",
-      "grade": null,
-      "via": "Goethe"
-     }
-    ]
-   }
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 35
   },
   {
    "id": "-OX1FyfZHWM",
@@ -1344,7 +1338,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "What is harmony",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 311
   },
   {
    "id": "0CUtnav-yF4",
@@ -1456,7 +1452,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "History of the double bass",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 418
   },
   {
    "id": "0SdVJfaYP7I",
@@ -1517,7 +1515,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "Ravi Shankar, Raga Jogeshwari; a raga is a traditional form",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 823
   },
   {
    "id": "0tubv1OKDjg",
@@ -1570,7 +1570,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "Vishnu Sahasranamam, sung by M. S. Subbulakshmi; the text is ancient",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 1791
   },
   {
    "id": "1JVzMwv3YpQ",
@@ -1624,7 +1626,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Vicente Fernandez, Volver Volver, 1972",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 181
   },
   {
    "id": "1VUvkPkAkjc",
@@ -1810,7 +1814,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Conducting patterns to practise with",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 71
   },
   {
    "id": "1eRNRzyX3ac",
@@ -1929,110 +1935,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Short history of the birth of jazz",
-   "cross_refs": {
-    "art": [
-     {
-      "id": "aw_9a44119fc364",
-      "title": "Barcelona",
-      "creator": "Aaron Douglas",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.12546238"
-     },
-     {
-      "id": "aw_e4e8d3d02a82",
-      "title": "Bravado",
-      "creator": "Aaron Douglas",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.12546240"
-     },
-     {
-      "id": "aw_e57dc1553a30",
-      "title": "Confrontation at the Bridge",
-      "creator": "Jacob Lawrence",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.20869118"
-     },
-     {
-      "id": "aw_adf694bf7d0b",
-      "title": "Going to Work",
-      "creator": "Jacob Lawrence",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.21795839"
-     },
-     {
-      "id": "aw_ceee2cc0d7d6",
-      "title": "Haystacks",
-      "creator": "Douglas, Aaron, 1899-1979 ; Measurements: 10 x 12\"",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.12546250"
-     },
-     {
-      "id": "aw_8d5fb9934adc",
-      "title": "Into Bondage",
-      "creator": "Aaron Douglas",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.14590767"
-     },
-     {
-      "id": "aw_7a5a055454c2",
-      "title": "Mother and Child: Lullaby",
-      "creator": "Gwendolyn Knight Lawrence ; Material: Lithograph; Measurements: 22 x 30in.",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.20868811"
-     }
-    ],
-    "ela": [
-     {
-      "id": "5-dreams",
-      "title": "Dreams",
-      "author": "Langston Hughes",
-      "grade": "5",
-      "via": "Langston Hughes"
-     },
-     {
-      "id": "11-narrative-of-the-life-of-frederick-douglass",
-      "title": "Narrative of the Life of Frederick Douglass",
-      "author": "Frederick Douglass",
-      "grade": "11",
-      "via": "Aaron Douglas"
-     },
-     {
-      "id": "12-poetry",
-      "title": "Poetry",
-      "author": null,
-      "grade": "12",
-      "via": "Langston Hughes"
-     },
-     {
-      "id": "10-their-eyes-were-watching-god",
-      "title": "Their Eyes Were Watching God",
-      "author": "Zora Neale Hurston",
-      "grade": "10",
-      "via": "Zora Neale Hurston"
-     }
-    ]
-   }
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 176
   },
   {
    "id": "1gRxxt4fYO4",
@@ -2137,7 +2042,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Mozart, Piano Sonata No. 16 K. 545, 1788",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 135
   },
   {
    "id": "1km9RJrB7Zk",
@@ -2248,7 +2155,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Bassoon",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 163
   },
   {
    "id": "23zLefwiii4",
@@ -2359,7 +2268,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Elvis Presley, All Shook Up, 1957",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 119
   },
   {
    "id": "2eUzdTF3P2M",
@@ -2499,110 +2410,9 @@
    "recording_year": 1962,
    "year_basis": null,
    "piece_note": "Louis Armstrong, When the Saints Go Marching In, on The Ed Sullivan Show; the song itself is a traditional spiritual",
-   "cross_refs": {
-    "art": [
-     {
-      "id": "aw_9a44119fc364",
-      "title": "Barcelona",
-      "creator": "Aaron Douglas",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.12546238"
-     },
-     {
-      "id": "aw_e4e8d3d02a82",
-      "title": "Bravado",
-      "creator": "Aaron Douglas",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.12546240"
-     },
-     {
-      "id": "aw_e57dc1553a30",
-      "title": "Confrontation at the Bridge",
-      "creator": "Jacob Lawrence",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.20869118"
-     },
-     {
-      "id": "aw_adf694bf7d0b",
-      "title": "Going to Work",
-      "creator": "Jacob Lawrence",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.21795839"
-     },
-     {
-      "id": "aw_ceee2cc0d7d6",
-      "title": "Haystacks",
-      "creator": "Douglas, Aaron, 1899-1979 ; Measurements: 10 x 12\"",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.12546250"
-     },
-     {
-      "id": "aw_8d5fb9934adc",
-      "title": "Into Bondage",
-      "creator": "Aaron Douglas",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.14590767"
-     },
-     {
-      "id": "aw_7a5a055454c2",
-      "title": "Mother and Child: Lullaby",
-      "creator": "Gwendolyn Knight Lawrence ; Material: Lithograph; Measurements: 22 x 30in.",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.20868811"
-     }
-    ],
-    "ela": [
-     {
-      "id": "5-dreams",
-      "title": "Dreams",
-      "author": "Langston Hughes",
-      "grade": "5",
-      "via": "Langston Hughes"
-     },
-     {
-      "id": "11-narrative-of-the-life-of-frederick-douglass",
-      "title": "Narrative of the Life of Frederick Douglass",
-      "author": "Frederick Douglass",
-      "grade": "11",
-      "via": "Aaron Douglas"
-     },
-     {
-      "id": "12-poetry",
-      "title": "Poetry",
-      "author": null,
-      "grade": "12",
-      "via": "Langston Hughes"
-     },
-     {
-      "id": "10-their-eyes-were-watching-god",
-      "title": "Their Eyes Were Watching God",
-      "author": "Zora Neale Hurston",
-      "grade": "10",
-      "via": "Zora Neale Hurston"
-     }
-    ]
-   }
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 210
   },
   {
    "id": "3itgsm-vUAE",
@@ -2721,17 +2531,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "On the origin of the Ode to Joy",
-   "cross_refs": {
-    "ela": [
-     {
-      "id": "clt-faust-part-1",
-      "title": "Faust — Part 1",
-      "author": "Johann Wolfgang von Goethe",
-      "grade": null,
-      "via": "Goethe"
-     }
-    ]
-   }
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 323
   },
   {
    "id": "4S9awPx2ho4",
@@ -2867,7 +2669,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Treble clef note reading",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 243
   },
   {
    "id": "4tw1TfZd3hc",
@@ -2977,7 +2781,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Explainer about K-Pop as a phenomenon",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 264
   },
   {
    "id": "4vh_nWwahto",
@@ -3083,7 +2889,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Weber, Hunting Chorus from Der Freischutz, 1821; played by 70 horns in Caracas",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 88
   },
   {
    "id": "57vZ1XMzNuc",
@@ -3143,7 +2951,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "La Bamba is a traditional son jarocho; this is a Smithsonian Folkways live performance",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 107
   },
   {
    "id": "5E7ByKR7TCk",
@@ -3200,7 +3010,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Beethoven, Moonlight Sonata, 1801; Barenboim playing the third movement",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 508
   },
   {
    "id": "71fkBqZ_4K8",
@@ -3310,7 +3122,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Rhythm syllables clap-along",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 325
   },
   {
    "id": "7dgE-1kL-as",
@@ -3464,7 +3278,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Prokofiev, Peter and the Wolf, 1936",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 1652
   },
   {
    "id": "7n0tNSFJQ34",
@@ -3583,7 +3399,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Beethoven, Symphony No. 5, premiered 1808",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 318
   },
   {
    "id": "7ujEAN2s27s",
@@ -3714,7 +3532,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Guide to Beethoven's Fifth",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 575
   },
   {
    "id": "7y771-AxrFA",
@@ -3775,7 +3595,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "Interlocking gamelan parts demonstrated",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 97
   },
   {
    "id": "90bY6Hvqfv0",
@@ -3873,7 +3695,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "History of the clarinet",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 329
   },
   {
    "id": "9HEjAkFBBz0",
@@ -3971,7 +3795,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Queen of the Night aria, from Die Zauberflote, 1791",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "cc-by",
+   "duration": 180
   },
   {
    "id": "9MNS9LKcDII",
@@ -4068,7 +3894,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Trombone, Philharmonia",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 759
   },
   {
    "id": "9Z1ib231yd0",
@@ -4299,7 +4127,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "What is melody",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 190
   },
   {
    "id": "AWdQJlFXl1g",
@@ -4422,7 +4252,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Monti, Czardas, 1904, arranged for flute",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 276
   },
   {
    "id": "Ah__4g01y_M",
@@ -4513,17 +4345,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Beethoven, Symphony No. 9, premiered Vienna 1824; the Ode to Joy text is Schiller, 1785",
-   "cross_refs": {
-    "ela": [
-     {
-      "id": "clt-faust-part-1",
-      "title": "Faust — Part 1",
-      "author": "Johann Wolfgang von Goethe",
-      "grade": null,
-      "via": "Goethe"
-     }
-    ]
-   }
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 1421
   },
   {
    "id": "Amq-qlqbjYA",
@@ -4605,7 +4429,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "BLACKPINK, As If It's Your Last, 2017",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 217
   },
   {
    "id": "BBbhfRfQIMM",
@@ -4716,7 +4542,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Why notes have names",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 435
   },
   {
    "id": "BMgKXbtQwoo",
@@ -4807,7 +4635,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Smithsonian explainer, What is Jazz",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 321
   },
   {
    "id": "BiHdlH-qmbQ",
@@ -4860,7 +4690,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Mariachi Vargas de Tecalitlan, live",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 4464
   },
   {
    "id": "CH1XGdu-hzQ",
@@ -4935,7 +4767,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "PSY, Gangnam Style, 2012",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 302
   },
   {
    "id": "CLLpSmaof4E",
@@ -5038,7 +4872,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Compilation of classroom-safe pop; no single work",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 6171
   },
   {
    "id": "CaCSuzR4DwM",
@@ -5129,110 +4965,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "What a Wonderful World, first released 1967; this is a BBC performance",
-   "cross_refs": {
-    "art": [
-     {
-      "id": "aw_9a44119fc364",
-      "title": "Barcelona",
-      "creator": "Aaron Douglas",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.12546238"
-     },
-     {
-      "id": "aw_e4e8d3d02a82",
-      "title": "Bravado",
-      "creator": "Aaron Douglas",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.12546240"
-     },
-     {
-      "id": "aw_e57dc1553a30",
-      "title": "Confrontation at the Bridge",
-      "creator": "Jacob Lawrence",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.20869118"
-     },
-     {
-      "id": "aw_adf694bf7d0b",
-      "title": "Going to Work",
-      "creator": "Jacob Lawrence",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.21795839"
-     },
-     {
-      "id": "aw_ceee2cc0d7d6",
-      "title": "Haystacks",
-      "creator": "Douglas, Aaron, 1899-1979 ; Measurements: 10 x 12\"",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.12546250"
-     },
-     {
-      "id": "aw_8d5fb9934adc",
-      "title": "Into Bondage",
-      "creator": "Aaron Douglas",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.14590767"
-     },
-     {
-      "id": "aw_7a5a055454c2",
-      "title": "Mother and Child: Lullaby",
-      "creator": "Gwendolyn Knight Lawrence ; Material: Lithograph; Measurements: 22 x 30in.",
-      "via": [
-       "history.harlem-renaissance"
-      ],
-      "image": null,
-      "jstor_url": "https://www.jstor.org/stable/community.20868811"
-     }
-    ],
-    "ela": [
-     {
-      "id": "5-dreams",
-      "title": "Dreams",
-      "author": "Langston Hughes",
-      "grade": "5",
-      "via": "Langston Hughes"
-     },
-     {
-      "id": "11-narrative-of-the-life-of-frederick-douglass",
-      "title": "Narrative of the Life of Frederick Douglass",
-      "author": "Frederick Douglass",
-      "grade": "11",
-      "via": "Aaron Douglas"
-     },
-     {
-      "id": "12-poetry",
-      "title": "Poetry",
-      "author": null,
-      "grade": "12",
-      "via": "Langston Hughes"
-     },
-     {
-      "id": "10-their-eyes-were-watching-god",
-      "title": "Their Eyes Were Watching God",
-      "author": "Zora Neale Hurston",
-      "grade": "10",
-      "via": "Zora Neale Hurston"
-     }
-    ]
-   }
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 145
   },
   {
    "id": "CzKOgAYYhGE",
@@ -5314,7 +5049,9 @@
    "recording_year": 1994,
    "year_basis": "established",
    "piece_note": "Moonlight Sonata, 1801, as used in the film Immortal Beloved, 1994",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 352
   },
   {
    "id": "DGGtadUAGDc",
@@ -5436,7 +5173,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Time signatures",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 168
   },
   {
    "id": "DcAWRVEIbEw",
@@ -5548,7 +5287,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Orchestra sections, percussion",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 419
   },
   {
    "id": "DkTlGaAhTA0",
@@ -5654,7 +5395,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "How the cello works",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 302
   },
   {
    "id": "Ecmf2TBFvjs",
@@ -5737,7 +5480,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Harmony for children",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 252
   },
   {
    "id": "EkYN-J9zZ6Q",
@@ -5798,7 +5543,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Bob Marley and the Wailers, Get Up Stand Up, from Burnin', 1973",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 190
   },
   {
    "id": "EoSZ1yhxgqA",
@@ -5938,7 +5685,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Time signature ear training",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 153
   },
   {
    "id": "F3Hv25iOVYg",
@@ -6071,7 +5820,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Profile of Prokofiev",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 172
   },
   {
    "id": "FtE3hoR_Nvo",
@@ -6177,7 +5928,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Morricone, Gabriel's Oboe, from The Mission, 1986",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 240
   },
   {
    "id": "FwDo7MdaxhA",
@@ -6273,7 +6026,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Beethoven's Ninth, Savall with Le Concert des Nations",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 4059
   },
   {
    "id": "GWUhvHfxN00",
@@ -6334,7 +6089,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "Balinese gong kebyar, Taruna Jaya",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 776
   },
   {
    "id": "IYHfiQ4R7Bs",
@@ -6455,7 +6212,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "How brass instruments work",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 251
   },
   {
    "id": "J52EUT1xfwA",
@@ -6561,7 +6320,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Brass tuning",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 824
   },
   {
    "id": "JFGgj3gtI1c",
@@ -6607,7 +6368,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Compound meter",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 506
   },
   {
    "id": "JNA07yyFtZQ",
@@ -6741,7 +6504,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Removed from YouTube. Used in MI-2 and MI-3 Module 32.1, Brass Instruments IV, The Tuba, and Module 32.2, Ear Training",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": null,
+   "duration": null
   },
   {
    "id": "JzEvEltvhfw",
@@ -6836,7 +6601,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Rhythm and beat clap-along",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 172
   },
   {
    "id": "JzqGZjFnYnA",
@@ -6891,7 +6658,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Aretha Franklin, Respect, released 1967",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 148
   },
   {
    "id": "KUtEg8Qxuxk",
@@ -7119,7 +6888,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Rhythm lesson",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 62
   },
   {
    "id": "KnbvZBbBmN4",
@@ -7179,7 +6950,9 @@
    "recording_year": 1968,
    "year_basis": "established",
    "piece_note": "Folsom Prison Blues written and released 1955; this is the 1968 Folsom Prison live recording",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 162
   },
   {
    "id": "LAwgD_YxRgM",
@@ -7240,7 +7013,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Zakir Hussain tabla solo at Berklee",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 555
   },
   {
    "id": "LBA2EPhp6OQ",
@@ -7302,7 +7077,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Natural minor scale",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 182
   },
   {
    "id": "LaXgEHBYT3c",
@@ -7436,7 +7213,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "The percussion family",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 473
   },
   {
    "id": "LkvjuZX8FXU",
@@ -7550,7 +7329,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Flute, Cincinnati Symphony",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 138
   },
   {
    "id": "LnjFTVY7Rtw",
@@ -7585,7 +7366,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Making instruments from natural materials; a craft activity",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 123
   },
   {
    "id": "MVJRqp7OfH4",
@@ -7643,7 +7426,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Sousa, The Stars and Stripes Forever, 1896",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 221
   },
   {
    "id": "MxWfNyZMj1M",
@@ -7696,7 +7481,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Umm Kulthum, Aghadan Alqak, Cairo University concert",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 3927
   },
   {
    "id": "N1cexwLOvtY",
@@ -7793,7 +7580,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Mozart, Symphony No. 40 in G minor, 1788",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 2168
   },
   {
    "id": "N2wETmvtdsc",
@@ -7835,7 +7624,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "Danish folk dance, Seven Jumps",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 501
   },
   {
    "id": "NWEVKyEwi4A",
@@ -8085,7 +7876,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Beethoven's Fifth, first movement, with scrolling score",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 510
   },
   {
    "id": "Ol0rRdF5L1c",
@@ -8140,7 +7933,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Woody Guthrie wrote This Land Is Your Land in 1940",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 140
   },
   {
    "id": "PBuDtF-71po",
@@ -8273,7 +8068,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Walkthrough of a homeschool music appreciation curriculum",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 310
   },
   {
    "id": "PLr5pvvmMLg",
@@ -8393,7 +8190,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Violin versus viola",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 298
   },
   {
    "id": "Q-k3EmD4o84",
@@ -8454,7 +8253,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Kanun technique lesson",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 1386
   },
   {
    "id": "QcIp7K2UFgE",
@@ -8574,7 +8375,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Trumpet, Philharmonia",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 792
   },
   {
    "id": "REjCNkVpdzI",
@@ -8693,7 +8496,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Types of tuba explained",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 720
   },
   {
    "id": "Rfy28X9wdxg",
@@ -8799,7 +8604,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Violin sound effects",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 327
   },
   {
    "id": "Rn25j5xozqg",
@@ -8860,7 +8667,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "Javanese gamelan, Sekar Setaman",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 5594
   },
   {
    "id": "RvQZM7Z4PPw",
@@ -8972,7 +8781,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Clarinet, Julian Bliss",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 475
   },
   {
    "id": "RxOBOhRECoo",
@@ -9083,7 +8894,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Elvis Presley, Suspicious Minds, 1969",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 273
   },
   {
    "id": "SAIvTZiNcqQ",
@@ -9201,7 +9014,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Musical expression",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 236
   },
   {
    "id": "SOc3238Z3vM",
@@ -9236,7 +9051,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "How to draw a train; a drawing activity in Music K",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 767
   },
   {
    "id": "SSAj4JxOrxQ",
@@ -9348,7 +9165,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "History of the cello",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 267
   },
   {
    "id": "TLQpI6nULdg",
@@ -9460,7 +9279,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Mozart, Bassoon Concerto in B flat K. 191, 1774",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 1101
   },
   {
    "id": "TNPvE8MNqe0",
@@ -9631,7 +9452,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Harmony explained by a jazz educator; the subject is harmony, not a piece of jazz",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 97
   },
   {
    "id": "UZNO13xKAPY",
@@ -9749,7 +9572,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Singing in harmony",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 353
   },
   {
    "id": "Uft6cHgMewY",
@@ -9861,7 +9686,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Made private on YouTube. Used in MI-2 and MI-3 Module 32.1, Brass Instruments IV, The Tuba, and Module 32.2, Ear Training",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": null,
+   "duration": null
   },
   {
    "id": "UqfUm7kyj7s",
@@ -10000,7 +9827,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Orchestra sections, strings",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 339
   },
   {
    "id": "UrIiLvg58SY",
@@ -10051,7 +9880,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Extreme, More Than Words, released 1990",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 256
   },
   {
    "id": "W2UzLIQxgTk",
@@ -10227,7 +10058,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Tone",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 398
   },
   {
    "id": "WOvy0WxcpKU",
@@ -10466,7 +10299,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Sharps, flats and naturals",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 224
   },
   {
    "id": "Xcpc8VDsv3c",
@@ -10585,7 +10420,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "On why to listen to The Four Seasons",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 259
   },
   {
    "id": "XtnoejeUylc",
@@ -10697,7 +10534,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "History of the trombone",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 907
   },
   {
    "id": "YfT0irsgB3Q",
@@ -10884,7 +10723,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Counting basic rhythms",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 518
   },
   {
    "id": "Z4ZbiE3nG2g",
@@ -10995,7 +10836,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Oboe, Cleveland Orchestra",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 226
   },
   {
    "id": "ZN41d7Txcq0",
@@ -11120,7 +10963,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "How to read music",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 324
   },
   {
    "id": "_P-Hjja5VHc",
@@ -11179,7 +11024,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "Kacharpaya, traditional Andean",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 138
   },
   {
    "id": "_SP_3xuuv6g",
@@ -11298,7 +11145,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Intervals",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 456
   },
   {
    "id": "a34qYxvRtJU",
@@ -11344,7 +11193,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Minor scales",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 394
   },
   {
    "id": "a9F20aAqXhg",
@@ -11477,7 +11328,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Orchestra sections, brass",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 492
   },
   {
    "id": "bYIBcgFLwfg",
@@ -11595,7 +11448,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Beethoven, Piano Sonata No. 8 Pathetique, published 1799, composed 1798",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 1178
   },
   {
    "id": "cK0UFgnrIqY",
@@ -11706,7 +11561,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Horn, Philharmonia",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 538
   },
   {
    "id": "cKw38eqVyNI",
@@ -11759,7 +11616,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Earl Scruggs, Foggy Mountain Breakdown, 1949",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 289
   },
   {
    "id": "cgZOrlMku0c",
@@ -11841,7 +11700,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "On the making of Golden, from KPop Demon Hunters, 2025",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 261
   },
   {
    "id": "cxhqqpVk65Q",
@@ -11923,7 +11784,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "BABYMONSTER, DRIP performance video",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 189
   },
   {
    "id": "d5gf9dXbPi0",
@@ -11974,7 +11837,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Billie Eilish, Birds of a Feather, from Hit Me Hard and Soft, 2024",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 211
   },
   {
    "id": "dJ0AkP_BFhs",
@@ -12071,7 +11936,9 @@
    "recording_year": 1984,
    "year_basis": "established",
    "piece_note": "Mozart, Confutatis from the Requiem, 1791, as filmed in Amadeus, 1984",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 455
   },
   {
    "id": "drnBMAEA3AM",
@@ -12174,7 +12041,9 @@
    "recording_year": 1965,
    "year_basis": "established",
    "piece_note": "Do-Re-Mi, from The Sound of Music, stage 1959; this is the 1965 film",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 139
   },
   {
    "id": "edScGrfl50M",
@@ -12263,7 +12132,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "C major scale played",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 12
   },
   {
    "id": "fSbrYAwTGkA",
@@ -12360,7 +12231,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Neuroscience of the beat",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 228
   },
   {
    "id": "gdZLi9oWNZg",
@@ -12413,7 +12286,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "BTS, Dynamite, 2020",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 223
   },
   {
    "id": "hQm0yNwZHjQ",
@@ -12459,7 +12334,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Triads",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 551
   },
   {
    "id": "hXCwQB9De88",
@@ -12646,7 +12523,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "World music fun facts, ESL channel",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 273
   },
   {
    "id": "ha6pGK6ZnXE",
@@ -12706,17 +12585,9 @@
    "recording_year": 2021,
    "year_basis": "traditional",
    "piece_note": "Gaudeamus Igitur is a traditional student song; recorded June 2021",
-   "cross_refs": {
-    "ela": [
-     {
-      "id": "clt-faust-part-1",
-      "title": "Faust — Part 1",
-      "author": "Johann Wolfgang von Goethe",
-      "grade": null,
-      "via": "Goethe"
-     }
-    ]
-   }
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 86
   },
   {
    "id": "ikXL0dODWGI",
@@ -12826,7 +12697,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Rhythm syllable game",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 226
   },
   {
    "id": "ioNng23DkIM",
@@ -12879,7 +12752,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "BLACKPINK, How You Like That, 2020",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 183
   },
   {
    "id": "ioZ8Wy9WI70",
@@ -12925,7 +12800,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Intro to triads",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 673
   },
   {
    "id": "iq_6mpO_45s",
@@ -13014,7 +12891,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Chart countdown, not a single work",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 1016
   },
   {
    "id": "k1-TrAvp_xs",
@@ -13079,7 +12958,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Mozart, Lacrimosa from the Requiem, left unfinished at his death in 1791",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 201
   },
   {
    "id": "kDqVwmTCNGA",
@@ -13190,7 +13071,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Music as a language, TEDx",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 482
   },
   {
    "id": "m1FSR3wKgrk",
@@ -13293,7 +13176,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Mozart y Mambo project, Rondo alla Mambo arrangement",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 369
   },
   {
    "id": "m4VGPIZ_wwo",
@@ -13398,7 +13283,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Song is Stevie Wonder, I Just Called to Say I Love You, 1984; this is a Pentatonix cover",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 225
   },
   {
    "id": "mGQLXRTl3Z0",
@@ -13504,7 +13391,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Bach, Cello Suite No. 1 in G, composed c. 1717-23",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 1168
   },
   {
    "id": "maDO3z41wXA",
@@ -13557,7 +13446,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Northern Cree, NPR Tiny Desk concert",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 744
   },
   {
    "id": "n15d1AEMKTc",
@@ -13655,7 +13546,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "The trombone family",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 86
   },
   {
    "id": "ne6tB2KiZuk",
@@ -13709,7 +13602,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Bobby McFerrin demonstrates the pentatonic scale",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 184
   },
   {
    "id": "oA3DxNWkNfg",
@@ -13752,7 +13647,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "She'll Be Coming Round the Mountain, traditional",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 94
   },
   {
    "id": "oTFO4sLZwII",
@@ -13877,7 +13774,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Time signatures explained",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 231
   },
   {
    "id": "pQX_u1igwmk",
@@ -13974,7 +13873,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Elvis Presley, I'll Never Know; date not confirmed",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 144
   },
   {
    "id": "qARNj6vpe_g",
@@ -14072,7 +13973,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Origins of the cello",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 135
   },
   {
    "id": "qg5h1kaQnug",
@@ -14133,7 +14036,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Marcel Khalife, oud",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 132
   },
   {
    "id": "qotloiNF-M4",
@@ -14216,7 +14121,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Beethoven, Fur Elise, composed 1810, as a Line Rider animation",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 132
   },
   {
    "id": "rdRdl9t3ozw",
@@ -14259,7 +14166,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Foley sound effects; sound rather than music",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 364
   },
   {
    "id": "s61-e29Vr6Q",
@@ -14313,7 +14222,9 @@
    "recording_year": 1964,
    "year_basis": "established",
    "piece_note": "The Girl from Ipanema, Jobim, 1962; the Getz/Gilberto recording 1964",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 168
   },
   {
    "id": "sM8HskUJx2w",
@@ -14369,7 +14280,9 @@
    "recording_year": null,
    "year_basis": "traditional",
    "piece_note": "Teaches the La Bamba dance to children",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 499
   },
   {
    "id": "sf6LD2B_kDQ",
@@ -14488,7 +14401,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Lindsey Stirling, Elements, 2012; violin over dubstep, not art music",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 247
   },
   {
    "id": "sfQeLgFmNEI",
@@ -14564,17 +14479,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Schubert, Erlkonig, D. 328, composed 1815",
-   "cross_refs": {
-    "ela": [
-     {
-      "id": "clt-faust-part-1",
-      "title": "Faust — Part 1",
-      "author": "Johann Wolfgang von Goethe",
-      "grade": null,
-      "via": "Goethe"
-     }
-    ]
-   }
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 284
   },
   {
    "id": "t9Mo-bkl4ko",
@@ -14743,7 +14650,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Elements of music",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 307
   },
   {
    "id": "tGSDVrnjDqI",
@@ -14889,7 +14798,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Mozart, twelve variations on Ah vous dirai-je Maman, c. 1781-82",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 566
   },
   {
    "id": "v44NY4fyxHA",
@@ -15000,7 +14911,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Major scales",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 433
   },
   {
    "id": "vGJTaP6anOU",
@@ -15111,7 +15024,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Can't Help Falling in Love, from Blue Hawaii, 1961",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 181
   },
   {
    "id": "vcBn04IyELc",
@@ -15322,7 +15237,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Beethoven's Fifth, as a Line Rider animation",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 266
   },
   {
    "id": "vvtglfjHrb4",
@@ -15500,7 +15417,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Accidentals",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 261
   },
   {
    "id": "w31VXC9AMts",
@@ -15606,7 +15525,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Piazzolla, Fuga y Misterio, 1968; played by the 12 Cellists",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 352
   },
   {
    "id": "wQHcz7U01M4",
@@ -15707,7 +15628,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Note values and time signatures",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 175
   },
   {
    "id": "wxp3xSkbVRU",
@@ -15782,7 +15705,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "KATSEYE, Gabriela, dance break; withheld from the published catalogue, see WITHDRAWN in the widget generator",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 317
   },
   {
    "id": "xFrGuyw1V8s",
@@ -15828,7 +15753,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "ABBA, Dancing Queen, released 1976",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 233
   },
   {
    "id": "xR2e8B8bAE8",
@@ -15938,7 +15865,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Why pop songs are catchy",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 216
   },
   {
    "id": "xfuUhjvbF24",
@@ -16078,7 +16007,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Short biography of Vivaldi",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 101
   },
   {
    "id": "xhhVuPe9xS8",
@@ -16181,7 +16112,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "What makes a melody memorable",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 509
   },
   {
    "id": "xtpiqdN2lJk",
@@ -16234,7 +16167,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Bill Monroe, Blue Moon of Kentucky, 1946",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 181
   },
   {
    "id": "xugt0hF6CNs",
@@ -16376,7 +16311,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Melody and harmony",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 164
   },
   {
    "id": "y9jY3G9vdwU",
@@ -16479,7 +16416,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "How music creates emotion",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 273
   },
   {
    "id": "yFGy9VPCN0g",
@@ -16532,7 +16471,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "News footage of the Rio samba school parade",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 71
   },
   {
    "id": "yTnhDFxEfwQ",
@@ -16623,7 +16564,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Tuba, Minnesota Orchestra",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 185
   },
   {
    "id": "yebNIHKAC4A",
@@ -16757,7 +16700,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Golden, from KPop Demon Hunters, 2025",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 199
   },
   {
    "id": "ynpeISCtZng",
@@ -16877,7 +16822,9 @@
    "recording_year": null,
    "year_basis": null,
    "piece_note": "Orchestra sections, woodwind",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 420
   },
   {
    "id": "z1oAJobeMYA",
@@ -16931,7 +16878,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "El Condor Pasa, Daniel Alomia Robles, 1913; this is a live panpipe performance",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 189
   },
   {
    "id": "zzE-kVadtNw",
@@ -17043,7 +16992,9 @@
    "recording_year": null,
    "year_basis": "established",
    "piece_note": "Vivaldi, The Four Seasons, published 1725",
-   "cross_refs": {}
+   "cross_refs": {},
+   "license": "standard",
+   "duration": 2935
   }
  ]
 }

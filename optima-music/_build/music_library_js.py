@@ -23,6 +23,7 @@ JS = """
   var state = {q:"", status:"", course:"", genre:"", kind:"", topic:"", xref:"",
                sort:"default"};
   var playlist = [];   // video ids the teacher has picked, in pick order
+  var clips = {};      // video id -> {s, e} in seconds: the excerpt a teacher chose
 
   var CMAP = {};
   MUSIC.courses.forEach(function(c){ CMAP[c.id] = c; });
@@ -38,6 +39,78 @@ JS = """
     return (s == null ? "" : String(s))
       .replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
       .replace(/"/g,"&quot;");
+  }
+
+  // ---- clip ranges. YouTube's player honours start= and end= on an embed and t= on a
+  // watch link, so a teacher can point a class at the two minutes that matter without
+  // re-hosting anything. Times are typed as m:ss and stored as seconds.
+  function fmt(sec){
+    sec = Math.max(0, Math.round(sec || 0));
+    var h = Math.floor(sec / 3600), m = Math.floor((sec % 3600) / 60), s = sec % 60;
+    var ms = (m < 10 && h ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+    return h ? h + ":" + ms : ms;
+  }
+  function parseTime(str){
+    // "1:20", "80", "1:02:03" -> seconds. null for blank, NaN for not a time.
+    var t = (str || "").replace(/\\s+/g, "");
+    if (!t) return null;
+    if (/^\\d+$/.test(t)) return parseInt(t, 10);
+    var m = /^(\\d+):([0-5]?\\d)(?::([0-5]?\\d))?$/.exec(t);
+    if (!m) return NaN;
+    return m[3] != null ? (+m[1]) * 3600 + (+m[2]) * 60 + (+m[3])
+                        : (+m[1]) * 60 + (+m[2]);
+  }
+  function clipFor(id){
+    var c = clips[id];
+    return (c && (c.s || c.e)) ? c : null;
+  }
+  function clipQuery(id){
+    var c = clipFor(id), q = [];
+    if (c && c.s) q.push("start=" + c.s);
+    if (c && c.e) q.push("end=" + c.e);
+    return q.join("&");
+  }
+  function clipLabel(id){
+    var c = clipFor(id), v = byId(id);
+    if (!c) return "";
+    return fmt(c.s || 0) + "\u2013" +
+      (c.e ? fmt(c.e) : (v && v.duration ? fmt(v.duration) : "end"));
+  }
+  function watchUrl(v){
+    var c = clipFor(v.id);
+    return v.url + (c && c.s ? "&t=" + c.s : "");
+  }
+  function clipRowFor(v){
+    if (v.state !== "ok") return "";
+    var c = clipFor(v.id) || {};
+    var dur = v.duration ? fmt(v.duration) : "";
+    return '<div class="cliprow" data-cliprow="' + esc(v.id) + '"' +
+      (clipFor(v.id) ? "" : " hidden") + '>' +
+      '<label>Play from <input type="text" inputmode="numeric" class="clipin" ' +
+        'data-clip-start="' + esc(v.id) + '" value="' + (c.s ? fmt(c.s) : "") + '" ' +
+        'placeholder="0:00" size="6"></label>' +
+      '<label>to <input type="text" inputmode="numeric" class="clipin" ' +
+        'data-clip-end="' + esc(v.id) + '" value="' + (c.e ? fmt(c.e) : "") + '" ' +
+        'placeholder="' + esc(dur || "end") + '" size="6"></label>' +
+      (dur ? '<span class="cliplen">of ' + esc(dur) + '</span>' : "") +
+      '<button type="button" class="clipclear" data-clipclear="' + esc(v.id) + '"' +
+        (clipFor(v.id) ? "" : " hidden") + '>Clear</button>' +
+      '<span class="cliperr" data-cliperr="' + esc(v.id) + '"></span>' +
+      '</div>';
+  }
+  function setClip(id, sIn, eIn){
+    // returns an error string, or "" when the clip was stored (or cleared)
+    var v = byId(id);
+    var s = parseTime(sIn), e = parseTime(eIn);
+    if (isNaN(s) || isNaN(e)) return "Type a time as minutes:seconds, like 1:20.";
+    if (v && v.duration){
+      if (s != null && s >= v.duration) return "The video ends at " + fmt(v.duration) + ".";
+      if (e != null && e > v.duration) return "The video ends at " + fmt(v.duration) + ".";
+    }
+    if (s != null && e != null && e <= s) return "The end has to come after the start.";
+    if (!s && !e) delete clips[id]; else clips[id] = {s: s || 0, e: e || 0};
+    save();
+    return "";
   }
 
   // one flat searchable string per video, built once. Course NAMES go in as well as ids,
@@ -257,13 +330,17 @@ JS = """
     h += pillsFor(v);
     h += xrefFor(v);
     h += '<div class="foot">';
-    h += '<a class="watch" href="' + esc(v.url) + '" target="_blank" rel="noopener">' +
+    h += '<a class="watch" href="' + esc(watchUrl(v)) + '" target="_blank" rel="noopener">' +
          (v.state === "ok" ? "Open on YouTube" : "Check the link") + '</a>';
-    h += '<button class="copybtn" data-url="' + esc(v.url) + '">Copy link</button>';
+    h += '<button class="copybtn" data-copy="' + esc(v.id) + '">Copy link</button>';
+    if (v.state === "ok")
+      h += '<button class="clipbtn' + (clipFor(v.id) ? ' set' : '') + '" data-clipbtn="' +
+           esc(v.id) + '">' + (clipFor(v.id) ? 'Clip ' + esc(clipLabel(v.id)) : 'Set a clip') +
+           '</button>';
     h += '<button class="addbtn' + (playlist.indexOf(v.id) > -1 ? ' in' : '') +
          '" data-add="' + esc(v.id) + '">' +
          (playlist.indexOf(v.id) > -1 ? 'In playlist' : 'Add to playlist') + '</button>';
-    h += '</div></div></article>';
+    h += '</div>' + clipRowFor(v) + '</div></article>';
     return h;
   }
 
@@ -328,7 +405,9 @@ JS = """
       if (!v) return;
       lines.push((i + 1) + ". " + (v.title || v.id));
       lines.push("   Channel: " + (v.channel || "not resolved"));
-      lines.push("   Link:    " + v.url);
+      lines.push("   Link:    " + watchUrl(v));
+      if (v.duration) lines.push("   Length:  " + fmt(v.duration));
+      if (clipFor(v.id)) lines.push("   Clip:    " + clipLabel(v.id));
       if ((v.courses||[]).length)
         lines.push("   Used in: " + v.courses.map(function(c){
           return CMAP[c] ? CMAP[c].name : c; }).join("; "));
@@ -353,9 +432,15 @@ JS = """
     playlist.forEach(function(id){
       var v = byId(id);
       if (!v || v.state !== "ok") return;
+      var q = clipQuery(id);
       out.push('<p style="margin:22px 0 6px;font-family:Arial,Helvetica,sans-serif;' +
-        'font-weight:bold;color:#0f2340;">' + esc(v.title || "") + '</p>');
-      out.push('<iframe width="640" height="360" src="' + esc(v.embed_url) +
+        'font-weight:bold;color:#0f2340;">' + esc(v.title || "") +
+        (q ? ' <span style="font-weight:normal;color:#6b7a8d;">(' + esc(clipLabel(id)) +
+             ')</span>' : '') + '</p>');
+      // rel=0 keeps the end screen to this channel's own videos rather than whatever
+      // YouTube would otherwise suggest to a student
+      out.push('<iframe width="640" height="360" src="' + esc(v.embed_url) + '?rel=0' +
+        (q ? '&' + q : '') +
         '" title="' + esc(v.title || "") + '" frameborder="0" ' +
         'allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; ' +
         'picture-in-picture" allowfullscreen></iframe>');
@@ -429,7 +514,8 @@ JS = """
 
   function save(){
     try {
-      localStorage.setItem(STORE, JSON.stringify({state: state, playlist: playlist}));
+      localStorage.setItem(STORE, JSON.stringify({state: state, playlist: playlist,
+                                                  clips: clips}));
     } catch(e){}
   }
 
@@ -512,8 +598,9 @@ JS = """
         var v = byId(play.dataset.play);
         if (!v) return;
         var frame = play.parentNode;
+        var cq = clipQuery(v.id);
         frame.innerHTML = '<iframe src="' + esc(v.embed_url) +
-          '?rel=0&autoplay=1" title="' + esc(v.title || "") +
+          '?rel=0&autoplay=1' + (cq ? '&' + cq : '') + '" title="' + esc(v.title || "") +
           '" allow="autoplay; encrypted-media; picture-in-picture" ' +
           'allowfullscreen></iframe>';
         // Whether an embed plays is YouTube's call, not ours: a channel can disallow
@@ -540,8 +627,75 @@ JS = """
         return;
       }
       var b = ev.target.closest(".copybtn");
-      if (b) copy(b.dataset.url, b, "Copied", "Copy link");
+      if (b){
+        var cv = byId(b.dataset.copy);
+        if (cv) copy(watchUrl(cv), b, "Copied", "Copy link");
+        return;
+      }
+      var cb = ev.target.closest(".clipbtn");
+      if (cb){
+        var row = document.querySelector('[data-cliprow="' + cb.dataset.clipbtn + '"]');
+        if (!row) return;
+        row.hidden = !row.hidden;
+        if (!row.hidden){ var first = row.querySelector("input"); if (first) first.focus(); }
+        return;
+      }
+      var cc = ev.target.closest(".clipclear");
+      if (cc){
+        var cid = cc.dataset.clipclear;
+        delete clips[cid];
+        save();
+        var crow = document.querySelector('[data-cliprow="' + cid + '"]');
+        if (crow){
+          crow.querySelectorAll("input").forEach(function(i){ i.value = ""; });
+          crow.querySelector(".cliperr").textContent = "";
+          cc.hidden = true;
+        }
+        reflectClip(cid);
+      }
     });
+
+    // A clip is stored when a time field is committed. change bubbles, so one listener
+    // on the grid survives every re-render, the same as the click handler above.
+    document.getElementById("grid").addEventListener("change", function(ev){
+      var inp = ev.target.closest(".clipin");
+      if (!inp) return;
+      var id = inp.dataset.clipStart || inp.dataset.clipEnd;
+      var row = document.querySelector('[data-cliprow="' + id + '"]');
+      if (!row) return;
+      var sIn = row.querySelector("[data-clip-start]"), eIn = row.querySelector("[data-clip-end]");
+      var err = setClip(id, sIn.value, eIn.value);
+      row.querySelector(".cliperr").textContent = err;
+      if (!err){
+        var c = clipFor(id);
+        sIn.value = c && c.s ? fmt(c.s) : "";
+        eIn.value = c && c.e ? fmt(c.e) : "";
+      }
+      row.querySelector(".clipclear").hidden = !clipFor(id);
+      reflectClip(id);
+    });
+  }
+
+  function reflectClip(id){
+    // Everything on the card that carries the clip: the button label, the watch link,
+    // and a player that is already open, which reloads at the new range.
+    var v = byId(id);
+    if (!v) return;
+    var btn = document.querySelector('[data-clipbtn="' + id + '"]');
+    if (btn){
+      btn.classList.toggle("set", !!clipFor(id));
+      btn.textContent = clipFor(id) ? "Clip " + clipLabel(id) : "Set a clip";
+    }
+    var card = document.querySelector('.card[data-id="' + id + '"]');
+    if (card){
+      var w = card.querySelector(".watch");
+      if (w) w.href = watchUrl(v);
+      var fr = card.querySelector(".frame iframe");
+      if (fr){
+        var cq = clipQuery(id);
+        fr.src = v.embed_url + "?rel=0&autoplay=1" + (cq ? "&" + cq : "");
+      }
+    }
   }
 
   function restore(){
@@ -554,6 +708,12 @@ JS = """
       if (Array.isArray(saved.playlist))
         // drop ids that no longer exist rather than rendering a phantom count
         playlist = saved.playlist.filter(function(id){ return !!byId(id); });
+      if (saved.clips && typeof saved.clips === "object")
+        Object.keys(saved.clips).forEach(function(id){
+          var c = saved.clips[id];
+          if (byId(id) && c && (typeof c.s === "number" || typeof c.e === "number"))
+            clips[id] = {s: c.s > 0 ? c.s : 0, e: c.e > 0 ? c.e : 0};
+        });
     } catch(e){}
     var q = document.getElementById("q");
     if (q) q.value = state.q;

@@ -11,7 +11,7 @@ Cross-course interactive widgets for Optima Academy Online, hosted on GitHub Pag
 | `optima-literature/ela-reference-library.html` | **Teacher-facing.** The ELA Reference Library: 226 titles with edition, translator, rights, first-publication and genre data, cover art, search, sort, a taught filter, a printable "my list" checkout card, and data-quality checks behind the ⚙ button. Generated — never hand-edit the HTML. | Not embedded in a course — teachers open it directly |
 | `optima-art/art-reference-library.html` | **Teacher-facing.** The Art Reference Library: 529 artworks catalogued from seven art courses, with search across artist, title, period, course and unit; availability filters; 41 published free-to-use images with a copy-URL button; a JSTOR link on 400 records; and a rights-and-data panel behind the ⚙ button. Generated — never hand-edit the HTML. | Not embedded in a course — teachers open it directly |
 | `video-topic-board/index.html` | **Teachers and the production team.** The Video Topic Board: 1,321 proposed instructional videos for grades 3–8 plus K–2 phonics, drawn from the subject wishlists, the ELA and Math video libraries, the science checklist, the music slate, the electives library and a grades 6–8 Social Studies request list (rows coded only 9–12 or only K–2 are excluded at build time), with grade bands, standards, each source's priority mapped to High / Middle / Lowest, search and filters, and who has claimed what. This public copy reads `data/snapshot.json`; claiming, releasing, adding, removing and reprioritizing happen on the team board in claude.ai, whose Team tab publishes the snapshot here. Generated — never hand-edit the HTML. | Not embedded in a course — open it directly |
-| `optima-music/music-reference-library.html` | **Students and teachers.** The Music Reference Library: the 154 published videos used across the nine K–12 music courses. Browse rows for **course** and **genre**, plus search and an evidence-gated topic filter across era, composer, culture, element, instrument, skill and cross-subject; the module that uses each video; joins into the art and ELA libraries; a click-to-play `youtube-nocookie` frame; a copyable listening list and Canvas embed; and the 76 pieces a lesson names but never links. Generated — never hand-edit the HTML. | Not embedded in a course — open it directly |
+| `optima-music/music-reference-library.html` | **Students and teachers.** The Music Reference Library: the 154 published videos used across the nine K–12 music courses. Browse rows for **course** and **genre**, plus search and an evidence-gated topic filter across era, composer, culture, element, instrument, skill and cross-subject; the module that uses each video; joins into the art and ELA libraries; a click-to-play `youtube-nocookie` frame; a per-card **clip** (start and end times) that the player, the copied link, the listening list and the Canvas embed all carry; a copyable listening list and Canvas embed; and the 76 pieces a lesson names but never links. Every video is linked, none re-hosted: a license pass over all 153 live videos found none that may lawfully be copied. Generated — never hand-edit the HTML. | Not embedded in a course — open it directly |
 
 ### optima-literature notes
 
@@ -87,6 +87,23 @@ Cross-course interactive widgets for Optima Academy Online, hosted on GitHub Pag
   something to listen to, and this page is open to students. The full disposition breakdown stays
   in the "How this was built" panel. A dead link is the exception and stays on the card, styled as
   a warning rather than a status, because it asks the reader to do something.
+- **Clips, not copies.** Each live card has a *Set a clip* button that opens two time fields
+  (start and end, typed as m:ss and checked against the running time). A set clip travels with
+  everything the card produces: the in-card player (`start=`/`end=` on the nocookie embed), the
+  watch link and *Copy link* (`&t=`), the listening list and the pasted Canvas embed. Clips are
+  saved per browser alongside the playlist. The Canvas embed also carries `rel=0`, so a student's
+  end screen offers that channel's own videos rather than YouTube's suggestions. The render probe
+  drives these controls in headless Chrome and asserts what they produce, including that an
+  end-before-start range and a non-time are refused with a reason.
+- **No downloadable copies, and the gate that says so.** The workshop's `license.py` pass
+  (yt-dlp, metadata only, never a stream) records YouTube's license and running time for every
+  live video into the contract as `license` and `duration`. On 2026-09-11: 152 standard license,
+  1 Creative Commons Attribution, 2 unresolvable (the dead links). The one CC BY video is a private
+  channel's re-upload of a Diana Damrau performance whose description credits the original video,
+  so the uploader had no right to grant that license and it is ruled out by name in
+  `CC_NOT_HOSTED`. `DOWNLOADS` is therefore empty. The build fails if a download is offered for a
+  video that is not `cc-by`, if a `cc-by` video has no ruling either way, or if any download link,
+  `download` attribute or `.mp4` reference reaches the painted page while `DOWNLOADS` is empty.
 - **Withdrawing a video** is a line in `WITHDRAWN` at the top of `build_music_library.py`, keyed by
   video id with the reason. It lives in the generator and NOT in the workshop's contract builder on
   purpose: the contract is a truthful record of what the courses actually link, and a harvest that

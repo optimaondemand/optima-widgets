@@ -197,6 +197,31 @@ details.uses.prev summary{color:var(--mute)}
 .copybtn:hover,.addbtn:hover{border-color:var(--cyan)}
 .copybtn.done{background:#e4f4ec;border-color:var(--ok);color:var(--ok)}
 .addbtn.in{background:var(--navy);border-color:var(--navy);color:#fff}
+.clipbtn{font:inherit;font-size:12.5px;font-weight:600;color:var(--navy-2);cursor:pointer;
+  background:#fff;border:1px solid var(--line);border-radius:7px;padding:6px 10px}
+.clipbtn:hover{border-color:var(--cyan)}
+.clipbtn.set{background:#e7f6f8;border-color:var(--cyan-dim);color:var(--cyan-dim)}
+
+/* Clip row: two time fields and nothing else. Sits under the actions so a chosen clip
+   reads as part of what the card will do, not as a setting somewhere else. */
+.cliprow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:10px;
+  padding:9px 10px;background:#f4f6f9;border:1px solid var(--line);border-radius:8px;
+  font-size:12.5px;color:var(--body)}
+/* display:flex above beats the browser's own [hidden]{display:none}, so hidden has to
+   be restated here or every row is open on load. */
+.cliprow[hidden],.clipclear[hidden]{display:none}
+.cliprow label{display:inline-flex;align-items:center;gap:6px;font-weight:600;
+  color:var(--navy-2)}
+.clipin{font:inherit;font-size:13px;width:5.2em;padding:4px 6px;color:var(--ink);
+  background:#fff;border:1px solid var(--line);border-radius:6px;outline:none;
+  text-align:center}
+.clipin:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(49,195,214,.18)}
+.cliplen{color:var(--mute)}
+.clipclear{font:inherit;font-size:12px;font-weight:600;color:var(--navy-2);cursor:pointer;
+  background:#fff;border:1px solid var(--line);border-radius:6px;padding:4px 8px}
+.clipclear:hover{border-color:var(--cyan)}
+.cliperr{flex-basis:100%;color:var(--dead);font-weight:600}
+.cliperr:empty{display:none}
 .empty{padding:70px 20px;text-align:center;color:var(--mute)}
 .empty b{display:block;font-size:18px;color:var(--ink);margin-bottom:7px}
 
@@ -234,6 +259,8 @@ body.hastray{padding-bottom:74px}
 .subj:focus-visible,
 .copybtn:focus-visible,
 .addbtn:focus-visible,
+.clipbtn:focus-visible,
+.clipclear:focus-visible,
 .watch:focus-visible,
 .playbtn:focus-visible,
 details.uses summary:focus-visible,

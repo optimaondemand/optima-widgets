@@ -52,6 +52,87 @@ def dump():
     return out
 
 
+INTERACT = """
+<script>
+(function(){
+  // Drive the real controls and write what happened into the DOM, where --dump-dom can
+  // see it. Nothing here reaches into the renderer's closure: it clicks and types.
+  var out = [];
+  function say(k, v){ out.push(k + "=" + v); }
+  try {
+    var card = document.querySelector('.card .clipbtn');
+    if (!card) throw new Error("no clip button rendered");
+    var id = card.dataset.clipbtn;
+    var art = document.querySelector('.card[data-id="' + id + '"]');
+    say("id", id);
+    var row = art.querySelector('.cliprow');
+    // computed, not the attribute: a display rule on the row can override [hidden]
+    say("row_display_before", getComputedStyle(row).display);
+    card.click();
+    say("row_open", !row.hidden);
+    say("row_display_after", getComputedStyle(row).display);
+    var sIn = row.querySelector('[data-clip-start]'), eIn = row.querySelector('[data-clip-end]');
+    // a bad range first: the end before the start
+    sIn.value = "2:05"; eIn.value = "1:20";
+    eIn.dispatchEvent(new Event("change", {bubbles: true}));
+    say("err_order", row.querySelector('.cliperr').textContent);
+    // then a good one
+    sIn.value = "1:20"; eIn.value = "2:05";
+    eIn.dispatchEvent(new Event("change", {bubbles: true}));
+    say("err_ok", row.querySelector('.cliperr').textContent);
+    say("btn", art.querySelector('.clipbtn').textContent);
+    say("btn_set", art.querySelector('.clipbtn').classList.contains("set"));
+    say("watch", art.querySelector('.watch').getAttribute("href"));
+    say("clear_shown", !row.querySelector('.clipclear').hidden);
+    // not a time
+    sIn.value = "one twenty";
+    sIn.dispatchEvent(new Event("change", {bubbles: true}));
+    say("err_text", row.querySelector('.cliperr').textContent);
+    // restore the good clip, then play: the iframe must carry it
+    sIn.value = "1:20";
+    sIn.dispatchEvent(new Event("change", {bubbles: true}));
+    art.querySelector('.playbtn').click();
+    var fr = art.querySelector('.frame iframe');
+    say("iframe", fr ? fr.getAttribute("src") : "none");
+    // clear: the button and link go back to their unset state
+    row.querySelector('.clipclear').click();
+    say("btn_after_clear", art.querySelector('.clipbtn').textContent);
+    say("watch_after_clear", art.querySelector('.watch').getAttribute("href"));
+    say("iframe_after_clear", art.querySelector('.frame iframe').getAttribute("src"));
+  } catch (e) { say("exception", e.message); }
+  var pre = document.createElement("pre"); pre.id = "probe-out";
+  pre.textContent = out.join("\\n");
+  document.body.appendChild(pre);
+})();
+</script>
+"""
+
+
+def interact():
+    """Second Chrome run against a copy of the page with a driver script appended."""
+    src = open(PAGE, encoding="utf-8").read()
+    tmpdir = tempfile.mkdtemp(prefix="musiclib-interact-")
+    path = os.path.join(tmpdir, "page.html")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(src.replace("</body></html>", INTERACT + "</body></html>"))
+    profile = tempfile.mkdtemp(prefix="musiclib-probe-")
+    cmd = [CHROME, "--headless", "--disable-gpu", "--no-sandbox",
+           "--user-data-dir=" + profile, "--virtual-time-budget=9000",
+           "--allow-file-access-from-files", "--dump-dom",
+           "file:///" + path.replace("\\", "/")]
+    r = subprocess.run(cmd, capture_output=True, timeout=180)
+    out = r.stdout.decode("utf-8", "replace")
+    m = re.search(r'<pre id="probe-out">(.*?)</pre>', out, re.S)
+    if not m:
+        return {"exception": "driver wrote nothing"}
+    got = {}
+    for line in m.group(1).split("\n"):
+        if "=" in line:
+            k, v = line.split("=", 1)
+            got[k.strip()] = v.rstrip('\r\n')  # Chrome on Windows ends dump lines with CRLF
+    return got
+
+
 def main():
     contract = json.load(open(os.path.join(ROOT, "music.json"), encoding="utf-8"))
     # The generator withholds some videos from the published page. Read that list out of
@@ -93,6 +174,23 @@ def main():
     eq(n(r'class="playbtn"'), len(videos) - len(dead), "play buttons")
     eq(n(r'youtube-nocookie\.com/embed/', grid), 0,
        "embeds in the grid before anything is clicked (nothing should preload)")
+
+    # ---- clip controls: one row and one button per live card, none on a dead one, every
+    # row collapsed on a fresh load, and the end field carries the running time
+    live_n = len(videos) - len(dead)
+    eq(n(r'data-cliprow="'), live_n, "clip rows")
+    eq(n(r'<div class="cliprow" data-cliprow="[^"]+" hidden(="")?>'), live_n,
+       "clip rows collapsed on first load")
+    eq(n(r'data-clipbtn="'), live_n, "clip buttons")
+    eq(n(r'>Set a clip</button>'), live_n, "clip buttons in their unset state")
+    eq(n(r'data-clip-start="'), live_n, "clip start fields")
+    eq(n(r'data-clip-end="'), live_n, "clip end fields")
+    eq(n(r'<span class="cliplen">of \d+:\d\d'),
+       sum(1 for v in videos if v["state"] == "ok" and v.get("duration")),
+       "running-time labels")
+    for v in dead:
+        if re.search(r'data-clipbtn="' + re.escape(v["id"]) + '"', grid):
+            fails.append("a dead video offers a clip button: " + v["id"])
 
     # ---- the build-bookkeeping badges are gone from the cards on purpose
     eq(n(r'<span class="badge '), 0,
@@ -164,6 +262,13 @@ def main():
     eq(n(r'data-status="', painted), 1, "the dead-link chip")
     eq(n(r'data-xref="', painted), 2, "cross-library chips")
 
+    # ---- no downloadable copy anywhere on the page. Independent of the generator's
+    # DOWNLOADS dict on purpose, like NEVER_PUBLISH: as of 2026-09-11 nothing in the
+    # catalogue may be re-hosted, and adding a hosted file must be a visible change here.
+    eq(n(r'class="dl"', painted), 0, "download links")
+    eq(n(r'<a [^>]*\sdownload[\s>=]', painted), 0, "anchors with a download attribute")
+    eq(n(r'\.mp4', painted), 0, "mp4 references")
+
     # ---- the independent never-publish check (see NEVER_PUBLISH above)
     for vid, why in NEVER_PUBLISH.items():
         if vid in doc:
@@ -231,6 +336,52 @@ def main():
     for probe in ("Music and creativity in Ancient Greece",
                   "TED-Ed", "Ode to Joy"):
         has(probe, "probe record " + probe)
+
+    # ---- clip controls, driven. The static counts above prove the controls painted;
+    # this proves they do what the card says: an invalid range is refused with a reason,
+    # a valid one reaches the button, the watch link and the player, and Clear undoes it.
+    got = interact()
+    by_id = {v["id"]: v for v in videos}
+    if "exception" in got:
+        fails.append("clip driver: " + got["exception"])
+    else:
+        vid = got.get("id", "")
+        v = by_id.get(vid)
+        amp = lambda s: (s or "").replace("&amp;", "&")
+        if got.get("row_display_before") != "none":
+            fails.append("clip rows are visible before anything is clicked (computed display %r)"
+                         % got.get("row_display_before"))
+        if got.get("row_open") != "true":
+            fails.append("clip button did not open the clip row")
+        if got.get("row_display_after") == "none":
+            fails.append("clip row is still not displayed after its button was clicked")
+        if "after the start" not in got.get("err_order", ""):
+            fails.append("end-before-start was accepted: %r" % got.get("err_order"))
+        if got.get("err_ok", "x") != "":
+            fails.append("a valid clip was refused: %r" % got.get("err_ok"))
+        # the dash between the times is an en dash; the console decode of the dump does
+        # not reliably preserve it, so match the two times around it
+        if not re.match(r"^Clip 1:20.2:05$", got.get("btn", "")):
+            fails.append("clip button label wrong: %r" % got.get("btn"))
+        if got.get("btn_set") != "true":
+            fails.append("clip button not marked set")
+        if not amp(got.get("watch")).endswith("&t=80"):
+            fails.append("watch link does not carry the start time: %r" % got.get("watch"))
+        if got.get("clear_shown") != "true":
+            fails.append("Clear did not appear once a clip was set")
+        if "minutes:seconds" not in got.get("err_text", ""):
+            fails.append("a non-time was accepted: %r" % got.get("err_text"))
+        if not amp(got.get("iframe")).endswith("?rel=0&autoplay=1&start=80&end=125"):
+            fails.append("player iframe does not carry the clip: %r" % got.get("iframe"))
+        if v and not amp(got.get("iframe")).startswith(v["embed_url"]):
+            fails.append("player iframe is not this video's nocookie embed")
+        if got.get("btn_after_clear") != "Set a clip":
+            fails.append("Clear did not reset the clip button: %r" % got.get("btn_after_clear"))
+        if v and amp(got.get("watch_after_clear")) != v["url"]:
+            fails.append("Clear did not reset the watch link: %r" % got.get("watch_after_clear"))
+        if not amp(got.get("iframe_after_clear")).endswith("?rel=0&autoplay=1"):
+            fails.append("Clear did not reload the open player without the clip: %r"
+                         % got.get("iframe_after_clear"))
 
     print("render gate: %d failures" % len(fails))
     for f in fails:

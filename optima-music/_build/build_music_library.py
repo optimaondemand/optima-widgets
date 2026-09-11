@@ -42,6 +42,25 @@ WITHDRAWN = {
                    "Intermediate I build folder.",
 }
 
+# Downloadable copies. Empty, and the gate below is why.
+#
+# A copy of a video may be offered ONLY when the contract records YouTube's Creative
+# Commons Attribution license for it AND the uploader is the rights holder of the
+# recording. The 2026-09-11 license pass found exactly one CC BY video among 153 live
+# ones, and it fails the second test: a private channel's re-upload of a Diana Damrau
+# performance, with the original video credited in its own description. A re-uploader
+# cannot license a performance they did not record, whatever box they ticked. Every other
+# video is under the standard YouTube license, which permits linking and embedding only.
+#
+# Keyed by video id -> URL of the hosted file. A cc-by video that is in neither dict
+# fails the build: it has to be either hosted or ruled out, by name, with a reason.
+DOWNLOADS = {}
+CC_NOT_HOSTED = {
+    "9HEjAkFBBz0": "Re-upload by a private channel of a Diana Damrau performance; the "
+                   "uploader is not the rights holder, so the CC BY flag is not theirs to "
+                   "grant. Also in no current module (previous-version only).",
+}
+
 # Badge labels for the course chips on a card. Short enough to sit in a pill, and taken
 # from what the builds themselves are called: the MI-1/2/3 folders, "M/J Music Theory".
 # The full course name is always in the chip's hover text.
@@ -291,6 +310,12 @@ def build():
     return out
 
 
+def body_only_early(doc):
+    """The page's markup with the two script blocks removed, for checks that must not
+    match the renderer's own source."""
+    return re.sub(r"<script>.*?</script>", "", doc, flags=re.S)
+
+
 def gate(doc, contract, prompts):
     """Fail the build rather than ship a page that misstates what is taught where."""
     fails = []
@@ -369,7 +394,8 @@ def gate(doc, contract, prompts):
     ALLOWED = {"id", "url", "embed_url", "title", "channel", "channel_url", "thumb",
                "state", "disposition", "courses", "attribution", "legacy_in", "lessons",
                "previous_lessons", "tags", "cross_refs",
-               "work_year", "recording_year", "year_basis", "piece_note"}
+               "work_year", "recording_year", "year_basis", "piece_note",
+               "license", "duration"}
     for v in videos:
         extra = set(v) - ALLOWED
         if extra:
@@ -400,6 +426,40 @@ def gate(doc, contract, prompts):
             fails.append("a work year with no established basis on " + v["id"])
         if v.get("year_basis") == "traditional" and v.get("work_year"):
             fails.append("traditional piece carrying a single year on " + v["id"])
+
+    # ---- license and running time. The license is the one fact that decides whether a
+    # copy may ever be offered; anything but the two YouTube values is a parse error.
+    for v in videos:
+        if v.get("license") not in ("cc-by", "standard", None):
+            fails.append("unknown license value on %s: %r" % (v["id"], v.get("license")))
+        if v["state"] == "ok" and v.get("license") is None:
+            fails.append("live video with no license recorded: " + v["id"])
+        d = v.get("duration")
+        if d is not None and not (isinstance(d, int) and 0 < d < 8 * 3600):
+            fails.append("implausible duration on %s: %r" % (v["id"], d))
+        if v["state"] == "ok" and d is None:
+            fails.append("live video with no duration (clip bounds cannot be checked): " +
+                         v["id"])
+
+    # ---- downloadable copies: the legal gate. Nothing may be offered without a valid
+    # Creative Commons license, and every CC-flagged video must have been ruled on.
+    for vid in DOWNLOADS:
+        v = next((x for x in videos if x["id"] == vid), None)
+        if v is None:
+            fails.append("download offered for a video not in the contract: " + vid)
+        elif v.get("license") != "cc-by":
+            fails.append("download offered for a video under the standard license: " + vid)
+        if vid in CC_NOT_HOSTED:
+            fails.append("a video is both hosted and ruled out: " + vid)
+    for v in videos:
+        if v.get("license") == "cc-by" and v["id"] not in DOWNLOADS                 and v["id"] not in CC_NOT_HOSTED:
+            fails.append("CC BY video with no ruling (host it or rule it out): " + v["id"])
+    for vid in CC_NOT_HOSTED:
+        if not any(x["id"] == vid and x.get("license") == "cc-by" for x in videos):
+            fails.append("CC_NOT_HOSTED names a video the contract does not call cc-by: " + vid)
+    if not DOWNLOADS:
+        check(" download" not in body_only_early(doc) and 'class="dl"' not in doc,
+              "a download link is on the page with nothing in DOWNLOADS")
 
     # ---- a dead link must look dead
     for v in videos:
@@ -448,6 +508,10 @@ def gate(doc, contract, prompts):
     check("How this was built" not in body_only and 'class="panel' not in body_only,
           "the builder panel is back on the page")
     check('id="reset"' in doc, "no reset control: a chosen filter would be a one-way door")
+    # the clip machinery must be in the renderer, and the Canvas embed must carry it
+    for needle in ("data-cliprow=", "data-clip-start=", "data-clip-end=", "clipQuery(",
+                   "?rel=0' +", "&t=\" + c.s"):
+        check(needle in doc, "clip control missing from the renderer: " + needle)
     n_courses = sum(1 for c in contract["courses"]
                     if any(c["id"] in v["courses"] for v in videos))
     check(chrome.count('<option value="') >= n_courses,
