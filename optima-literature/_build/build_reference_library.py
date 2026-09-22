@@ -914,6 +914,7 @@ def gate(page, book, client):
                    'data-view="compare"', 'data-view="grades"',
                    'data-view="sources"', 'data-view="attention"',
                    'data-view="mine"', 'data-view="shelves"',
+                   'id="tbMineGrid"', 'tbcard tbadmin', 'tbWireShelfButtons',
                    'window.__SHELVES__', 'window.__SCHOOL_YEAR__',
                    'window.__LIB__',
                    'fonts.googleapis.com/css2?family=Wix+Madefor',
@@ -925,8 +926,11 @@ def gate(page, book, client):
 
     # removed on purpose (2026-08-24): stat counters, the author dropdown,
     # and the Translations view. If one reappears, someone merged old code.
+    # 2026-09-22: the classrooms.json block left the teacher path. My Classroom
+    # ends in shelf tiles; the record is maintainer-only behind the gear.
     for gone in ('class="stat"', 'id="fAuthor"', 'data-view="editions"',
-                 'class="spines"'):
+                 'class="spines"', 'Send this to your team', 'id="tbMineList"',
+                 'How this reaches the library'):
         if gone in page:
             problems.append(f"removed element has reappeared: {gone}")
 

@@ -302,6 +302,14 @@ select,#q{font-family:inherit;font-size:13.5px;padding:8px 11px;
   body.tbprinting .views{padding:0;}
   body.tbprinting .tbshelves{display:block !important;}
   body.tbprinting .tbshelf{display:none !important;}
+  /* A tile printed from My Classroom lives inside a step card. */
+  body.tbprinting .tbcard{display:none !important;}
+  body.tbprinting .tbcard.tbprintwrap{display:block !important;border:none;
+     box-shadow:none;margin:0;border-radius:0;}
+  body.tbprinting .tbprintwrap .tbhead,
+  body.tbprinting .tbprintwrap .tbrun{display:none !important;}
+  body.tbprinting .tbprintwrap .tbminegrid{padding:0;}
+  body.tbprinting .tbprintme{box-shadow:none !important;}
   body.tbprinting .tbshelf.tbprintme{display:block !important;border:none;
        box-shadow:none;border-top:3px solid #0E1C42 !important;}
   body.tbprinting .tbprintme .tbsfoot{display:none !important;}
@@ -467,6 +475,16 @@ select,#q{font-family:inherit;font-size:13.5px;padding:8px 11px;
 .tbblank{padding:34px 20px;text-align:center;color:var(--ink-faint);font-size:13px;
      line-height:1.7;border:1px dashed var(--line);border-radius:12px;background:var(--card);}
 .tbhide{display:none;}
+/* Maintainer-only card on My Classroom (the classrooms.json record). Shown only
+   while the Data checks gear is on, so a teacher never meets raw JSON. */
+.tbadmin{display:none;}
+body.show-admin .tbadmin{display:block;}
+body.show-admin .tbadmin.tbhide{display:none;}
+/* The teacher's own tiles: same card as a published shelf, navy top edge. */
+.tbminegrid{padding:18px 20px;}
+.tbshelf.tbmine{border-top-color:var(--navy);}
+.tbshelf.tbediting{box-shadow:0 0 0 3px rgba(85,200,232,.45);}
+.tbsp{flex:1;}
 
 </style>
 </head>
@@ -1174,9 +1192,11 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
      My Classroom writes a shelf, Teacher Bookshelves reads every shelf.
 
      Published shelves arrive in window.__SHELVES__, built from classrooms.json.
-     A teacher's own unsent work lives in localStorage and is labelled a draft,
-     because a draft is visible to nobody else until the team commits it, and a
-     shelf that looks published when it is not would be a lie to the teacher. */
+     A teacher's own shelves live in localStorage and render as the same tiles:
+     under My Classroom (with Edit and Remove) and under Teacher Bookshelves
+     (badged "My shelf"). The tile IS what a teacher came for. The classrooms.json
+     record that carries a shelf to every other teacher is a maintainer concern,
+     so it renders only while the Data checks gear is on. */
 
   var SHELVES = window.__SHELVES__ || [];
   var YEAR = window.__SCHOOL_YEAR__ || '';
@@ -1323,7 +1343,7 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     return h + '</div>';
   }
 
-  function tbShelfCard(s, draft, idx){
+  function tbShelfCard(s, mine, idx, editable){
     var ids = tbEntries(s);
     var groups = tbByQuarter(ids);
     var books = '';
@@ -1341,9 +1361,9 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
         books += tbBook(recFor(grp.items[i].id), grp.items[i]);
       }
     }
-    return '<div class="tbshelf"' + (draft ? ' style="border-top-color:#8DA0B6"' : '') + '>'
+    return '<div class="tbshelf' + (mine ? ' tbmine' : '') + '">'
       + '<div class="tbsh"><div class="tbsteach">' + esc(s.teacher)
-      + (draft ? ' <span class="bdg" style="--bc:#8F347F">Draft</span>' : '')
+      + (mine && !editable ? ' <span class="bdg tg">My shelf</span>' : '')
       + '</div><div class="tbscourse">' + esc(s.course) + '</div>'
       + '<div class="tbsmeta">' + tbBadges(s) + '</div>'
       + '<div class="tbprintonly">Optima Academy Online'
@@ -1355,8 +1375,9 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
       + '<div class="tbsfoot">'
       + '<button class="tick" data-tbprint="' + idx + '">Print this shelf</button>'
       + '<button class="tick" data-tbcopy="' + idx + '">Copy book list</button>'
-      + (draft ? '<span class="tbnolink">Visible only to you until your team '
-               + 'publishes it.</span>' : '')
+      + (editable ? '<span class="tbsp"></span>'
+                  + '<button class="tick" data-tbedit="' + idx + '">Edit</button>'
+                  + '<button class="tick" data-tbdel="' + idx + '">Remove</button>' : '')
       + '</div></div>';
   }
 
@@ -1470,20 +1491,54 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     return out.join(NL);
   }
 
-  function tbPrintShelf(idx){
-    var cards = document.querySelectorAll('#tbShelfGrid .tbshelf');
-    var el = cards[idx];
+  // Walks up from a node to the nearest ancestor carrying a class. Written out
+  // on purpose: .closest() is banned in this file (see the header comment).
+  function tbUp(node, cls){
+    var n = node ? node.parentElement : null;
+    while (n && n !== document.body){
+      if ((' ' + n.className + ' ').indexOf(' ' + cls + ' ') !== -1) return n;
+      n = n.parentElement;
+    }
+    return null;
+  }
+
+  function tbPrintShelf(el){
     if (!el) return;
+    // A tile under My Classroom sits inside a step card that the print
+    // stylesheet hides; mark that wrapper so the tile still reaches paper.
+    var wrap = tbUp(el, 'tbcard');
     function cleanup(){
       document.body.className = document.body.className.replace(' tbprinting', '');
       el.className = el.className.replace(' tbprintme', '');
+      if (wrap) wrap.className = wrap.className.replace(' tbprintwrap', '');
       if (window.onafterprint === cleanup) window.onafterprint = null;
     }
     el.className = el.className + ' tbprintme';
+    if (wrap) wrap.className = wrap.className + ' tbprintwrap';
     document.body.className = document.body.className + ' tbprinting';
     window.onafterprint = cleanup;
     try { window.print(); } catch(e){}
     setTimeout(cleanup, 500);
+  }
+
+  // Print and copy on a shelf tile, wherever the tile is drawn. Print takes
+  // the tile element; copy takes the shelf record from the rows just rendered.
+  function tbWireShelfButtons(box, rows){
+    var pb = box.querySelectorAll('[data-tbprint]');
+    for (var p=0;p<pb.length;p++){
+      pb[p].addEventListener('click', (function(btn){
+        return function(){ tbPrintShelf(tbUp(btn, 'tbshelf')); };
+      })(pb[p]));
+    }
+    var cb = box.querySelectorAll('[data-tbcopy]');
+    for (var c=0;c<cb.length;c++){
+      cb[c].addEventListener('click', (function(btn){
+        return function(){
+          var row = rows[parseInt(btn.getAttribute('data-tbcopy'), 10)];
+          if (row) tbToClipboard(tbShelfText(row.s), btn);
+        };
+      })(cb[c]));
+    }
   }
 
   /* ---- view: My Classroom ---- */
@@ -1557,35 +1612,40 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
       + '<span class="tbrunL">titles selected<br />for this course</span>'
       + '<span class="tbright">'
       + '<button class="tbbtn gh tbhide" id="tbCancel">Cancel edit</button>'
-      + '<button class="tbbtn pri" id="tbSave" disabled>Save this course</button>'
+      + '<button class="tbbtn pri" id="tbSave" disabled>Save to my bookshelf</button>'
       + '</span></div></div>';
 
     var mineCard = '<div class="tbcard tbhide" id="tbMineCard">'
       + '<div class="tbhead"><span class="tbnum">3</span>'
-      + '<span class="tbname">My courses</span>'
+      + '<span class="tbname">My bookshelf</span>'
       + '<span class="tbnote" id="tbMineNote"></span></div>'
-      + '<div id="tbMineList"></div>'
-      + '<div class="tbrun"><button class="tbbtn gh" id="tbAnother">Add another course</button>'
-      + '</div></div>';
+      + '<div class="tbshelves tbminegrid" id="tbMineGrid"></div>'
+      + '<div class="tbrun"><span class="tbrunL">Each tile is one course. Print it, or '
+      + 'copy the list to paste into a syllabus or a note to families.</span>'
+      + '<span class="tbright"><button class="tbbtn gh" id="tbAnother">Add another '
+      + 'course</button></span></div></div>';
 
-    var outCard = '<div class="tbcard tbhide" id="tbOutCard">'
-      + '<div class="tbhead"><span class="tbnum">4</span>'
-      + '<span class="tbname">Send this to your team</span>'
+    // Maintainer-only. Hidden unless the Data checks gear is on (body.show-admin).
+    var outCard = '<div class="tbcard tbadmin tbhide" id="tbOutCard">'
+      + '<div class="tbhead"><span class="tbnum">&#9881;</span>'
+      + '<span class="tbname">For the library maintainer</span>'
       + '<span class="tbnote"><button class="tick" id="tbCopyJson">Copy this block'
       + '</button></span></div>'
       + '<div class="tbbody"><div class="tbfile"><pre id="tbJson"></pre></div>'
-      + '<div class="tbsay"><b>How this reaches the library.</b> Copy the block above '
-      + 'and send it to whoever maintains the book lists. One record per course, in a '
-      + 'file your team owns; a teacher with three courses is three records under the '
-      + 'same name. Your shelf appears under Teacher Bookshelves once that file is '
-      + 'published. Nothing you type here is sent anywhere on its own.</div>'
+      + '<div class="tbsay"><b>What this is.</b> The shelves above as records for '
+      + '<b>classrooms.json</b>, one per course. Paste them into that file and rebuild '
+      + 'the library; the shelves then appear for every teacher under Teacher '
+      + 'Bookshelves. This card shows only while Data checks is on. Teachers do not '
+      + 'see it and do not need it.</div>'
       + '</div></div>';
 
     return shell('My Classroom',
-      'Tell us who you are and which titles you are teaching. You are choosing from the '
-      + 'approved catalogue, so every title arrives already cleared for rights and edition '
-      + 'and carries its purchase and free-text links with it. Teach more than one course? '
-      + 'Save one, then add another &mdash; your name carries over.',
+      'Build the bookshelf for your course in three steps: name the course, tick the '
+      + 'titles you teach, and save. Your shelf appears below as a tile you can print or '
+      + 'copy, with each title&rsquo;s edition and its purchase or free-text links already '
+      + 'attached. Teach more than one course? Save the first, then add another; your '
+      + 'name carries over. Your shelves are kept in this browser and are here the next '
+      + 'time you open the library.',
       form + picker + mineCard + outCard);
   }
 
@@ -1680,7 +1740,7 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     var save = document.getElementById('tbSave');
     if (save){
       save.disabled = !(n > 0 && me.teacher && me.course);
-      save.textContent = (tbEdit >= 0) ? 'Update this course' : 'Save this course';
+      save.textContent = (tbEdit >= 0) ? 'Update this course' : 'Save to my bookshelf';
     }
     var cancel = document.getElementById('tbCancel');
     if (cancel) cancel.className = (tbEdit >= 0) ? 'tbbtn gh' : 'tbbtn gh tbhide';
@@ -1705,23 +1765,25 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
 
   function tbDrawMine(){
     var card = document.getElementById('tbMineCard');
-    var list = document.getElementById('tbMineList');
+    var list = document.getElementById('tbMineGrid');
     if (!card || !list) return;
-    if (!me.courses.length){ card.className = 'tbcard tbhide'; tbDrawJson(); return; }
+    if (!me.courses.length){
+      list.innerHTML = '';
+      card.className = 'tbcard tbhide'; tbDrawJson(); return;
+    }
     card.className = 'tbcard';
-    var h = '';
+    var rows = [], h = '';
     for (var i=0;i<me.courses.length;i++){
       var s = me.courses[i];
-      h += '<div class="tbmrow' + (tbEdit === i ? ' on' : '') + '">'
-        + '<span class="tbmc">' + esc(s.course) + '</span>'
-        + '<span class="tbmm">' + tbBadges(s) + '</span>'
-        + '<span class="tbmn">' + tbEntries(s).length + ' titles</span>'
-        + '<span class="tbma">'
-        + '<button class="tick" data-tbedit="' + i + '">Edit</button>'
-        + '<button class="tick" data-tbdel="' + i + '">Remove</button>'
-        + '</span></div>';
+      rows.push({s: s, draft: false});
+      h += tbShelfCard(s, true, i, true);
     }
     list.innerHTML = h;
+    if (tbEdit >= 0){
+      var tiles = list.querySelectorAll('.tbshelf');
+      if (tiles[tbEdit]) tiles[tbEdit].className += ' tbediting';
+    }
+    tbWireShelfButtons(list, rows);
     var note = document.getElementById('tbMineNote');
     if (note){
       note.textContent = me.courses.length
@@ -1785,14 +1847,14 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     var card = document.getElementById('tbOutCard');
     var pre = document.getElementById('tbJson');
     if (!card || !pre) return;
-    if (!me.courses.length){ card.className = 'tbcard tbhide'; return; }
+    if (!me.courses.length){ card.className = 'tbcard tbadmin tbhide'; return; }
     var txt = esc(tbJsonText())
       .replace(/&quot;([a-z_]+)&quot;:/g, '<span class="k">&quot;$1&quot;</span>:')
       .replace(/: &quot;([^&]*)&quot;/g, ': <span class="s">&quot;$1&quot;</span>')
       .replace(/^( +)&quot;([^&]+)&quot;(,?)$/gm, '$1<span class="s">&quot;$2&quot;</span>$3')
       .replace(/: null/g, ': <span class="n">null</span>');
     pre.innerHTML = txt;
-    card.className = 'tbcard';
+    card.className = 'tbcard tbadmin';
     var cj = document.getElementById('tbCopyJson');
     if (cj && !cj.getAttribute('data-wired')){
       cj.setAttribute('data-wired', '1');
@@ -1938,29 +2000,15 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     if (!rows.length){
       h = '<div class="tbblank">' + (all.length
         ? 'No bookshelf matches that search.'
-        : 'No bookshelves published yet. Teachers build one under <b>My Classroom</b>; '
-          + 'they appear here once the team publishes <b>classrooms.json</b>.') + '</div>';
+        : 'No bookshelves yet. Build yours under <b>My Classroom</b> and it appears '
+          + 'here.') + '</div>';
     }
     box.innerHTML = h;
     var hits = document.getElementById('tbHits');
     if (hits) hits.textContent = rows.length + (rows.length === 1 ? ' course' : ' courses');
     tbCount(rows.length, 'course');
 
-    var pb = box.querySelectorAll('[data-tbprint]');
-    for (var p=0;p<pb.length;p++){
-      pb[p].addEventListener('click', (function(btn){
-        return function(){ tbPrintShelf(parseInt(btn.getAttribute('data-tbprint'), 10)); };
-      })(pb[p]));
-    }
-    var cb = box.querySelectorAll('[data-tbcopy]');
-    for (var c=0;c<cb.length;c++){
-      cb[c].addEventListener('click', (function(btn){
-        return function(){
-          var row = tbRendered[parseInt(btn.getAttribute('data-tbcopy'), 10)];
-          if (row) tbToClipboard(tbShelfText(row.s), btn);
-        };
-      })(cb[c]));
-    }
+    tbWireShelfButtons(box, rows);
   }
 
   function viewShelves(){
@@ -2207,6 +2255,7 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
     var open = viewbar.className.indexOf('show-admin') !== -1;
     if (open){
       viewbar.className = 'viewbar';
+      document.body.className = document.body.className.replace(' show-admin', '');
       adminToggle.setAttribute('aria-expanded', 'false');
       if (view === 'sources' || view === 'attention'){
         view = 'library';
@@ -2217,6 +2266,7 @@ window.__SCHOOL_YEAR__ = "2026-27";</script>
       }
     } else {
       viewbar.className = 'viewbar show-admin';
+      document.body.className = document.body.className + ' show-admin';
       adminToggle.setAttribute('aria-expanded', 'true');
     }
   });

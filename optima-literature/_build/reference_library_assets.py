@@ -314,6 +314,14 @@ select,#q{font-family:inherit;font-size:13.5px;padding:8px 11px;
   body.tbprinting .views{padding:0;}
   body.tbprinting .tbshelves{display:block !important;}
   body.tbprinting .tbshelf{display:none !important;}
+  /* A tile printed from My Classroom lives inside a step card. */
+  body.tbprinting .tbcard{display:none !important;}
+  body.tbprinting .tbcard.tbprintwrap{display:block !important;border:none;
+     box-shadow:none;margin:0;border-radius:0;}
+  body.tbprinting .tbprintwrap .tbhead,
+  body.tbprinting .tbprintwrap .tbrun{display:none !important;}
+  body.tbprinting .tbprintwrap .tbminegrid{padding:0;}
+  body.tbprinting .tbprintme{box-shadow:none !important;}
   body.tbprinting .tbshelf.tbprintme{display:block !important;border:none;
        box-shadow:none;border-top:3px solid #0E1C42 !important;}
   body.tbprinting .tbprintme .tbsfoot{display:none !important;}
@@ -479,6 +487,16 @@ select,#q{font-family:inherit;font-size:13.5px;padding:8px 11px;
 .tbblank{padding:34px 20px;text-align:center;color:var(--ink-faint);font-size:13px;
      line-height:1.7;border:1px dashed var(--line);border-radius:12px;background:var(--card);}
 .tbhide{display:none;}
+/* Maintainer-only card on My Classroom (the classrooms.json record). Shown only
+   while the Data checks gear is on, so a teacher never meets raw JSON. */
+.tbadmin{display:none;}
+body.show-admin .tbadmin{display:block;}
+body.show-admin .tbadmin.tbhide{display:none;}
+/* The teacher's own tiles: same card as a published shelf, navy top edge. */
+.tbminegrid{padding:18px 20px;}
+.tbshelf.tbmine{border-top-color:var(--navy);}
+.tbshelf.tbediting{box-shadow:0 0 0 3px rgba(85,200,232,.45);}
+.tbsp{flex:1;}
 
 """
 
